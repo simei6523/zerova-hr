@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>規章制度 · Zerova HR 平台</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand:        #00818E;
+      --brand-hover:  #006d78;
+      --brand-dark:   #005f6a;
+      --brand-light:  #4ec8d4;
+      --brand-pale:   #dff4f6;
+      --brand-faint:  #f0fafb;
+      --sidebar-bg1:  #2A4F5E;
+      --sidebar-bg2:  #2E5769;
+      --dark:   #1a3038;
+      --gray:   #6a8890;
+      --gray-light: #e2eef0;
+      --white:  #ffffff;
+      --sidebar-width: 258px;
+    }
+    html, body {
+      height: 100%;
+      font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      background: #f4f9fa;
+      color: var(--dark);
+      -webkit-font-smoothing: antialiased;
+    }
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: linear-gradient(175deg, var(--sidebar-bg1) 0%, var(--sidebar-bg2) 100%);
+      color: #fff;
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 100; overflow: hidden;
+    }
+    .sidebar::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--brand), var(--brand-light), var(--brand));
+      z-index: 2;
+    }
+    .sidebar__grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(0,129,142,0.12) 1px, transparent 1px);
+      background-size: 22px 22px;
+      pointer-events: none;
+    }
+    .sidebar__brand {
+      padding: 1.5rem 1.25rem 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative; z-index: 1;
+    }
+    .sidebar__logo-wrap { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; }
+    .sidebar__logo-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--brand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; font-weight: 900; color: white; flex-shrink: 0;
+      box-shadow: 0 3px 12px rgba(0,129,142,0.4);
+    }
+    .sidebar__logo-name { font-size: 1.1rem; font-weight: 700; color: white; letter-spacing: 0.1em; }
+    .sidebar__logo-sub { font-size: 0.58rem; color: rgba(255,255,255,0.4); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 1px; }
+
+    .sidebar__nav { flex: 1; padding: 1.2rem 0; overflow-y: auto; position: relative; z-index: 1; }
+    .sidebar__nav-section { margin-bottom: 1.4rem; }
+    .sidebar__nav-label {
+      padding: 0 1.25rem 0.45rem;
+      font-size: 0.59rem; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.26);
+    }
+    .sidebar__nav-list { list-style: none; }
+    .sidebar__nav-item a {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.62rem 1.25rem;
+      font-size: 0.84rem; color: rgba(255,255,255,0.58);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: color 0.16s, background 0.16s, border-color 0.16s;
+    }
+    .sidebar__nav-item a:hover { color: #fff; background: rgba(0,129,142,0.14); }
+    .sidebar__nav-item--active a {
+      color: #fff; font-weight: 600;
+      background: linear-gradient(90deg, rgba(0,129,142,0.22) 0%, transparent 100%);
+      border-left-color: var(--brand-light);
+    }
+    .nav-icon { width: 17px; height: 17px; opacity: 0.72; flex-shrink: 0; }
+    .sidebar__nav-item--active .nav-icon { opacity: 1; }
+    .sidebar__footer {
+      padding: 0.9rem 1.25rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.65rem; color: rgba(255,255,255,0.28);
+      line-height: 1.6; position: relative; z-index: 1;
+    }
+    .sidebar__footer-brand { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; color: var(--brand-light); display: block; margin-bottom: 0.18rem; }
+
+    /* ══ MAIN ══ */
+    .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar {
+      height: 54px; background: white;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex; align-items: center; padding: 0 2rem; gap: 1rem;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar__breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; }
+    .topbar__breadcrumb a { color: var(--brand); text-decoration: none; }
+    .topbar__breadcrumb a:hover { color: var(--brand-dark); }
+    .topbar__breadcrumb span { color: var(--gray); }
+    .topbar__breadcrumb strong { color: var(--dark); font-weight: 600; }
+    .topbar__actions { margin-left: auto; display: flex; align-items: center; gap: 0.8rem; }
+    .topbar__avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; color: white; cursor: pointer;
+    }
+    /* 下載按鈕 */
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.5rem 1.2rem;
+      background: var(--brand); color: white;
+      font-size: 0.8rem; font-weight: 600;
+      border: none; border-radius: 7px; cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(0,129,142,0.3);
+      transition: background 0.18s, transform 0.15s;
+    }
+    .btn-download:hover { background: var(--brand-dark); transform: translateY(-1px); }
+    .btn-download:disabled, .btn-download.disabled {
+      background: #b0cdd0; box-shadow: none; cursor: not-allowed; transform: none;
+    }
+
+    /* ══ PAGE BODY ══ */
+    .page-body {
+      display: flex; flex: 1; overflow: hidden; height: calc(100vh - 54px);
+    }
+
+    /* ── 左側規章列表 ── */
+    .reg-sidebar {
+      width: 260px; flex-shrink: 0;
+      background: white;
+      border-right: 1px solid var(--gray-light);
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .reg-sidebar__header {
+      padding: 1rem 1.1rem 0.75rem;
+      border-bottom: 2px solid var(--brand-pale);
+      position: sticky; top: 0; background: white; z-index: 5;
+    }
+    .reg-sidebar__title {
+      font-size: 0.78rem; font-weight: 700; color: var(--dark);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .reg-sidebar__title::before {
+      content: ""; display: block; width: 4px; height: 15px;
+      background: var(--brand); border-radius: 2px;
+    }
+    .reg-sidebar__count {
+      margin-left: auto;
+      font-size: 0.65rem; color: var(--gray);
+      background: var(--brand-pale); padding: 0.15rem 0.5rem; border-radius: 10px;
+    }
+
+    /* 分類 */
+    .reg-category { border-bottom: 1px solid var(--gray-light); }
+    .reg-category__title {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.1rem;
+      font-size: 0.76rem; font-weight: 700; color: var(--dark);
+      cursor: pointer;
+      background: var(--brand-faint);
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .reg-category__title:hover { background: var(--brand-pale); }
+    .reg-category__icon { font-size: 0.9rem; }
+    .reg-category__arrow {
+      margin-left: auto;
+      width: 14px; height: 14px; color: var(--gray);
+      transition: transform 0.2s;
+    }
+    .reg-category.open .reg-category__arrow { transform: rotate(90deg); }
+    .reg-category__count {
+      font-size: 0.62rem; color: var(--brand);
+      background: var(--brand-pale); padding: 0.1rem 0.42rem; border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* 規章項目 */
+    .reg-list { display: none; }
+    .reg-category.open .reg-list { display: block; }
+    .reg-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.1rem 0.6rem 1.8rem;
+      font-size: 0.8rem; color: var(--gray);
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+      line-height: 1.4;
+    }
+    .reg-item:hover { background: var(--brand-faint); color: var(--dark); }
+    .reg-item.active {
+      background: var(--brand-pale);
+      color: var(--brand-dark);
+      font-weight: 600;
+      border-left-color: var(--brand);
+    }
+    .reg-item__dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gray-light); flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .reg-item.active .reg-item__dot { background: var(--brand); }
+
+    /* ── 中間 PDF 閱覽區 ── */
+    .reg-viewer {
+      flex: 1; display: flex; flex-direction: column;
+      background: #f4f9fa; overflow: hidden;
+    }
+    .reg-viewer__toolbar {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.85rem 1.5rem;
+      background: white;
+      border-bottom: 1px solid var(--gray-light);
+      flex-shrink: 0;
+    }
+    .reg-viewer__doc-title {
+      font-size: 0.9rem; font-weight: 700; color: var(--dark);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .reg-viewer__doc-title svg { color: var(--brand); flex-shrink: 0; }
+    .reg-viewer__meta { font-size: 0.7rem; color: var(--gray); margin-top: 0.1rem; }
+    .reg-viewer__actions { margin-left: auto; display: flex; gap: 0.6rem; }
+
+    /* PDF 嵌入框 */
+    .reg-viewer__frame {
+      flex: 1; padding: 1.25rem 1.5rem;
+      overflow-y: auto;
+    }
+    .pdf-embed-wrap {
+      background: white;
+      border: 1px solid var(--gray-light);
+      border-radius: 10px;
+      overflow: hidden;
+      height: 100%;
+      min-height: 500px;
+      box-shadow: 0 2px 12px rgba(0,129,142,0.07);
+    }
+    .pdf-embed-wrap iframe {
+      width: 100%; height: 100%; border: none; display: block;
+      min-height: 500px;
+    }
+
+    /* 空白提示 */
+    .reg-viewer__empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem; padding: 3rem;
+      text-align: center;
+    }
+    .reg-viewer__empty-icon {
+      width: 72px; height: 72px; border-radius: 18px;
+      background: var(--brand-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .reg-viewer__empty h3 { font-size: 1rem; font-weight: 700; color: var(--dark); }
+    .reg-viewer__empty p { font-size: 0.82rem; color: var(--gray); line-height: 1.6; max-width: 300px; }
+
+    @media (max-width: 900px) {
+      .reg-sidebar { width: 220px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar__grid" aria-hidden="true"></div>
+    <div class="sidebar__brand">
+      <a href="index.html" class="sidebar__logo-wrap">
+        <div class="sidebar__logo-icon">Z</div>
+        <div>
+          <div class="sidebar__logo-name">ZEROVA</div>
+          <div class="sidebar__logo-sub">HR Platform</div>
+        </div>
+      </a>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__nav-section">
+        <div class="sidebar__nav-label">主選單</div>
+        <ul class="sidebar__nav-list">
+          <li class="sidebar__nav-item">
+            <a href="index.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>首頁總覽
+            </a>
+          </li>
+          <li class="sidebar__nav-item sidebar__nav-item--active">
+            <a href="regulations.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>規章制度
+            </a>
+          </li>
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>表單流程
+            </a>
+          </li>
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>薪酬管理
+            </a>
+          </li>
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>績效管理
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="sidebar__nav-section">
+        <div class="sidebar__nav-label">學習資源</div>
+        <ul class="sidebar__nav-list">
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>HR 學習資料
+            </a>
+          </li>
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>人員管理
+            </a>
+          </li>
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>出勤管理
+            </a>
+          </li>
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>數據報表
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="sidebar__nav-section">
+        <div class="sidebar__nav-label">系統</div>
+        <ul class="sidebar__nav-list">
+          <li class="sidebar__nav-item">
+            <a href="#">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L17.66 6.34M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>系統設定
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar__footer">
+      <span class="sidebar__footer-brand">ZEROVA TECHNOLOGY</span>
+      HR Platform v2.1 · 2025
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar__breadcrumb">
+        <a href="index.html">首頁</a>
+        <span>›</span>
+        <strong>規章制度</strong>
+      </div>
+      <div class="topbar__actions">
+        <!-- 下載按鈕：依選取的規章動態更新 -->
+        <a id="downloadBtn" href="#" class="btn-download disabled" onclick="return false;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下載 PDF
+        </a>
+        <div class="topbar__avatar">HR</div>
+      </div>
+    </div>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- 左側規章列表 -->
+      <div class="reg-sidebar">
+        <div class="reg-sidebar__header">
+          <div class="reg-sidebar__title">
+            規章制度
+            <span class="reg-sidebar__count">10 份</span>
+          </div>
+        </div>
+
+        <!-- 工作規則類 -->
+        <div class="reg-category open" id="cat-work">
+          <div class="reg-category__title" onclick="toggleCategory('cat-work')">
+            <span class="reg-category__icon">📋</span>
+            工作規則類
+            <span class="reg-category__count">2</span>
+            <svg class="reg-category__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="reg-list">
+            <div class="reg-item" onclick="loadDoc(this, '工作規則', 'pdf/work-rules.pdf', '2024/01/01 公告')">
+              <span class="reg-item__dot"></span>工作規則
+            </div>
+            <div class="reg-item" onclick="loadDoc(this, '考勤暨請假管理辦法', 'pdf/leave-policy.pdf', '2024/03/15 修訂')">
+              <span class="reg-item__dot"></span>考勤暨請假管理辦法
+            </div>
+          </div>
+        </div>
+
+        <!-- 薪酬管理類 -->
+        <div class="reg-category open" id="cat-salary">
+          <div class="reg-category__title" onclick="toggleCategory('cat-salary')">
+            <span class="reg-category__icon">💰</span>
+            薪酬管理類
+            <span class="reg-category__count">2</span>
+            <svg class="reg-category__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="reg-list">
+            <div class="reg-item" onclick="loadDoc(this, '薪資管理辦法', 'pdf/salary-policy.pdf', '2024/01/01 公告')">
+              <span class="reg-item__dot"></span>薪資管理辦法
+            </div>
+            <div class="reg-item" onclick="loadDoc(this, '加班管理辦法', 'pdf/overtime-policy.pdf', '2024/06/01 修訂')">
+              <span class="reg-item__dot"></span>加班管理辦法
+            </div>
+          </div>
+        </div>
+
+        <!-- 績效考核類 -->
+        <div class="reg-category open" id="cat-perf">
+          <div class="reg-category__title" onclick="toggleCategory('cat-perf')">
+            <span class="reg-category__icon">📊</span>
+            績效考核類
+            <span class="reg-category__count">2</span>
+            <svg class="reg-category__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="reg-list">
+            <div class="reg-item" onclick="loadDoc(this, '績效考核辦法', 'pdf/performance-policy.pdf', '2024/01/01 公告')">
+              <span class="reg-item__dot"></span>績效考核辦法
+            </div>
+            <div class="reg-item" onclick="loadDoc(this, '人員晉升管理辦法', 'pdf/promotion-policy.pdf', '2023/07/01 公告')">
+              <span class="reg-item__dot"></span>人員晉升管理辦法
+            </div>
+          </div>
+        </div>
+
+        <!-- 招募任用類 -->
+        <div class="reg-category open" id="cat-recruit">
+          <div class="reg-category__title" onclick="toggleCategory('cat-recruit')">
+            <span class="reg-category__icon">🔍</span>
+            招募任用類
+            <span class="reg-category__count">2</span>
+            <svg class="reg-category__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="reg-list">
+            <div class="reg-item" onclick="loadDoc(this, '招募任用管理辦法', 'pdf/recruitment-policy.pdf', '2024/01/01 公告')">
+              <span class="reg-item__dot"></span>招募任用管理辦法
+            </div>
+            <div class="reg-item" onclick="loadDoc(this, '新進人員試用期滿考核作業辦法', 'pdf/probation-policy.pdf', '2023/10/01 公告')">
+              <span class="reg-item__dot"></span>新進人員試用期滿考核作業辦法
+            </div>
+          </div>
+        </div>
+
+        <!-- 其它類 -->
+        <div class="reg-category open" id="cat-other">
+          <div class="reg-category__title" onclick="toggleCategory('cat-other')">
+            <span class="reg-category__icon">⭐</span>
+            其它類
+            <span class="reg-category__count">2</span>
+            <svg class="reg-category__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="reg-list">
+            <div class="reg-item" onclick="loadDoc(this, '優秀員工獎勵辦法', 'pdf/award-policy.pdf', '2024/01/01 公告')">
+              <span class="reg-item__dot"></span>優秀員工獎勵辦法
+            </div>
+            <div class="reg-item" onclick="loadDoc(this, '員工行為準則', 'pdf/conduct-policy.pdf', '2023/01/01 公告')">
+              <span class="reg-item__dot"></span>員工行為準則
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end reg-sidebar -->
+
+      <!-- 中間 PDF 閱覽區 -->
+      <div class="reg-viewer">
+
+        <!-- 工具列（選到文件後顯示） -->
+        <div class="reg-viewer__toolbar" id="viewerToolbar" style="display:none;">
+          <div>
+            <div class="reg-viewer__doc-title" id="viewerTitle">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              文件名稱
+            </div>
+            <div class="reg-viewer__meta" id="viewerMeta">公告日期</div>
+          </div>
+        </div>
+
+        <!-- 空白提示（預設顯示） -->
+        <div class="reg-viewer__empty" id="viewerEmpty">
+          <div class="reg-viewer__empty-icon">📄</div>
+          <h3>請從左側選擇規章</h3>
+          <p>點選左側任一規章名稱，即可在此閱覽 PDF 內容，並可點選右上角「下載 PDF」取得檔案。</p>
+        </div>
+
+        <!-- PDF iframe -->
+        <div class="reg-viewer__frame" id="viewerFrame" style="display:none;">
+          <div class="pdf-embed-wrap">
+            <iframe id="pdfIframe" src="" title="規章制度 PDF"></iframe>
+          </div>
+        </div>
+
+      </div><!-- end reg-viewer -->
+
+    </div><!-- end page-body -->
+  </main>
+</div>
+
+<script>
+  // 展開/收合分類
+  function toggleCategory(id) {
+    const cat = document.getElementById(id);
+    cat.classList.toggle('open');
+  }
+
+  // 載入文件
+  function loadDoc(el, title, pdfPath, meta) {
+    // 更新 active 樣式
+    document.querySelectorAll('.reg-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+
+    // 更新 toolbar
+    document.getElementById('viewerTitle').innerHTML =
+      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${title}`;
+    document.getElementById('viewerMeta').textContent = meta;
+    document.getElementById('viewerToolbar').style.display = 'flex';
+
+    // 載入 PDF
+    document.getElementById('pdfIframe').src = pdfPath;
+    document.getElementById('viewerEmpty').style.display = 'none';
+    document.getElementById('viewerFrame').style.display = 'block';
+
+    // 更新頂部下載按鈕
+    const btn = document.getElementById('downloadBtn');
+    btn.href = pdfPath;
+    btn.download = title + '.pdf';
+    btn.classList.remove('disabled');
+    btn.onclick = null;
+  }
+</script>
+</body>
+</html>
