@@ -550,7 +550,7 @@
 
           <!-- 績效管理 -->
           <li class="nav-item" id="nav-perf">
-            <div class="nav-link" onclick="showPage('coming','績效管理')">
+            <div class="nav-link" onclick="showPage('talent')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               績效管理
             </div>
@@ -784,6 +784,13 @@
       </div>
     </div>
 
+    <!-- ══ PAGE: 人才識別九宮格 ══ -->
+    <div class="page-section" id="page-talent" style="display:none;">
+      <div style="height:calc(100vh - 54px);">
+        <iframe id="talentIframe" data-src="talent-grid/index.html" title="人才識別九宮格" style="width:100%; height:100%; border:none; display:block;"></iframe>
+      </div>
+    </div>
+
     <!-- ══ PAGE: 建置中 ══ -->
     <div class="page-section" id="page-coming" style="display:none;">
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100vh - 54px);gap:1rem;text-align:center;padding:3rem;">
@@ -815,13 +822,20 @@
     if (page === 'coming' && title) {
       document.getElementById('comingTitle').textContent = title + '（建置中）';
     }
+    // 人才九宮格頁面：首次切換時才載入 iframe
+    if (page === 'talent') {
+      const iframe = document.getElementById('talentIframe');
+      if (iframe && !iframe.src) {
+        iframe.src = iframe.dataset.src;
+      }
+    }
     // 下載按鈕只在規章頁且已選文件時顯示
     if (page !== 'regulations') {
       document.getElementById('downloadBtn').classList.add('hidden');
     }
     // 更新側欄 active
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    const navMap = { home:'nav-home', regulations:'nav-reg', coming:'nav-forms' };
+    const navMap = { home:'nav-home', regulations:'nav-reg', coming:'nav-forms', talent:'nav-perf' };
     const navId = navMap[page];
     if (navId) document.getElementById(navId)?.classList.add('active');
   }
