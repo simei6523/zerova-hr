@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025 人才識別九宮格｜總覽入口</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", Arial, sans-serif;
+  background: #f5f4f0;
+  color: #1a1a18;
+  min-height: 100vh;
+}
+
+/* ── 頂部 Banner ── */
+.banner {
+  background: #3C3489;
+  color: #fff;
+  padding: 2.5rem 2rem 2rem;
+}
+.banner-inner { max-width: 960px; margin: 0 auto; }
+.banner h1 { font-size: 24px; font-weight: 500; letter-spacing: 0.02em; }
+.banner p  { font-size: 14px; opacity: 0.75; margin-top: 6px; }
+
+.banner-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.meta-item { text-align: center; }
+.meta-item .num  { font-size: 28px; font-weight: 500; }
+.meta-item .lbl  { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+
+/* ── 主體 ── */
+.page { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+/* ── 搜尋 & 篩選列 ── */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.search-box {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px 14px;
+  font-size: 13px;
+  border: 0.5px solid #b4b2a9;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a1a18;
+  outline: none;
+}
+.search-box:focus { border-color: #7F77DD; }
+
+.filter-btn {
+  padding: 7px 14px;
+  font-size: 13px;
+  border: 0.5px solid #b4b2a9;
+  border-radius: 8px;
+  background: #fff;
+  color: #5f5e5a;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-btn.active {
+  background: #EEEDFE;
+  color: #3C3489;
+  border-color: #AFA9EC;
+}
+
+/* ── 部門卡片格線 ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+/* ── 部門卡片 ── */
+.dept-card {
+  background: #fff;
+  border: 0.5px solid #d3d1c7;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.dept-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(60,52,137,0.10);
+}
+
+.card-accent { height: 5px; }
+
+.card-body { padding: 16px 18px 14px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.card-title  { font-size: 15px; font-weight: 500; color: #1a1a18; line-height: 1.4; }
+.card-badge  {
+  font-size: 10px; padding: 3px 8px; border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* 狀態色 */
+.status-complete { background: #E1F5EE; color: #0F6E56; }
+.status-pending  { background: #FAEEDA; color: #854F0B; }
+.status-missing  { background: #F1EFE8; color: #5F5E5A; }
+
+/* mini 九宮格 */
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 3px;
+}
+.mini-cell {
+  border-radius: 4px;
+  padding: 5px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.mini-cell .mc-num  { font-size: 14px; font-weight: 500; line-height: 1; }
+.mini-cell .mc-lbl  { font-size: 8px; text-align: center; line-height: 1.2; }
+
+/* mini cell 顏色 */
+.mc-skilled  { background:#EAF3DE; } .mc-skilled  .mc-num { color:#27500A; } .mc-skilled  .mc-lbl { color:#3B6D11; }
+.mc-perfstar { background:#E6F1FB; } .mc-perfstar .mc-num { color:#185FA5; } .mc-perfstar .mc-lbl { color:#378ADD; }
+.mc-star     { background:#EEEDFE; } .mc-star     .mc-num { color:#534AB7; } .mc-star     .mc-lbl { color:#7F77DD; }
+.mc-basic    { background:#F1EFE8; } .mc-basic    .mc-num { color:#5F5E5A; } .mc-basic    .mc-lbl { color:#888780; }
+.mc-core     { background:#FAEEDA; } .mc-core     .mc-num { color:#854F0B; } .mc-core     .mc-lbl { color:#BA7517; }
+.mc-potential{ background:#E1F5EE; } .mc-potential.mc-num { color:#0F6E56; } .mc-potential .mc-lbl { color:#1D9E75; }
+.mc-unfit    { background:#FCEBEB; } .mc-unfit    .mc-num { color:#791F1F; } .mc-unfit    .mc-lbl { color:#A32D2D; }
+.mc-watch    { background:#FAEEDA; } .mc-watch    .mc-num { color:#854F0B; } .mc-watch    .mc-lbl { color:#BA7517; }
+.mc-explore  { background:#FAECE7; } .mc-explore  .mc-num { color:#712B13; } .mc-explore  .mc-lbl { color:#993C1D; }
+.mc-empty    { background:#f5f4f0; } .mc-empty    .mc-num { color:#b4b2a9; } .mc-empty    .mc-lbl { color:#d3d1c7; }
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 14px;
+  border-top: 0.5px solid #eeecea;
+}
+.card-footer .total { font-size: 12px; color: #5f5e5a; }
+.card-footer .arrow { font-size: 18px; color: #AFA9EC; }
+
+/* ── 空狀態卡（待建） ── */
+.dept-card.pending {
+  border-style: dashed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.dept-card.pending:hover { transform: none; box-shadow: none; }
+
+/* ── 說明列 ── */
+.how-to {
+  margin-top: 2.5rem;
+  background: #fff;
+  border: 0.5px solid #d3d1c7;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+.how-to h2 { font-size: 14px; font-weight: 500; color: #1a1a18; margin-bottom: 10px; }
+.steps { display: flex; flex-wrap: wrap; gap: 12px; counter-reset: step; }
+.step {
+  flex: 1; min-width: 160px;
+  background: #f5f4f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  counter-increment: step;
+  position: relative;
+  padding-left: 36px;
+}
+.step::before {
+  content: counter(step);
+  position: absolute; left: 12px; top: 12px;
+  width: 18px; height: 18px;
+  background: #3C3489; color: #fff;
+  font-size: 11px; font-weight: 500;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.step p { font-size: 12px; color: #5f5e5a; line-height: 1.6; }
+
+.note { font-size: 11px; color: #888780; text-align: center; margin-top: 2rem; }
+
+
+</style>
+</head>
+<body>
+
+
+
+<!-- ── Banner ── -->
+<div class="banner">
+  <div class="banner-inner">
+    <h1>2025 人才識別九宮格｜各部門總覽</h1>
+    <p>績效評核完成後，點選各部門卡片即可查看完整互動式九宮格</p>
+    <div class="banner-meta">
+      <div class="meta-item"><div class="num" id="dept-done">14</div><div class="lbl">已完成部門</div></div>
+      <div class="meta-item"><div class="num" id="dept-total">14</div><div class="lbl">部門總數</div></div>
+      <div class="meta-item"><div class="num" id="staff-total">263</div><div class="lbl">納入評核人數</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 主體 ── -->
+<div class="page">
+
+  <!-- 搜尋 & 篩選 -->
+  <div class="toolbar">
+    <input class="search-box" id="search" placeholder="🔍 搜尋部門名稱…" oninput="filterCards()" />
+    <button class="filter-btn active" onclick="filterStatus('all',this)">全部</button>
+    <button class="filter-btn" onclick="filterStatus('complete',this)">已完成</button>
+    <button class="filter-btn" onclick="filterStatus('pending',this)">待建立</button>
+  </div>
+
+  <!-- 部門卡片 -->
+  <div class="grid" id="card-grid">
+    <!-- ★ 新增部門：複製一個 dept-card 區塊，修改以下欄位即可 ★
+         data-status="complete" → 已完成（可點擊）
+         data-status="pending"  → 尚未建立（灰色不可點）
+         href="XXX.html"        → 對應的九宮格 HTML 檔名
+         card-accent 顏色      → 各部門識別色（自訂）
+    -->
+
+    <!-- 全球人力資源單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_hr.html"
+       data-name="全球人力資源單位" data-status="complete">
+      <div class="card-accent" style="background:#534AB7;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球人力資源單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <!-- mini 九宮格：順序為 ⑥③① / ⑧④② / ⑨⑦⑤ -->
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">1</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">1</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 2 人</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 全球財會單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_finance.html"
+       data-name="全球財會單位" data-status="complete">
+      <div class="card-accent" style="background:#1D9E75;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球財會單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">2</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">4</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">1</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 7 人</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球研發單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_rnd.html"
+       data-name="全球研發單位" data-status="complete">
+      <div class="card-accent" style="background:#185FA5;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球研發單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">31</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">43</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">8</span> <span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">1</span> <span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span> <span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span> <span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span> <span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">1</span> <span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span> <span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 91 人 · 13 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球品管單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_qa.html"
+       data-name="全球品管單位" data-status="complete">
+      <div class="card-accent" style="background:#0F6E56;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球品管單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">3</span> <span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">4</span> <span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">6</span> <span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">5</span> <span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">6</span> <span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">5</span> <span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span> <span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span> <span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">3</span> <span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 32 人 · 3 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球供應鏈單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_scm.html"
+       data-name="全球供應鏈單位" data-status="complete">
+      <div class="card-accent" style="background:#854F0B;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球供應鏈單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">4</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">4</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">3</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">1</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">2</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 14 人 · 8 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球生產管理單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_mfg_mgmt.html"
+       data-name="全球生產管理單位" data-status="complete">
+      <div class="card-accent" style="background:#378ADD;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球生產管理單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">2</span> <span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">13</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">10</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">2</span> <span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">15</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">8</span> <span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span> <span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">2</span> <span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">4</span> <span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 56 人 · 7 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球技術服務單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_ts.html"
+       data-name="全球技術服務單位" data-status="complete">
+      <div class="card-accent" style="background:#0C447C;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球技術服務單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">7</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">2</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">1</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">5</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 15 人 · 3 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球產品管理單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_pm.html"
+       data-name="全球產品管理單位" data-status="complete">
+      <div class="card-accent" style="background:#712B13;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球產品管理單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">1</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">3</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">2</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">1</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">5</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">1</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">1</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 14 人 · 4 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 業務一部 -->
+    <a class="dept-card" href="talent_nine_grid_2025_sales1.html"
+       data-name="業務一部" data-status="complete">
+      <div class="card-accent" style="background:#993C1D;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">業務一部</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">1</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">5</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">5</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 11 人 · 2 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 業務二部 -->
+    <a class="dept-card" href="talent_nine_grid_2025_sales2.html"
+       data-name="業務二部" data-status="complete">
+      <div class="card-accent" style="background:#712B13;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">業務二部</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">5</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">1</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 6 人</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球資訊管理單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_it.html"
+       data-name="全球資訊管理單位" data-status="complete">
+      <div class="card-accent" style="background:#0C447C;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球資訊管理單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">5</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">1</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">1</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">1</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 8 人</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 全球商業運營單位 -->
+    <a class="dept-card" href="talent_nine_grid_2025_biz.html"
+       data-name="全球商業運營單位" data-status="complete">
+      <div class="card-accent" style="background:#27500A;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">全球商業運營單位</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">1</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">3</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">1</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 5 人 · 2 個子部門</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 法務部 -->
+    <a class="dept-card" href="talent_nine_grid_2025_legal.html"
+       data-name="法務部" data-status="complete">
+      <div class="card-accent" style="background:#5F5E5A;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">法務部</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">0</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">1</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 1 人</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+
+    <!-- 稽核部 -->
+    <a class="dept-card" href="talent_nine_grid_2025_audit.html"
+       data-name="稽核部" data-status="complete">
+      <div class="card-accent" style="background:#378ADD;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">稽核部</div>
+          <span class="card-badge status-complete">已完成</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-skilled">  <span class="mc-num">0</span><span class="mc-lbl">⑥熟練</span></div>
+          <div class="mini-cell mc-perfstar"> <span class="mc-num">1</span><span class="mc-lbl">③績效之星</span></div>
+          <div class="mini-cell mc-star">     <span class="mc-num">0</span><span class="mc-lbl">①明星</span></div>
+          <div class="mini-cell mc-basic">    <span class="mc-num">0</span><span class="mc-lbl">⑧基本</span></div>
+          <div class="mini-cell mc-core">     <span class="mc-num">0</span><span class="mc-lbl">④中堅</span></div>
+          <div class="mini-cell mc-potential"><span class="mc-num">0</span><span class="mc-lbl">②潛力</span></div>
+          <div class="mini-cell mc-unfit">    <span class="mc-num">0</span><span class="mc-lbl">⑨不適任</span></div>
+          <div class="mini-cell mc-watch">    <span class="mc-num">0</span><span class="mc-lbl">⑦待觀察</span></div>
+          <div class="mini-cell mc-explore">  <span class="mc-num">0</span><span class="mc-lbl">⑤探索</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">共 1 人</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <!-- ★ 以下為「待建立」示範卡片，收到新部門 Excel 後替換即可 ★ -->
+
+    <div class="dept-card pending" data-name="資訊技術部" data-status="pending">
+      <div class="card-accent" style="background:#d3d1c7;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">資訊技術部</div>
+          <span class="card-badge status-pending">待建立</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑥</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">③</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">①</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑧</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">④</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">②</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑨</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑦</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑤</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">尚未匯入</span>
+        <span class="arrow" style="color:#d3d1c7;">→</span>
+      </div>
+    </div>
+
+    <div class="dept-card pending" data-name="業務發展部" data-status="pending">
+      <div class="card-accent" style="background:#d3d1c7;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-title">業務發展部</div>
+          <span class="card-badge status-pending">待建立</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑥</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">③</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">①</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑧</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">④</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">②</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑨</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑦</span></div>
+          <div class="mini-cell mc-empty"><span class="mc-num">—</span><span class="mc-lbl">⑤</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total">尚未匯入</span>
+        <span class="arrow" style="color:#d3d1c7;">→</span>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- 使用說明 -->
+  <div class="how-to">
+    <h2>📁 如何新增部門？（不需要寫程式）</h2>
+    <div class="steps">
+      <div class="step"><p>將各部門的 Excel 評核表上傳給 Claude，請他產生對應的九宮格 HTML 檔</p></div>
+      <div class="step"><p>把新的 HTML 檔與本首頁（index.html）放在同一個資料夾中</p></div>
+      <div class="step"><p>請 Claude 在首頁新增該部門的卡片（提供部門名稱與人數即可）</p></div>
+      <div class="step"><p>將整個資料夾放到公司內部網路（NAS / SharePoint），主管即可瀏覽</p></div>
+    </div>
+  </div>
+
+  <p class="note">© 2025 全球人力資源單位 · 人才識別九宮格系統 · 資料僅供內部使用</p>
+
+</div><!-- /page -->
+
+<script>
+let currentStatus = 'all';
+
+function filterCards() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  document.querySelectorAll('.dept-card').forEach(card => {
+    const name = card.dataset.name.toLowerCase();
+    const statusMatch = currentStatus === 'all' || card.dataset.status === currentStatus;
+    const nameMatch   = name.includes(q);
+    card.style.display = (statusMatch && nameMatch) ? '' : 'none';
+  });
+}
+
+function filterStatus(status, btn) {
+  currentStatus = status;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+</script>
+</body>
+</html>
