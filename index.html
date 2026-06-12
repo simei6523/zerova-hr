@@ -140,6 +140,11 @@
       border-left-color: var(--brand-light);
     }
     .nav-doc-item.active::before { background: var(--brand-light); }
+    .nav-doc-item--empty {
+      cursor: default; color: rgba(255,255,255,0.28); font-style: italic;
+    }
+    .nav-doc-item--empty:hover { color: rgba(255,255,255,0.28); background: none; }
+    .nav-doc-item--empty::before { background: rgba(255,255,255,0.12); }
 
     .sidebar__footer {
       padding: 0.9rem 1.25rem;
@@ -534,11 +539,82 @@
 
           <!-- 表單流程 -->
           <li class="nav-item" id="nav-forms">
-            <div class="nav-link" onclick="showPage('coming','表單流程')">
+            <div class="nav-link" onclick="toggleNav('nav-forms'); showPage('forms')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
               表單流程
+              <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
+            <ul class="nav-submenu">
+              <!-- 工作規則類 -->
+              <li>
+                <div class="nav-sub-group open" id="formcat-work">
+                  <div class="nav-sub-cat" onclick="toggleSubCat('formcat-work')">
+                    📋 工作規則類
+                    <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                  <ul class="nav-sub-items">
+                    <li class="nav-doc-item nav-doc-item--empty">尚無表單</li>
+                  </ul>
+                </div>
+              </li>
+              <!-- 薪酬管理類 -->
+              <li>
+                <div class="nav-sub-group open" id="formcat-salary">
+                  <div class="nav-sub-cat" onclick="toggleSubCat('formcat-salary')">
+                    💰 薪酬管理類
+                    <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                  <ul class="nav-sub-items">
+                    <li class="nav-doc-item nav-doc-item--empty">尚無表單</li>
+                  </ul>
+                </div>
+              </li>
+              <!-- 績效考核類 -->
+              <li>
+                <div class="nav-sub-group open" id="formcat-perf">
+                  <div class="nav-sub-cat" onclick="toggleSubCat('formcat-perf')">
+                    📊 績效考核類
+                    <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                  <ul class="nav-sub-items">
+                    <li class="nav-doc-item" onclick="loadForm(this,'人員晉升提報申請表修正','pdf/form-promotion.pdf','適用：人員晉升提報')">人員晉升提報申請表修正</li>
+                  </ul>
+                </div>
+              </li>
+              <!-- 招募任用類 -->
+              <li>
+                <div class="nav-sub-group open" id="formcat-recruit">
+                  <div class="nav-sub-cat" onclick="toggleSubCat('formcat-recruit')">
+                    🔍 招募任用類
+                    <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                  <ul class="nav-sub-items">
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表3)人員基本資料表','pdf/form-3-basicinfo.pdf','適用：新進人員資料建檔')">(表3)人員基本資料表</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表4)面試評核表','pdf/form-4-interview.pdf','適用：面試評核')">(表4)面試評核表</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表5)職系資位預核表','pdf/form-5-grade-precheck.pdf','適用：職系資位預核')">(表5)職系資位預核表</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表6-1)DL資位薪資核定表','pdf/form-6-1-dl-salary.pdf','適用：DL人員薪資核定')">(表6-1)DL資位薪資核定表</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表6)IDL資位薪資核定表','pdf/form-6-idl-salary.pdf','適用：IDL人員薪資核定')">(表6)IDL資位薪資核定表</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表7)新進人員錄用薪資暨年度總所得核定表','pdf/form-7-newhire-salary.pdf','適用：新進人員薪資核定')">(表7)新進人員錄用薪資暨年度總所得核定表</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'(表7-1)服務期滿暨績效達成獎勵金約定書','pdf/form-7-1-bonus-agreement.pdf','適用：服務期滿獎勵金約定')">(表7-1)服務期滿暨績效達成獎勵金約定書</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'新進人員試用期滿考核作業表單','pdf/form-probation-eval.pdf','修正 2025/12/15')">新進人員試用期滿考核作業表單_修正20251215</li>
+                  </ul>
+                </div>
+              </li>
+              <!-- 其它類 -->
+              <li>
+                <div class="nav-sub-group open" id="formcat-other">
+                  <div class="nav-sub-cat" onclick="toggleSubCat('formcat-other')">
+                    ⭐ 其它類
+                    <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                  <ul class="nav-sub-items">
+                    <li class="nav-doc-item" onclick="loadForm(this,'優良員工提報表','pdf/form-excellent-employee.pdf','適用：優良員工提報')">優良員工提報表</li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
           </li>
+
 
           <!-- 薪酬管理 -->
           <li class="nav-item" id="nav-salary">
@@ -550,7 +626,7 @@
 
           <!-- 績效管理 -->
           <li class="nav-item" id="nav-perf">
-            <div class="nav-link" onclick="showPage('talent')">
+            <div class="nav-link" onclick="showPage('coming','績效管理')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               績效管理
             </div>
@@ -640,7 +716,7 @@
           <h1 class="hero__title">馳諾瓦科技<br><span>人力資源管理平台</span></h1>
           <p class="hero__desc">整合規章制度、表單流程、薪酬管理與績效評核，打造高效率的 HR 數位工作環境。</p>
           <div class="hero__ctas">
-            <a href="#" class="btn-primary" onclick="showPage('regulations');toggleNav('nav-reg');return false;">
+            <a href="#" class="btn-primary" onclick="showPage('forms');toggleNav('nav-forms');return false;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               表單下載
             </a>
@@ -784,12 +860,34 @@
       </div>
     </div>
 
-    <!-- ══ PAGE: 人才識別九宮格 ══ -->
-    <div class="page-section" id="page-talent" style="display:none;">
-      <div style="height:calc(100vh - 54px);">
-        <iframe id="talentIframe" data-src="talent-grid/index.html" title="人才識別九宮格" style="width:100%; height:100%; border:none; display:block;"></iframe>
+    <!-- ══ PAGE: 表單流程 ══ -->
+    <div class="page-section" id="page-forms" style="display:none;height:calc(100vh - 54px);overflow:hidden;">
+      <div style="display:flex;flex-direction:column;height:100%;">
+        <!-- 表單 toolbar -->
+        <div class="reg-toolbar" id="formToolbar">
+          <div>
+            <div class="reg-toolbar__title" id="formTitle">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              請從左側選單選擇表單
+            </div>
+            <div class="reg-toolbar__meta" id="formMeta">點選左側任一表單名稱即可閱覽</div>
+          </div>
+        </div>
+        <!-- 空白提示 -->
+        <div class="reg-empty" id="formEmpty">
+          <div class="reg-empty__icon">📝</div>
+          <h3>請從左側選單選擇表單</h3>
+          <p>展開分類後點選表單名稱，即可在此閱覽 PDF 內容，並可點選右上角「下載 PDF」取得檔案。</p>
+        </div>
+        <!-- PDF 閱覽 -->
+        <div class="reg-viewer-wrap" id="formViewer" style="display:none;">
+          <div class="pdf-embed-wrap">
+            <iframe id="formPdfIframe" src="" title="表單流程"></iframe>
+          </div>
+        </div>
       </div>
     </div>
+
 
     <!-- ══ PAGE: 建置中 ══ -->
     <div class="page-section" id="page-coming" style="display:none;">
@@ -822,20 +920,13 @@
     if (page === 'coming' && title) {
       document.getElementById('comingTitle').textContent = title + '（建置中）';
     }
-    // 人才九宮格頁面：首次切換時才載入 iframe
-    if (page === 'talent') {
-      const iframe = document.getElementById('talentIframe');
-      if (iframe && !iframe.src) {
-        iframe.src = iframe.dataset.src;
-      }
-    }
-    // 下載按鈕只在規章頁且已選文件時顯示
-    if (page !== 'regulations') {
+    // 下載按鈕只在規章頁或表單頁且已選文件時顯示
+    if (page !== 'regulations' && page !== 'forms') {
       document.getElementById('downloadBtn').classList.add('hidden');
     }
     // 更新側欄 active
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    const navMap = { home:'nav-home', regulations:'nav-reg', coming:'nav-forms', talent:'nav-perf' };
+    const navMap = { home:'nav-home', regulations:'nav-reg', forms:'nav-forms', coming:'nav-forms' };
     const navId = navMap[page];
     if (navId) document.getElementById(navId)?.classList.add('active');
   }
@@ -873,6 +964,29 @@
     // 確保在規章頁
     showPage('regulations');
     document.getElementById('nav-reg').classList.add('active', 'open');
+  }
+
+  // ── 載入表單 PDF ──
+  function loadForm(el, title, path, meta) {
+    // active 樣式
+    document.querySelectorAll('.nav-doc-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    // toolbar
+    document.getElementById('formTitle').innerHTML =
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + title;
+    document.getElementById('formMeta').textContent = meta;
+    // iframe
+    document.getElementById('formPdfIframe').src = path;
+    document.getElementById('formEmpty').style.display = 'none';
+    document.getElementById('formViewer').style.display = 'block';
+    // 下載按鈕
+    const btn = document.getElementById('downloadBtn');
+    btn.href = path;
+    btn.download = title + '.pdf';
+    btn.classList.remove('hidden');
+    // 確保在表單頁
+    showPage('forms');
+    document.getElementById('nav-forms').classList.add('active', 'open');
   }
 
   // ── filter tags ──
