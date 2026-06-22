@@ -264,9 +264,11 @@
     .stats-bar__item {
       flex: 1; padding: 0.95rem 1.35rem; border-right: 1px solid var(--gray-light);
       display: flex; align-items: center; gap: 0.7rem; transition: background 0.15s;
+      cursor: pointer; text-decoration: none; color: inherit;
     }
     .stats-bar__item:last-child { border-right: none; }
     .stats-bar__item:hover { background: var(--brand-faint); }
+    .stats-bar__item:hover .stats-bar__num { color: var(--brand); }
     .stats-bar__icon { width: 36px; height: 36px; border-radius: 9px; background: var(--brand-pale); display: flex; align-items: center; justify-content: center; color: var(--brand); flex-shrink: 0; }
     .stats-bar__num { font-size: 1.28rem; font-weight: 800; color: var(--brand-dark); }
     .stats-bar__label { font-size: 0.69rem; color: var(--gray); margin-top: 0.06rem; }
@@ -430,6 +432,9 @@
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
 
     @media (max-width:1050px) { .two-col,.bottom-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) {
+      [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -730,21 +735,55 @@
 
       <!-- Stats bar -->
       <div class="stats-bar fade-in fd-2">
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="stats-bar__num" id="statTotal">載入中…</div><div class="stats-bar__label">在職員工人數</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="stats-bar__num">37</div><div class="stats-bar__label">待審核表單</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="stats-bar__num">6月</div><div class="stats-bar__label">本月薪資結算</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="stats-bar__num">Q2</div><div class="stats-bar__label">績效評核進行中</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><div><div class="stats-bar__num">48</div><div class="stats-bar__label">學習文章</div></div></div>
+        <!-- 在職員工人數 → 跳至儀表板 -->
+        <a class="stats-bar__item" href="#" title="查看人力儀表板" onclick="scrollToSection('section-dashboard');return false;">
+          <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div><div class="stats-bar__num" id="statTotal">載入中…</div><div class="stats-bar__label">在職員工人數</div></div>
+        </a>
+        <!-- 離職率 → 跳至離職率 Dashboard -->
+        <a class="stats-bar__item" href="#" title="查看離職率 Dashboard" onclick="scrollToSection('section-dashboard-turnover');return false;">
+          <div class="stats-bar__icon" style="background:#fde0e0;color:#a82828;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg></div>
+          <div><div class="stats-bar__num" style="color:#a82828;">—</div><div class="stats-bar__label">離職率</div></div>
+        </a>
+        <!-- 招募達成率 → 跳至招募達成率 Dashboard -->
+        <a class="stats-bar__item" href="#" title="查看招募達成率 Dashboard" onclick="scrollToSection('section-dashboard-recruit');return false;">
+          <div class="stats-bar__icon" style="background:#ddeeff;color:#2450b8;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+          <div><div class="stats-bar__num" style="color:#2450b8;">—</div><div class="stats-bar__label">招募達成率</div></div>
+        </a>
+        <!-- 本季專案進度 → 跳至本季專案進度 -->
+        <a class="stats-bar__item" href="#" title="查看本季專案進度" onclick="scrollToSection('section-project');return false;">
+          <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div><div class="stats-bar__num">69%</div><div class="stats-bar__label">本季專案進度</div></div>
+        </a>
+        <!-- 學習文章 → 跳至 HR 學習資料 -->
+        <a class="stats-bar__item" href="#" title="查看學習資料" onclick="scrollToSection('section-hr-learn');return false;">
+          <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+          <div><div class="stats-bar__num">48</div><div class="stats-bar__label">學習文章</div></div>
+        </a>
       </div>
 
       <div class="content">
 
-        <!-- Dashboard -->
-        <div class="fade-in fd-2">
+        <!-- ① HR 系統公告 ─ 最上方，全寬 -->
+        <div class="fade-in fd-2" id="section-notice" style="margin-bottom:1.85rem;">
+          <div class="section-header"><h2 class="section-title">HR 系統公告</h2><a href="#" class="section-link">查看全部 →</a></div>
+          <div class="notice-list">
+            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">Q2 績效評核系統已開放填寫，請各部門主管於截止日前完成</div><div class="notice-date">2025/06/01</div></div></div>
+            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">7 月勞健保費率調整通知，請人員確認新費率明細</div><div class="notice-date">2025/05/28</div></div></div>
+            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">新版在職訓練課程已上線，歡迎同仁報名參加</div><div class="notice-date">2025/05/15</div></div></div>
+            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">年度員工滿意度調查結果公布，整體滿意度達 87%</div><div class="notice-date">2025/05/10</div></div></div>
+            <div class="notice-item" style="border-radius:0 0 9px 9px;border-bottom:1px solid var(--gray-light);"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">試用期滿考核作業辦法修訂版本已上傳，請查閱規章制度</div><div class="notice-date">2025/04/30</div></div></div>
+          </div>
+        </div>
+
+        <!-- ② 三個 Dashboards ─ 全寬依序垂直排列 -->
+        <div class="fade-in fd-2" id="section-dashboard" style="margin-bottom:1.85rem;">
           <div class="section-header">
             <h2 class="section-title">人力資源數據儀表板專區</h2>
             <a href="https://simei6523.github.io/hr-dashboard-1/" target="_blank" class="section-link">開新視窗 ↗</a>
           </div>
+
+          <!-- Dashboard 1：人員人數 -->
           <div class="dashboard-wrap">
             <div class="dashboard-titlebar">
               <div class="dashboard-titlebar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
@@ -759,73 +798,104 @@
             </div>
             <iframe src="https://simei6523.github.io/hr-dashboard-1/" title="全球各 Site 人員人數 Dashboard" loading="lazy"></iframe>
           </div>
-        </div>
 
-        <!-- Two-col -->
-        <div class="two-col fade-in fd-3">
-          <div>
-            <div class="section-header"><h2 class="section-title">HR 學習資料</h2><a href="#" class="section-link">更多文章 →</a></div>
-            <div class="article-filters">
-              <button class="filter-tag filter-tag--active">全部</button>
-              <button class="filter-tag">AI 自動化</button>
-              <button class="filter-tag">招募</button>
-              <button class="filter-tag">薪酬管理</button>
-              <button class="filter-tag">績效管理</button>
-              <button class="filter-tag">員工關係</button>
-              <button class="filter-tag">法規</button>
-              <button class="filter-tag">其它</button>
+          <!-- Dashboard 2：離職率 -->
+          <div class="dashboard-wrap" style="margin-top:1.4rem;" id="section-dashboard-turnover">
+            <div class="dashboard-titlebar">
+              <div class="dashboard-titlebar__icon" style="background:#fde0e0;color:#a82828;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg></div>
+              <div>
+                <div class="dashboard-titlebar__name">離職率分析 Dashboard</div>
+                <div class="dashboard-titlebar__sub">各部門離職趨勢與原因分析 · Zerova Technology</div>
+              </div>
+              <div class="dashboard-titlebar__btn" style="background:#a82828;cursor:default;opacity:0.75;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                建置中
+              </div>
             </div>
-            <div class="article-list">
-              <a href="#" class="article-item"><span class="article-cat cat-ai">AI 自動化</span><div class="article-meta"><div class="article-title">如何用 AI 工具自動化員工入職流程</div><div class="article-info">2025/06/05 · 8 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-recruit">招募</span><div class="article-meta"><div class="article-title">2025 年台灣人才市場趨勢分析與招募策略</div><div class="article-info">2025/05/28 · 12 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-pay">薪酬管理</span><div class="article-meta"><div class="article-title">彈性薪酬制度設計：基本薪資與績效獎金比例</div><div class="article-info">2025/05/20 · 10 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-perf">績效管理</span><div class="article-meta"><div class="article-title">OKR vs KPI：如何選擇適合貴公司的績效框架</div><div class="article-info">2025/05/15 · 9 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-emp">員工關係</span><div class="article-meta"><div class="article-title">提升員工敬業度的五個實用方法</div><div class="article-info">2025/05/08 · 7 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-law">法規</span><div class="article-meta"><div class="article-title">勞基法 2025 年修正重點整理與因應措施</div><div class="article-info">2025/05/01 · 15 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-other">其它</span><div class="article-meta"><div class="article-title">遠端工作時代的 HR 管理挑戰與最佳實踐</div><div class="article-info">2025/04/22 · 11 分鐘</div></div></a>
+            <div style="height:220px;display:flex;align-items:center;justify-content:center;background:#fdf6f6;flex-direction:column;gap:0.8rem;">
+              <div style="width:56px;height:56px;border-radius:14px;background:#fde0e0;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">📉</div>
+              <div style="font-size:0.88rem;font-weight:700;color:#a82828;">離職率儀表板建置中</div>
+              <div style="font-size:0.74rem;color:#b87070;">即將上線，敬請期待</div>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:1.4rem;">
-            <div>
-              <div class="section-header"><h2 class="section-title">即將到來</h2></div>
-              <div class="upcoming-list">
-                <div class="event-item"><div class="event-date"><div class="event-date__day">20</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">Q2 績效評核截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>全員必填</div></div><span class="event-badge eb-amber">待辦</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">25</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">6 月薪資發放日</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>財務部執行</div></div><span class="event-badge eb-brand">預定</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">10</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">新人教育訓練</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>本月新進 12 名</div></div><span class="event-badge eb-green">確認</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">15</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">Q2 績效面談週</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>各部門主管執行</div></div><span class="event-badge eb-brand">預定</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">31</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">年度健檢報名截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>福委會辦理</div></div><span class="event-badge eb-amber">待辦</span></div>
+
+          <!-- Dashboard 3：招募達成率 -->
+          <div class="dashboard-wrap" style="margin-top:1.4rem;" id="section-dashboard-recruit">
+            <div class="dashboard-titlebar">
+              <div class="dashboard-titlebar__icon" style="background:#ddeeff;color:#2450b8;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+              <div>
+                <div class="dashboard-titlebar__name">招募達成率 Dashboard</div>
+                <div class="dashboard-titlebar__sub">招募進度、各職缺達成率追蹤 · Zerova Technology</div>
+              </div>
+              <div class="dashboard-titlebar__btn" style="background:#2450b8;cursor:default;opacity:0.75;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                建置中
+              </div>
+            </div>
+            <div style="height:220px;display:flex;align-items:center;justify-content:center;background:#f5f8ff;flex-direction:column;gap:0.8rem;">
+              <div style="width:56px;height:56px;border-radius:14px;background:#ddeeff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🎯</div>
+              <div style="font-size:0.88rem;font-weight:700;color:#2450b8;">招募達成率儀表板建置中</div>
+              <div style="font-size:0.74rem;color:#7090c8;">即將上線，敬請期待</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ HR 重要工作行事曆 ＋ 本季專案進度 ─ 左右並排 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.85rem;" class="fade-in fd-3">
+
+          <!-- HR 重要工作行事曆 -->
+          <div>
+            <div class="section-header"><h2 class="section-title">HR 重要工作行事曆</h2></div>
+            <div class="upcoming-list">
+              <div class="event-item"><div class="event-date"><div class="event-date__day">20</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">Q2 績效評核截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>全員必填</div></div><span class="event-badge eb-amber">待辦</span></div>
+              <div class="event-item"><div class="event-date"><div class="event-date__day">25</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">6 月薪資發放日</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>財務部執行</div></div><span class="event-badge eb-brand">預定</span></div>
+              <div class="event-item"><div class="event-date"><div class="event-date__day">10</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">新人教育訓練</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>本月新進 12 名</div></div><span class="event-badge eb-green">確認</span></div>
+              <div class="event-item"><div class="event-date"><div class="event-date__day">15</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">Q2 績效面談週</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>各部門主管執行</div></div><span class="event-badge eb-brand">預定</span></div>
+              <div class="event-item"><div class="event-date"><div class="event-date__day">31</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">年度健檢報名截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>福委會辦理</div></div><span class="event-badge eb-amber">待辦</span></div>
+            </div>
+          </div>
+
+          <!-- 本季專案進度 -->
+          <div id="section-project">
+            <div class="section-header"><h2 class="section-title">本季專案進度</h2><a href="#" class="section-link">詳情 →</a></div>
+            <div class="card" style="padding:1rem 1.1rem;">
+              <div class="progress-item"><div class="progress-label"><span class="progress-name">工程研發部</span><span class="progress-pct">82%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:82%"></div></div></div>
+              <div class="progress-item"><div class="progress-label"><span class="progress-name">產品設計部</span><span class="progress-pct">71%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:71%"></div></div></div>
+              <div class="progress-item"><div class="progress-label"><span class="progress-name">業務行銷部</span><span class="progress-pct">65%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%"></div></div></div>
+              <div class="progress-item"><div class="progress-label"><span class="progress-name">人力資源部</span><span class="progress-pct">90%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:90%"></div></div></div>
+              <div class="progress-item"><div class="progress-label"><span class="progress-name">財務法務部</span><span class="progress-pct">58%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:58%"></div></div></div>
+              <div class="progress-item"><div class="progress-label"><span class="progress-name">製造供應鏈</span><span class="progress-pct">45%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%"></div></div></div>
+              <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">
+                <div class="progress-label"><span class="progress-name" style="font-weight:700;">整體完成率</span><span class="progress-pct" style="font-size:1rem;">69%</span></div>
+                <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:69%"></div></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Bottom -->
-        <div class="bottom-grid fade-in fd-4">
-          <div class="card">
-            <div class="section-header" style="margin-bottom:1rem;"><h2 class="section-title">薪酬管理</h2><a href="#" class="section-link">查看全部 →</a></div>
-            <table class="salary-table">
-              <thead><tr><th>項目</th><th>對象</th><th>金額 / 比例</th><th>狀態</th></tr></thead>
-              <tbody>
-                <tr><td>6月底薪</td><td>全員 1,284 人</td><td>計算中</td><td><span class="badge-status bs-review">處理中</span></td></tr>
-                <tr><td>Q2 績效獎金</td><td>正職員工</td><td>基本薪 × 0~30%</td><td><span class="badge-status bs-pending">待核准</span></td></tr>
-                <tr><td>加班費結算</td><td>非管理職</td><td>依勞基法計算</td><td><span class="badge-status bs-done">完成</span></td></tr>
-                <tr><td>勞健保調整</td><td>全員</td><td>7月生效</td><td><span class="badge-status bs-done">已通知</span></td></tr>
-                <tr><td>5月薪資單</td><td>全員 1,271 人</td><td>NT$ 148,320,000</td><td><span class="badge-status bs-done">已發放</span></td></tr>
-              </tbody>
-            </table>
+        <!-- ④ HR 學習資料 ─ 最下方，全寬 -->
+        <div class="fade-in fd-4" id="section-hr-learn" style="margin-bottom:2rem;">
+          <div class="section-header"><h2 class="section-title">HR 學習資料</h2><a href="#" class="section-link">更多文章 →</a></div>
+          <div class="article-filters">
+            <button class="filter-tag filter-tag--active">全部</button>
+            <button class="filter-tag">AI 自動化</button>
+            <button class="filter-tag">招募</button>
+            <button class="filter-tag">薪酬管理</button>
+            <button class="filter-tag">績效管理</button>
+            <button class="filter-tag">員工關係</button>
+            <button class="filter-tag">法規</button>
+            <button class="filter-tag">其它</button>
           </div>
-          <div class="card">
-            <div class="section-header" style="margin-bottom:1rem;"><h2 class="section-title">Q2 績效進度</h2><a href="#" class="section-link">詳情 →</a></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">工程研發部</span><span class="progress-pct">82%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:82%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">產品設計部</span><span class="progress-pct">71%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:71%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">業務行銷部</span><span class="progress-pct">65%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">人力資源部</span><span class="progress-pct">90%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:90%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">財務法務部</span><span class="progress-pct">58%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:58%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">製造供應鏈</span><span class="progress-pct">45%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%"></div></div></div>
-            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">
-              <div class="progress-label"><span class="progress-name" style="font-weight:700;">整體完成率</span><span class="progress-pct" style="font-size:1rem;">69%</span></div>
-              <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:69%"></div></div>
-            </div>
+          <!-- 文章列表：兩欄網格讓版面更好看 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-ai">AI 自動化</span><div class="article-meta"><div class="article-title">如何用 AI 工具自動化員工入職流程</div><div class="article-info">2025/06/05 · 8 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-recruit">招募</span><div class="article-meta"><div class="article-title">2025 年台灣人才市場趨勢分析與招募策略</div><div class="article-info">2025/05/28 · 12 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-pay">薪酬管理</span><div class="article-meta"><div class="article-title">彈性薪酬制度設計：基本薪資與績效獎金比例</div><div class="article-info">2025/05/20 · 10 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-perf">績效管理</span><div class="article-meta"><div class="article-title">OKR vs KPI：如何選擇適合貴公司的績效框架</div><div class="article-info">2025/05/15 · 9 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-emp">員工關係</span><div class="article-meta"><div class="article-title">提升員工敬業度的五個實用方法</div><div class="article-info">2025/05/08 · 7 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-law">法規</span><div class="article-meta"><div class="article-title">勞基法 2025 年修正重點整理與因應措施</div><div class="article-info">2025/05/01 · 15 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-other">其它</span><div class="article-meta"><div class="article-title">遠端工作時代的 HR 管理挑戰與最佳實踐</div><div class="article-info">2025/04/22 · 11 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-ai">AI 自動化</span><div class="article-meta"><div class="article-title">HR 數據分析入門：如何用數據提升人才決策</div><div class="article-info">2025/04/10 · 10 分鐘</div></div></a>
           </div>
         </div>
 
@@ -908,6 +978,19 @@
 </div>
 
 <script>
+  // ── 滾動到首頁指定區塊 ──
+  function scrollToSection(sectionId) {
+    // 確保在首頁
+    showPage('home');
+    // 延遲一下讓頁面切換完成後再滾動
+    setTimeout(function() {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 80);
+  }
+
   // ── 頁面切換 ──
   function showPage(page, title) {
     // 隱藏所有
