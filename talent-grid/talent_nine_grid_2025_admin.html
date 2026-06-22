@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人才識別九宮格 2025｜行政管理部</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", Arial, sans-serif; background: #f5f4f0; color: #1a1a18; min-height: 100vh; }
+.page { max-width: 980px; margin: 0 auto; padding: 2rem 1rem; }
+.card { background: #fff; border-radius: 12px; border: 0.5px solid #d3d1c7; overflow: visible; }
+.header { padding: 1.5rem 1.5rem 1rem; border-bottom: 0.5px solid #eeecea; }
+.header h1 { font-size: 20px; font-weight: 500; color: #1a1a18; }
+.header p  { font-size: 13px; color: #5f5e5a; margin-top: 4px; }
+.controls { display: flex; gap: 10px; padding: 1rem 1.5rem; flex-wrap: wrap; align-items: center; border-bottom: 0.5px solid #eeecea; }
+.year-btn { padding: 6px 16px; font-size: 13px; border: 0.5px solid #b4b2a9; border-radius: 8px; cursor: pointer; background: #fff; color: #5f5e5a; transition: all 0.15s; }
+.year-btn.active { background: #3C3489; color: #fff; border-color: #3C3489; }
+.year-btn:hover:not(.active) { background: #f5f4f0; }
+.main { display: grid; grid-template-columns: 1fr 250px; gap: 1.5rem; padding: 1.5rem 1.5rem 1rem; }
+@media (max-width: 700px) { .main { grid-template-columns: 1fr; } }
+.grid-wrap { position: relative; padding-left: 40px; }
+.axis-label-y { font-size: 12px; color: #5f5e5a; position: absolute; left: 0; top: 50%; transform: translateY(-50%) rotate(-90deg); white-space: nowrap; }
+.axis-top { display: flex; padding: 0 0 6px; }
+.axis-top span { font-size: 11px; color: #888780; flex: 1; text-align: center; }
+.axis-label-x { font-size: 12px; color: #5f5e5a; text-align: center; margin-top: 8px; }
+.nine-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+.perf-axis { position: absolute; right: -62px; top: 22px; bottom: 36px; display: flex; flex-direction: column; justify-content: space-around; }
+.perf-axis span { font-size: 10px; color: #888780; white-space: nowrap; }
+.cell { border: 0.5px solid #d3d1c7; border-radius: 8px; padding: 10px; min-height: 115px; display: flex; flex-direction: column; gap: 5px; cursor: pointer; transition: transform 0.12s; }
+.cell:hover { transform: scale(1.025); }
+.cell-label { font-size: 11px; font-weight: 500; }
+.cell-count { font-size: 28px; font-weight: 500; line-height: 1; }
+.cell-pct   { font-size: 12px; }
+.cell-names { font-size: 10px; margin-top: auto; line-height: 1.5; }
+.star      { background:#EEEDFE; border-color:#AFA9EC; } .star      .cell-label{color:#3C3489;} .star      .cell-count,.star      .cell-pct{color:#534AB7;} .star      .cell-names{color:#7F77DD;}
+.potential { background:#E1F5EE; border-color:#5DCAA5; } .potential .cell-label{color:#085041;} .potential .cell-count,.potential .cell-pct{color:#0F6E56;} .potential .cell-names{color:#1D9E75;}
+.perf-star { background:#E6F1FB; border-color:#85B7EB; } .perf-star .cell-label{color:#0C447C;} .perf-star .cell-count,.perf-star .cell-pct{color:#185FA5;} .perf-star .cell-names{color:#378ADD;}
+.core      { background:#FAEEDA; border-color:#EF9F27; } .core      .cell-label{color:#633806;} .core      .cell-count,.core      .cell-pct{color:#854F0B;} .core      .cell-names{color:#BA7517;}
+.explore   { background:#FAECE7; border-color:#F0997B; } .explore   .cell-label{color:#4A1B0C;} .explore   .cell-count,.explore   .cell-pct{color:#712B13;} .explore   .cell-names{color:#993C1D;}
+.skilled   { background:#EAF3DE; border-color:#97C459; } .skilled   .cell-label{color:#173404;} .skilled   .cell-count,.skilled   .cell-pct{color:#27500A;} .skilled   .cell-names{color:#3B6D11;}
+.watch     { background:#FAEEDA; border-color:#EF9F27; } .watch     .cell-label{color:#633806;} .watch     .cell-count,.watch     .cell-pct{color:#854F0B;} .watch     .cell-names{color:#BA7517;}
+.basic     { background:#F1EFE8; border-color:#B4B2A9; } .basic     .cell-label{color:#2C2C2A;} .basic     .cell-count,.basic     .cell-pct{color:#5F5E5A;} .basic     .cell-names{color:#888780;}
+.unfit     { background:#FCEBEB; border-color:#F09595; } .unfit     .cell-label{color:#501313;} .unfit     .cell-count,.unfit     .cell-pct{color:#791F1F;} .unfit     .cell-names{color:#A32D2D;}
+.sidebar { display: flex; flex-direction: column; gap: 12px; }
+.summary-card { background: #f5f4f0; border-radius: 8px; padding: 12px 14px; }
+.summary-card h3  { font-size: 12px; color: #5f5e5a; font-weight: 400; margin-bottom: 6px; }
+.summary-card .val { font-size: 22px; font-weight: 500; color: #1a1a18; }
+.summary-card .sub { font-size: 11px; color: #888780; margin-top: 2px; }
+.detail-panel { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 8px; padding: 12px 14px; display: none; }
+.detail-panel h3 { font-size: 13px; font-weight: 500; color: #1a1a18; margin-bottom: 8px; }
+.detail-panel p  { font-size: 12px; color: #5f5e5a; line-height: 1.6; }
+.legend { display: flex; flex-direction: column; gap: 6px; }
+.legend-title { font-size: 11px; font-weight: 500; color: #5f5e5a; margin-bottom: 2px; }
+.legend-item  { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #5f5e5a; }
+.legend-dot   { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.note  { font-size: 11px; color: #888780; padding: 8px 1.5rem 1rem; border-top: 0.5px solid #eeecea; }
+.badge { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #EEEDFE; color: #534AB7; vertical-align: middle; margin-left: 6px; }
+.placeholder-box { grid-column: 1/-1; padding: 2.5rem; text-align: center; color: #888780; font-size: 13px; line-height: 2.2; border: 0.5px dashed #b4b2a9; border-radius: 8px; }
+.home-btn {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px 10px 14px;
+  background: #3C3489; color: #fff;
+  font-size: 13px; font-family: inherit; font-weight: 500;
+  border-radius: 100px; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(60,52,137,0.30);
+  transition: background 0.15s, transform 0.12s; white-space: nowrap;
+}
+.home-btn:hover { background: #534AB7; transform: translateY(-2px); }
+.home-btn:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="card">
+  <div class="header">
+    <h1>人才識別九宮格 <span class="badge">2025</span></h1>
+    <p>行政管理部 · 依績效（Ⅰ）× 潛力（Ⅱ）雙軸分類</p>
+  </div>
+  <div class="controls">
+    <div style="display:flex;gap:6px;">
+      <button class="year-btn active" onclick="setYear(2025,this)">2025</button>
+      <button class="year-btn" onclick="setYear(2024,this)">2024</button>
+      <button class="year-btn" onclick="setYear(2023,this)">2023</button>
+    </div>
+    <span style="font-size:12px;color:#5f5e5a;margin-left:12px;">總人數：<strong id="total-count">1</strong> 人</span>
+  </div>
+  <div class="main">
+    <div class="grid-wrap">
+      <span class="axis-label-y">績效 Ⅰ</span>
+      <div class="axis-top">
+        <span>低潛力 1–3</span><span>中潛力 4–6</span><span>高潛力 7–9</span>
+      </div>
+      <div class="nine-grid" id="grid"></div>
+      <div class="axis-label-x">潛力 Ⅱ</div>
+      <div class="perf-axis">
+        <span>高 A+/A</span><span>中 B/C</span><span>低 C-/D</span>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="summary-card">
+        <h3>高潛力人才（①②⑤）</h3>
+        <div class="val" id="high-pot-val">—</div>
+        <div class="sub" id="high-pot-sub">—</div>
+      </div>
+      <div class="summary-card">
+        <h3>明星球員比例</h3>
+        <div class="val" id="star-pct">—</div>
+        <div class="sub" id="star-sub">目標 ≤ 15%</div>
+      </div>
+      <div class="summary-card">
+        <h3>待關注人員（⑦⑧⑨）</h3>
+        <div class="val" id="concern-val">—</div>
+        <div class="sub" id="concern-sub">—</div>
+      </div>
+      <div class="detail-panel" id="detail">
+        <h3 id="detail-title">—</h3>
+        <p id="detail-desc">—</p>
+      </div>
+      <div class="legend">
+        <div class="legend-title">人才分類說明</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#534AB7"></span>①明星球員（高績效+高潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>②潛力人才（中績效+高潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#185FA5"></span>③績效之星（高績效+中潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#BA7517"></span>④中堅力量（中績效+中潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#993C1D"></span>⑤探索員工（低績效+高潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#3B6D11"></span>⑥熟練員工（高績效+低潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#854F0B"></span>⑦待觀察者（低績效+中潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#5F5E5A"></span>⑧基本勝任（中績效+低潛力）</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#A32D2D"></span>⑨不適任（低績效+低潛力）</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">💡 點擊任一格可查看定義說明 · 整合多年資料後可切換年份對比</p>
+</div>
+</div>
+
+<a class="home-btn" href="index.html" title="回總覽首頁">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+    <path d="M9 21V12h6v9"/>
+  </svg>
+  回總覽首頁
+</a>
+
+<script>
+const DESCS = {
+  '①明星球員':'擁有優秀工作能力，績效亮眼。企業未來之星，應立即規劃晉升或賦予重大挑戰性任務，提供自由與創新空間，加速其成長。',
+  '②潛力人才':'具備高潛能，目前績效穩定。應提供跨部門或具挑戰性的專案機會，加速績效提升，將其推向明星行列。',
+  '③績效之星':'績效表現穩定且出色，是部門的中堅力量。應透過深耕專業技能、進階培訓，使其在現有崗位上發揮最大價值。',
+  '④中堅力量':'潛力與績效表現均衡。可透過參與專案或進修相關技能，決定是否給予更有挑戰的任務（往右移動），或強化現有績效（往上移動）。',
+  '⑤探索員工':'剛進入新職位或仍在適應期，有潛力但績效尚未達標。需提供清晰的發展方向、導師指導及適當支援，以提升表現。',
+  '⑥熟練員工':'擁有穩定的高績效輸出，但發展潛力有限。適合專注於現有專業領域，作為資深專家或內部專業知識導師。',
+  '⑦待觀察者':'擁有一定潛力，但績效未達標。可能是適應不良或資源不足。建議透過導師計畫、強化指導或調整工作內容來提升績效。',
+  '⑧基本勝任':'傾向追求穩定，能完成基本工作要求，但缺乏突破。可設定略具挑戰性的目標來激勵他們慢慢進步。',
+  '⑨不適任':'績效和潛力均未達標。應協助其改善，若無法提升，則需考慮轉調其他合適職務，或採取離職安排。'
+};
+
+const EMPTY_CELLS = () => [
+  {id:'6',type:'skilled',  label:'⑥熟練員工',count:0,names:[]},
+  {id:'3',type:'perf-star',label:'③績效之星',count:0,names:[]},
+  {id:'1',type:'star',     label:'①明星球員',count:0,names:[]},
+  {id:'8',type:'basic',    label:'⑧基本勝任',count:0,names:[]},
+  {id:'4',type:'core',     label:'④中堅力量',count:0,names:[]},
+  {id:'2',type:'potential',label:'②潛力人才',count:0,names:[]},
+  {id:'9',type:'unfit',    label:'⑨不適任',  count:0,names:[]},
+  {id:'7',type:'watch',    label:'⑦待觀察者',count:0,names:[]},
+  {id:'5',type:'explore',  label:'⑤探索員工',count:0,names:[]},
+];
+
+function makeCells(data) {
+  const c = EMPTY_CELLS();
+  const idx = {};
+  c.forEach((cell,i) => idx[cell.id] = i);
+  Object.entries(data).forEach(([id,names]) => {
+    if(idx[id] !== undefined){ c[idx[id]].count = names.length; c[idx[id]].names = names; }
+  });
+  return c;
+}
+
+const DATA = {
+  2025: {
+    all: { total:1, cells: makeCells({ '3':['王若薇'] }) }
+  }
+};
+
+let currentYear = 2025;
+
+function setYear(y,btn){
+  document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentYear = y; render();
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  document.getElementById('detail').style.display = 'none';
+
+  if(currentYear !== 2025){
+    grid.innerHTML = `<div class="placeholder-box">尚未匯入 ${currentYear} 年資料<br>請將對應年度的績效評核表（.xlsx）依相同格式準備後整合至本檔案。</div>`;
+    ['total-count','high-pot-val','high-pot-sub','star-pct','star-sub','concern-val','concern-sub']
+      .forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent='—'; });
+    return;
+  }
+
+  const ds = DATA[2025]['all'];
+  document.getElementById('total-count').textContent = ds.total;
+
+  let highPot=0, highPotNames=[], concern=0, concernNames=[], starCount=0;
+  ds.cells.forEach(c=>{
+    if(['1','2','5'].includes(c.id)){ highPot+=c.count; highPotNames=highPotNames.concat(c.names); }
+    if(['7','8','9'].includes(c.id)){ concern+=c.count; concernNames=concernNames.concat(c.names); }
+    if(c.id==='1') starCount=c.count;
+  });
+
+  document.getElementById('high-pot-val').textContent = highPot + ' 人';
+  document.getElementById('high-pot-sub').textContent = highPotNames.length ? highPotNames.join('、') : '（無）';
+  document.getElementById('concern-val').textContent = concern + ' 人';
+  document.getElementById('concern-sub').textContent = concernNames.length ? concernNames.join('、') : '（無）';
+
+  const pct = ds.total > 0 ? Math.round(starCount/ds.total*100) : 0;
+  document.getElementById('star-pct').textContent = pct + '%';
+  document.getElementById('star-sub').textContent = pct > 15 ? '目標 ≤ 15%（超額優秀）' : '目標 ≤ 15%（符合標準）';
+
+  grid.innerHTML = '';
+  ds.cells.forEach(c=>{
+    const p = ds.total > 0 ? Math.round(c.count/ds.total*100) : 0;
+    const displayNames = c.names.length ? c.names.join(' / ') : '—';
+    const div = document.createElement('div');
+    div.className = 'cell ' + c.type;
+    div.innerHTML = `
+      <div class="cell-label">${c.label}</div>
+      <div class="cell-count">${c.count}</div>
+      <div class="cell-pct">${p}%</div>
+      <div class="cell-names">${displayNames}</div>
+    `;
+    div.onclick = ()=>{
+      document.getElementById('detail-title').textContent = c.label;
+      document.getElementById('detail-desc').textContent = DESCS[c.label] || '—';
+      document.getElementById('detail').style.display = 'block';
+    };
+    grid.appendChild(div);
+  });
+}
+render();
+</script>
+</body>
+</html>
