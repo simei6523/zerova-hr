@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>招募進度彙總 Dashboard｜2026 Q2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:       #0B1628;
+  --surface:  #152036;
+  --surface2: #1C2D47;
+  --border:   rgba(100,149,237,0.18);
+
+  --indigo:   #7B9FFF;
+  --indigo-lt:rgba(123,159,255,0.15);
+  --indigo-dk:#C7D7FF;
+  --violet:   #A78BFA;
+  --violet-lt:rgba(167,139,250,0.15);
+  --sky:      #38BDF8;
+  --sky-lt:   rgba(56,189,248,0.15);
+  --sky-dk:   #BAE6FD;
+  --teal:     #2DD4BF;
+  --teal-lt:  rgba(45,212,191,0.15);
+  --teal-dk:  #99F6E4;
+  --amber:    #FBB042;
+  --amber-lt: rgba(251,176,66,0.15);
+  --amber-dk: #FEE9C3;
+  --rose:     #FB7185;
+  --rose-lt:  rgba(251,113,133,0.15);
+  --rose-dk:  #FFD6DC;
+
+  --text-pri: #D8E4F8;
+  --text-sec: #94B4E8;
+  --text-mut: #6A8BC0;
+  --text-gray:#7A9DC0;
+
+  --radius:   14px;
+  --shadow:   0 4px 20px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-sm:0 2px 10px rgba(0,0,0,0.3);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  background: var(--bg);
+  color: var(--text-pri);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2rem 1.5rem 3.5rem;
+}
+
+.page { max-width: 1100px; margin: 0 auto; }
+
+/* ── Header ── */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 2rem;
+  background: linear-gradient(135deg, #0F1B3D 0%, #1A3A6E 100%);
+  border-radius: 20px; padding: 24px 28px; color: #fff;
+  border: 1px solid rgba(99,140,255,0.18);
+}
+.header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
+.header-left p  { font-size: 13px; opacity: 0.72; margin-top: 4px; }
+.header-badges  { display: flex; gap: 8px; flex-wrap: wrap; }
+.hbadge {
+  font-size: 12px; font-weight: 600;
+  background: rgba(255,255,255,0.18); color: #fff;
+  padding: 5px 13px; border-radius: 99px; white-space: nowrap;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* ── Section label ── */
+.sec-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--sky); text-transform: uppercase;
+  margin-bottom: 12px; margin-top: 2rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+/* ── KPI grid ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+  gap: 12px;
+}
+.kpi {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 18px 20px;
+  border-top: 4px solid transparent; transition: transform .15s;
+}
+.kpi:hover { transform: translateY(-2px); }
+.kpi-icon { font-size: 22px; margin-bottom: 10px; }
+.kpi-label { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 5px; }
+.kpi-value { font-size: 32px; font-weight: 700; line-height: 1; letter-spacing: -1.5px; }
+.kpi-sub   { font-size: 12px; color: var(--text-gray); margin-top: 6px; }
+
+.kpi-indigo { border-top-color: var(--indigo); }
+.kpi-indigo .kpi-value { color: var(--indigo); }
+.kpi-sky    { border-top-color: var(--sky); }
+.kpi-sky    .kpi-value { color: var(--sky); }
+.kpi-teal   { border-top-color: var(--teal); }
+.kpi-teal   .kpi-value { color: var(--teal); }
+.kpi-amber  { border-top-color: var(--amber); }
+.kpi-amber  .kpi-value { color: var(--amber); }
+.kpi-rose   { border-top-color: var(--rose); }
+.kpi-rose   .kpi-value { color: var(--rose); }
+.kpi-violet { border-top-color: var(--violet); }
+.kpi-violet .kpi-value { color: var(--violet); }
+.kpi-neu    { border-top-color: rgba(100,149,237,0.4); }
+.kpi-neu    .kpi-value { color: var(--text-pri); }
+
+/* ── Charts ── */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.chart-card.full { grid-column: 1 / -1; }
+.chart-card {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); padding: 20px 22px;
+}
+.chart-title { font-size: 13px; font-weight: 600; color: var(--text-pri); margin-bottom: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 12px; color: var(--text-gray); }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.legend-sq { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+/* ── Split blocks ── */
+.split-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.kpi-block {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); padding: 20px 22px;
+}
+.kpi-block-title { font-size: 13px; font-weight: 600; color: var(--text-pri); margin-bottom: 14px; }
+.kpi-block-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.kpi-block-row:last-child { border-bottom: none; }
+.kpi-block-dept { font-size: 13px; color: var(--text-pri); }
+.kpi-block-right { display: flex; align-items: center; gap: 10px; }
+.kpi-num { font-size: 15px; font-weight: 700; min-width: 36px; text-align: right; }
+.mini-bar { width: 76px; height: 7px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+.mini-bar-fill { height: 100%; border-radius: 99px; }
+
+/* Rate badge */
+.rate-badge {
+  font-size: 12px; font-weight: 600; padding: 3px 10px;
+  border-radius: 99px; min-width: 56px; text-align: center;
+}
+.rb-teal   { background: var(--teal-lt);  color: var(--teal-dk); }
+.rb-sky    { background: var(--sky-lt);   color: var(--sky-dk); }
+.rb-amber  { background: var(--amber-lt); color: var(--amber-dk); }
+.rb-rose   { background: var(--rose-lt);  color: var(--rose-dk); }
+
+/* ── Table ── */
+.table-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  padding: 11px 14px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.07em; color: var(--sky); text-transform: uppercase;
+  background: rgba(56,189,248,0.10); text-align: left; white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+thead th.r { text-align: right; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); vertical-align: middle; white-space: nowrap; }
+tbody td.r { text-align: right; color: var(--text-gray); }
+tbody tr:hover td { background: rgba(123,159,255,0.07); }
+tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; color: var(--text-pri); border-top: 1px solid var(--border); }
+.prog-wrap { display: flex; align-items: center; gap: 8px; }
+.prog-bar  { width: 72px; height: 7px; background: var(--surface2); border-radius: 99px; overflow: hidden; flex-shrink: 0; }
+.prog-fill { height: 100%; border-radius: 99px; }
+.prog-pct  { font-size: 12px; color: var(--text-gray); min-width: 36px; }
+
+/* Pill status */
+.pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+.p-teal  { background: var(--teal-lt);   color: var(--teal-dk); }
+.p-sky   { background: var(--sky-lt);    color: var(--sky-dk); }
+.p-amber { background: var(--amber-lt);  color: var(--amber-dk); }
+.p-gray  { background: #F1F5F9; color: #64748B; }
+
+/* ── Footer ── */
+.footer { font-size: 12px; color: var(--text-gray); text-align: right; margin-top: 2rem; }
+
+@media (max-width: 680px) {
+  body { padding: 1rem; }
+  .charts-row, .split-row { grid-template-columns: 1fr; }
+  .chart-card.full { grid-column: 1; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <h1>📋 招募進度彙總 Dashboard</h1>
+      <p>各部門 TTL 合計｜資料更新：2026/06/27</p>
+    </div>
+    <div class="header-badges">
+      <span class="hbadge">2026 Q2</span>
+      <span class="hbadge">9 個部門</span>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="sec-label">整體概況</div>
+  <div class="kpi-grid">
+    <div class="kpi kpi-neu">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-label">總需求人數</div>
+      <div class="kpi-value">56</div>
+      <div class="kpi-sub">9 個部門</div>
+    </div>
+    <div class="kpi kpi-sky">
+      <div class="kpi-icon">📨</div>
+      <div class="kpi-label">收到履歷</div>
+      <div class="kpi-value">3,235</div>
+      <div class="kpi-sub">合格 1,011 份</div>
+    </div>
+    <div class="kpi kpi-indigo">
+      <div class="kpi-icon">🤝</div>
+      <div class="kpi-label">面談人數</div>
+      <div class="kpi-value">115</div>
+      <div class="kpi-sub">面談率 11.37%</div>
+    </div>
+    <div class="kpi kpi-violet">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-label">錄取人數</div>
+      <div class="kpi-value">43</div>
+      <div class="kpi-sub">錄取率 37.39%</div>
+    </div>
+    <div class="kpi kpi-teal">
+      <div class="kpi-icon">🏢</div>
+      <div class="kpi-label">已報到</div>
+      <div class="kpi-value">15</div>
+      <div class="kpi-sub">報到率 58.14%</div>
+    </div>
+    <div class="kpi kpi-amber">
+      <div class="kpi-icon">⏳</div>
+      <div class="kpi-label">待招募人數</div>
+      <div class="kpi-value">31</div>
+      <div class="kpi-sub">尚未到位</div>
+    </div>
+    <div class="kpi kpi-rose">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-label">整體遞補率</div>
+      <div class="kpi-value">44.64%</div>
+      <div class="kpi-sub">招募達成率</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="sec-label">視覺化分析</div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">各部門需求人數</div>
+      <div style="position:relative;height:240px;">
+        <canvas id="c1" role="img" aria-label="各部門需求人數橫向長條圖"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">招募漏斗</div>
+      <div style="position:relative;height:240px;">
+        <canvas id="c2" role="img" aria-label="招募各階段漏斗圖"></canvas>
+      </div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">各部門需求 / 已報到 / 待招募</div>
+      <div class="legend">
+        <span><span class="legend-sq" style="background:#4F46E5"></span>需求數</span>
+        <span><span class="legend-sq" style="background:#0D9488"></span>已報到</span>
+        <span><span class="legend-sq" style="background:#F59E0B"></span>待招募</span>
+      </div>
+      <div style="position:relative;height:210px;">
+        <canvas id="c3" role="img" aria-label="各部門招募狀態分組長條圖"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split: 待招募 + 遞補率 -->
+  <div class="sec-label">部門細項指標</div>
+  <div class="split-row">
+    <div class="kpi-block">
+      <div class="kpi-block-title">⏳ 各部門待招募人數</div>
+      <div id="remain-list"></div>
+    </div>
+    <div class="kpi-block">
+      <div class="kpi-block-title">📊 各部門遞補率（招募達成率）</div>
+      <div id="rate-list"></div>
+    </div>
+  </div>
+
+  <!-- Detail table -->
+  <div class="sec-label">各部門詳細數據</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>部門</th>
+          <th class="r">需求</th>
+          <th class="r">履歷量</th>
+          <th class="r">合格履歷</th>
+          <th class="r">面談</th>
+          <th class="r">面談率</th>
+          <th class="r">錄取</th>
+          <th class="r">錄取率</th>
+          <th class="r">已報到</th>
+          <th class="r">待招募</th>
+          <th class="r">遞補率</th>
+          <th style="min-width:120px">招募進度</th>
+          <th class="r">狀態</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">自動產生｜最新更新：2026/06/27</div>
+</div>
+
+<script>
+const depts = [
+  { name:'研發',         req:28, cv:499,  pass:74,  int:45, hire:23, rep:10, wait:5,  quit:8,  remain:13 },
+  { name:'技術服務',     req:4,  cv:119,  pass:16,  int:5,  hire:3,  rep:1,  wait:0,  quit:2,  remain:3  },
+  { name:'生產管理',     req:7,  cv:1914, pass:802, int:39, hire:12, rep:3,  wait:2,  quit:7,  remain:2  },
+  { name:'品管',         req:8,  cv:132,  pass:13,  int:8,  hire:0,  rep:0,  wait:0,  quit:0,  remain:8  },
+  { name:'產品技術支援', req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:1,  wait:2,  quit:1,  remain:0  },
+  { name:'供應鏈',       req:1,  cv:305,  pass:19,  int:5,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
+  { name:'事業(業務)',   req:2,  cv:60,   pass:7,   int:1,  hire:1,  rep:0,  wait:1,  quit:0,  remain:1  },
+  { name:'商業運營',     req:1,  cv:79,   pass:8,   int:4,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
+  { name:'市場行銷',     req:2,  cv:4,    pass:1,   int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
+];
+const total = { name:'合計', req:56, cv:3235, pass:1011, int:115, hire:43, rep:15, wait:10, quit:18, remain:31 };
+
+const pct2 = (a, b) => b > 0 ? (a / b * 100).toFixed(2) + '%' : '-';
+const progPct = d => +((d.req - d.remain) / d.req * 100).toFixed(2);
+
+const INDIGO='#4F46E5', TEAL='#0D9488', AMBER='#F59E0B', ROSE='#F43F5E', SKY='#0EA5E9', VIOLET='#7C3AED';
+const GRID='rgba(99,102,241,0.08)', TMUT='#6366F1', TPRI='#1E1B4B', TGRAY='#64748B';
+
+// C1 — horizontal bar
+new Chart(document.getElementById('c1'), {
+  type:'bar',
+  data: {
+    labels: depts.map(d=>d.name),
+    datasets: [{ data:depts.map(d=>d.req), backgroundColor:INDIGO, borderRadius:5, barThickness:16 }]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.parsed.x} 人`}} },
+    scales: {
+      x:{ ticks:{color:TGRAY,font:{size:11}}, grid:{color:GRID}, border:{display:false} },
+      y:{ ticks:{color:TPRI,font:{size:11,weight:'500'}}, grid:{display:false}, border:{display:false} }
+    }
+  }
+});
+
+// C2 — funnel
+new Chart(document.getElementById('c2'), {
+  type:'bar',
+  data: {
+    labels:['需求','合格履歷','面談','錄取','已報到'],
+    datasets:[{ data:[56,1011,115,43,15], backgroundColor:[INDIGO,VIOLET,SKY,TEAL,'#0D9488CC'], borderRadius:5, barThickness:34 }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.parsed.y} 人`}} },
+    scales: {
+      x:{ ticks:{color:TPRI,font:{size:11,weight:'500'}}, grid:{display:false}, border:{display:false} },
+      y:{ ticks:{color:TGRAY,font:{size:11}}, grid:{color:GRID}, border:{display:false} }
+    }
+  }
+});
+
+// C3 — grouped bar
+new Chart(document.getElementById('c3'), {
+  type:'bar',
+  data: {
+    labels: depts.map(d=>d.name.replace('產品技術支援','產技支援').replace('事業(業務)','事業')),
+    datasets:[
+      { label:'需求數', data:depts.map(d=>d.req),    backgroundColor:INDIGO, borderRadius:3, barThickness:10 },
+      { label:'已報到', data:depts.map(d=>d.rep),    backgroundColor:TEAL,   borderRadius:3, barThickness:10 },
+      { label:'待招募', data:depts.map(d=>d.remain), backgroundColor:AMBER,  borderRadius:3, barThickness:10 },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{mode:'index'} },
+    scales: {
+      x:{ ticks:{color:TPRI,font:{size:11},maxRotation:35}, grid:{display:false}, border:{display:false} },
+      y:{ ticks:{color:TGRAY,font:{size:11}}, grid:{color:GRID}, border:{display:false} }
+    }
+  }
+});
+
+// ── 待招募人數 block ──
+const maxRemain = Math.max(...depts.map(d=>d.remain), 1);
+const remainList = document.getElementById('remain-list');
+depts.forEach(d => {
+  const pctBar = Math.round(d.remain / maxRemain * 100);
+  const clr = d.remain === 0 ? TEAL : d.remain >= 5 ? ROSE : AMBER;
+  const numCls = d.remain === 0 ? 'color:'+TEAL : d.remain >= 5 ? 'color:'+ROSE : 'color:'+AMBER;
+  remainList.innerHTML += `<div class="kpi-block-row">
+    <span class="kpi-block-dept">${d.name}</span>
+    <div class="kpi-block-right">
+      <div class="mini-bar"><div class="mini-bar-fill" style="width:${pctBar}%;background:${clr}"></div></div>
+      <span class="kpi-num" style="${numCls}">${d.remain}</span>
+    </div>
+  </div>`;
+});
+
+// ── 遞補率 block ──
+const rateList = document.getElementById('rate-list');
+depts.forEach(d => {
+  const rate = progPct(d);
+  const rbCls = rate >= 80 ? 'rb-teal' : rate >= 50 ? 'rb-sky' : rate > 0 ? 'rb-amber' : 'rb-rose';
+  const barClr = rate >= 80 ? TEAL : rate >= 50 ? SKY : rate > 0 ? AMBER : ROSE;
+  rateList.innerHTML += `<div class="kpi-block-row">
+    <span class="kpi-block-dept">${d.name}</span>
+    <div class="kpi-block-right">
+      <div class="mini-bar"><div class="mini-bar-fill" style="width:${rate}%;background:${barClr}"></div></div>
+      <span class="rate-badge ${rbCls}">${rate.toFixed(2)}%</span>
+    </div>
+  </div>`;
+});
+
+// ── Detail table ──
+const tbody = document.getElementById('tbody');
+[...depts, total].forEach((d, i) => {
+  const isTotal = i === depts.length;
+  const intRate  = pct2(d.int,  d.pass);
+  const hireRate = pct2(d.hire, d.int);
+  const repRate  = d.hire > 0 ? pct2(d.rep + d.wait, d.hire) : '-';
+  const rate     = progPct(d);
+  const barClr   = rate >= 80 ? TEAL : rate >= 50 ? SKY : AMBER;
+
+  let pillHtml = '';
+  if (!isTotal) {
+    if (d.remain === 0)    pillHtml = '<span class="pill p-teal">完成</span>';
+    else if (rate >= 60)   pillHtml = '<span class="pill p-sky">進行中</span>';
+    else if (d.int === 0)  pillHtml = '<span class="pill p-gray">尚未面談</span>';
+    else                   pillHtml = '<span class="pill p-amber">招募中</span>';
+  }
+
+  const cvStr = d.cv ? d.cv.toLocaleString() : '-';
+  const remainStyle = !isTotal && d.remain > 0
+    ? `style="color:${d.remain>=5?ROSE:AMBER};font-weight:700"` : '';
+  const rateStyle = !isTotal ? `style="color:${barClr};font-weight:600"` : '';
+
+  tbody.innerHTML += `<tr${isTotal?' class="total-row"':''}>
+    <td>${d.name}</td>
+    <td class="r">${d.req}</td>
+    <td class="r">${cvStr}</td>
+    <td class="r">${d.pass || '-'}</td>
+    <td class="r">${d.int}</td>
+    <td class="r">${intRate}</td>
+    <td class="r">${d.hire}</td>
+    <td class="r">${hireRate}</td>
+    <td class="r">${d.rep}</td>
+    <td class="r" ${remainStyle}>${d.remain}</td>
+    <td class="r" ${rateStyle}>${rate.toFixed(2)}%</td>
+    <td>${isTotal ? '' : `<div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${rate}%;background:${barClr}"></div></div><span class="prog-pct">${rate.toFixed(2)}%</span></div>`}</td>
+    <td class="r">${pillHtml}</td>
+  </tr>`;
+});
+</script>
+</body>
+</html>
