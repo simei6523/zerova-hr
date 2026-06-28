@@ -582,7 +582,8 @@
                     <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                   </div>
                   <ul class="nav-sub-items">
-                    <li class="nav-doc-item" onclick="loadForm(this,'人員晉升提報申請表修正','pdf/form-promotion.pdf','適用：人員晉升提報')">人員晉升提報申請表修正</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'人員晉升提報申請表','pdf/form-promotion.pdf','適用：人員晉升提報')">人員晉升提報申請表</li>
+                    <li class="nav-doc-item" onclick="loadHtmlForm(this,'人員晉升提報申請表電子表單','forms/promotion-form.html','適用：人員晉升提報')">人員晉升提報申請表電子表單</li>
                   </ul>
                 </div>
               </li>
@@ -955,6 +956,10 @@
             <iframe id="formPdfIframe" src="" title="表單流程"></iframe>
           </div>
         </div>
+        <!-- HTML 電子表單閱覽 -->
+        <div id="formHtmlViewer" style="display:none; width:100%; height:calc(100vh - 140px);">
+          <iframe id="formHtmlIframe" src="" title="電子表單" style="width:100%; height:100%; border:none; display:block;"></iframe>
+        </div>
       </div>
     </div>
 
@@ -1070,7 +1075,8 @@
     document.getElementById('formTitle').innerHTML =
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + title;
     document.getElementById('formMeta').textContent = meta;
-    // iframe
+    // 隱藏 HTML 表單，顯示 PDF viewer
+    document.getElementById('formHtmlViewer').style.display = 'none';
     document.getElementById('formPdfIframe').src = path;
     document.getElementById('formEmpty').style.display = 'none';
     document.getElementById('formViewer').style.display = 'block';
@@ -1079,6 +1085,26 @@
     btn.href = path;
     btn.download = title + '.pdf';
     btn.classList.remove('hidden');
+    // 確保在表單頁
+    showPage('forms');
+    document.getElementById('nav-forms').classList.add('active', 'open');
+  }
+
+  function loadHtmlForm(el, title, path, meta) {
+    // active 樣式
+    document.querySelectorAll('.nav-doc-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    // toolbar
+    document.getElementById('formTitle').innerHTML =
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + title;
+    document.getElementById('formMeta').textContent = meta;
+    // 隱藏 PDF viewer，顯示 HTML 表單
+    document.getElementById('formViewer').style.display = 'none';
+    document.getElementById('formEmpty').style.display = 'none';
+    document.getElementById('formHtmlIframe').src = path;
+    document.getElementById('formHtmlViewer').style.display = 'block';
+    // 隱藏下載 PDF 按鈕（HTML 表單有自己的列印/下載功能）
+    document.getElementById('downloadBtn').classList.add('hidden');
     // 確保在表單頁
     showPage('forms');
     document.getElementById('nav-forms').classList.add('active', 'open');
