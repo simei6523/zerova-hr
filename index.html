@@ -749,7 +749,7 @@
         <!-- 招募達成率 → 跳至招募達成率 Dashboard -->
         <a class="stats-bar__item" href="#" title="查看招募達成率 Dashboard" onclick="scrollToSection('section-dashboard-recruit');return false;">
           <div class="stats-bar__icon" style="background:#ddeeff;color:#2450b8;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
-          <div><div class="stats-bar__num" style="color:#2450b8;">—</div><div class="stats-bar__label">招募達成率</div></div>
+          <div><div class="stats-bar__num" id="statRecruitRate" style="color:#2450b8;">—</div><div class="stats-bar__label">招募達成率</div></div>
         </a>
         <!-- 本季專案進度 → 跳至本季專案進度 -->
         <a class="stats-bar__item" href="#" title="查看本季專案進度" onclick="scrollToSection('section-project');return false;">
@@ -828,16 +828,12 @@
                 <div class="dashboard-titlebar__name">招募達成率 Dashboard</div>
                 <div class="dashboard-titlebar__sub">招募進度、各職缺達成率追蹤 · Zerova Technology</div>
               </div>
-              <div class="dashboard-titlebar__btn" style="background:#2450b8;cursor:default;opacity:0.75;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
-                建置中
-              </div>
+              <a href="recruit-dashboard/index.html" target="_blank" class="dashboard-titlebar__btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                獨立開啟
+              </a>
             </div>
-            <div style="height:220px;display:flex;align-items:center;justify-content:center;background:#f5f8ff;flex-direction:column;gap:0.8rem;">
-              <div style="width:56px;height:56px;border-radius:14px;background:#ddeeff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🎯</div>
-              <div style="font-size:0.88rem;font-weight:700;color:#2450b8;">招募達成率儀表板建置中</div>
-              <div style="font-size:0.74rem;color:#7090c8;">即將上線，敬請期待</div>
-            </div>
+            <iframe src="recruit-dashboard/index.html" title="招募達成率 Dashboard" loading="lazy" style="width:100%;height:520px;border:none;display:block;"></iframe>
           </div>
         </div>
 
@@ -1133,6 +1129,35 @@
       const el = document.getElementById('statTotal');
       if (el) el.textContent = '—';
     });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  招募達成率 Icon 自動勾稽
+  //  ▶ 資料來源與 recruit-dashboard/index.html 完全相同
+  //  ▶ 公式：整體遞補率 = (總需求 - 尚餘) / 總需求 × 100%
+  //  ▶ 未來只需同步更新此處與 Dashboard 的 depts 陣列即可
+  // ══════════════════════════════════════════════════════
+  (function () {
+    // ★ 與 recruit-dashboard/index.html 內 const depts = [...] 保持一致 ★
+    const depts = [
+      { name:'研發',         req:28, remain:13 },
+      { name:'技術服務',     req:4,  remain:3  },
+      { name:'生產管理',     req:7,  remain:2  },
+      { name:'品管',         req:8,  remain:8  },
+      { name:'產品技術支援', req:3,  remain:0  },
+      { name:'供應鏈',       req:1,  remain:1  },
+      { name:'事業(業務)',   req:2,  remain:1  },
+      { name:'商業運營',     req:1,  remain:1  },
+      { name:'市場行銷',     req:2,  remain:2  },
+    ];
+    const totalReq    = depts.reduce((s, d) => s + d.req,    0); // 56
+    const totalRemain = depts.reduce((s, d) => s + d.remain, 0); // 31
+    const rate = ((totalReq - totalRemain) / totalReq * 100).toFixed(2) + '%'; // 44.64%
+
+    const el = document.getElementById('statRecruitRate');
+    if (el) el.textContent = rate;
+  })();
 </script>
 </body>
 </html>
