@@ -1142,7 +1142,7 @@
   //  公式：整體遞補率 = (總需求 - 尚餘) / 總需求 × 100%
   //  ★ 與 recruit-dashboard/index.html 內 const depts 保持一致 ★
   // ══════════════════════════════════════════════════════
-  (function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const depts = [
       { req:28, remain:13 },  // 研發
       { req:4,  remain:3  },  // 技術服務
@@ -1159,7 +1159,7 @@
     const rate = ((totalReq - totalRemain) / totalReq * 100).toFixed(2) + '%'; // 44.64%
     const el = document.getElementById('statRecruitRate');
     if (el) el.textContent = rate;
-  })();
+  });
 </script>
 </body>
 </html>
