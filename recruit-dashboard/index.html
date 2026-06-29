@@ -266,11 +266,10 @@ tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; col
         <canvas id="c1" role="img" aria-label="各部門需求人數橫向長條圖"></canvas>
       </div>
     </div>
-    <div class="chart-card">
+    <div class="chart-card" id="funnel-card">
       <div class="chart-title">招募漏斗</div>
-      <div style="position:relative;height:240px;">
-        <canvas id="c2" role="img" aria-label="招募各階段漏斗圖"></canvas>
-      </div>
+      <canvas id="funnel-canvas" width="300" height="260" style="width:100%;height:260px;display:block;cursor:pointer;" title="點擊重播動畫"></canvas>
+      <div style="text-align:center;font-size:11px;color:var(--text-gray);margin-top:6px;opacity:0.6;">點擊重播 ↺</div>
     </div>
     <div class="chart-card full">
       <div class="chart-title">各部門需求 / 已報到 / 待招募</div>
@@ -363,22 +362,213 @@ new Chart(document.getElementById('c1'), {
   }
 });
 
-// C2 — funnel
-new Chart(document.getElementById('c2'), {
-  type:'bar',
-  data: {
-    labels:['需求','合格履歷','面談','錄取','已報到'],
-    datasets:[{ data:[56,1011,115,43,15], backgroundColor:[INDIGO,VIOLET,SKY,TEAL,'#0D9488CC'], borderRadius:5, barThickness:34 }]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.parsed.y} 人`}} },
-    scales: {
-      x:{ ticks:{color:TPRI,font:{size:11,weight:'500'}}, grid:{display:false}, border:{display:false} },
-      y:{ ticks:{color:TGRAY,font:{size:11}}, grid:{color:GRID}, border:{display:false} }
+// C2 — Animated Funnel Canvas
+(function() {
+  const canvas = document.getElementById('funnel-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Hi-DPI — sharp text
+  const DPR = Math.min(window.devicePixelRatio || 1, 3);
+  canvas.width  = 300 * DPR;
+  canvas.height = 260 * DPR;
+  ctx.scale(DPR, DPR);
+  ctx.imageSmoothingEnabled = false;
+  const W = 300, H = 260;
+
+  const stages = [
+    { label:'需求人數', value:56,   color:'#F59E42', glow:'rgba(245,158,66,0.4)' },
+    { label:'合格履歷', value:1011, color:'#38BDF8', glow:'rgba(56,189,248,0.4)' },
+    { label:'面談人數', value:115,  color:'#A78BFA', glow:'rgba(167,139,250,0.4)' },
+    { label:'錄取人數', value:43,   color:'#F472B6', glow:'rgba(244,114,182,0.4)' },
+    { label:'已報到',   value:15,   color:'#2DD4BF', glow:'rgba(45,212,191,0.4)' },
+  ];
+
+  const n = stages.length;
+  const sliceH = H / n;
+  const topW = W * 0.55, botW = W * 0.09, gap = 3;
+
+  // Pre-compute trapezoid points per stage
+  function trapPoints(i) {
+    const t0 = i / (n - 1), t1 = (i + 1) / (n - 1);
+    const w0 = topW + (botW - topW) * t0;
+    const w1 = topW + (botW - topW) * t1;
+    const y0 = i * sliceH + (i > 0 ? gap : 0);
+    const y1 = (i + 1) * sliceH - (i < n - 1 ? gap : 0);
+    return {
+      xTL: (W - w0) / 2, xTR: (W + w0) / 2,
+      xBL: (W - w1) / 2, xBR: (W + w1) / 2,
+      y0, y1, cy: (y0 + y1) / 2
+    };
+  }
+
+  // State
+  let stageAlpha = new Array(n).fill(0);   // 0→1 fill animation
+  let particles  = [];
+  let phase = 'filling';   // filling | flowing | done
+  let startTime = null;
+  const fillDuration  = 600;   // ms per stage
+  const flowDuration  = 1800;  // total particle flow ms
+  let flowStart = null;
+
+  // Particles
+  function spawnParticles() {
+    particles = [];
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x: W / 2 + (Math.random() - 0.5) * topW * 0.7,
+        y: -8 - Math.random() * 40,
+        vy: 1.2 + Math.random() * 1.8,
+        vx: (Math.random() - 0.5) * 0.6,
+        r:  2 + Math.random() * 2.5,
+        alpha: 0.7 + Math.random() * 0.3,
+        stageIdx: Math.floor(Math.random() * n),
+        color: stages[Math.floor(Math.random() * n)].color,
+        life: 0,
+        maxLife: 80 + Math.random() * 60
+      });
     }
   }
-});
+
+  function drawTrap(i, alpha) {
+    const p = trapPoints(i);
+    const s = stages[i];
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    // Gradient fill
+    const grad = ctx.createLinearGradient(W/2, p.y0, W/2, p.y1);
+    grad.addColorStop(0, s.color + 'EE');
+    grad.addColorStop(1, s.color + 'AA');
+    ctx.beginPath();
+    ctx.moveTo(p.xTL, p.y0);
+    ctx.lineTo(p.xTR, p.y0);
+    ctx.lineTo(p.xBR, p.y1);
+    ctx.lineTo(p.xBL, p.y1);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Glow edge
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = alpha * 0.5;
+    ctx.stroke();
+
+    // Labels (only when alpha > 0.6)
+    if (alpha > 0.6) {
+      ctx.globalAlpha = alpha;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = 'transparent';
+      // Label
+      ctx.font = `600 11.5px -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.98)';
+      ctx.fillText(s.label, Math.round(W / 2), Math.round(p.cy - 9));
+      // Value
+      ctx.font = `700 13.5px -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.88)';
+      ctx.fillText(s.value.toLocaleString(), Math.round(W / 2), Math.round(p.cy + 9));
+    }
+    ctx.restore();
+  }
+
+  function drawParticle(p) {
+    ctx.save();
+    ctx.globalAlpha = p.alpha * (1 - p.life / p.maxLife);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 6;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function reset() {
+    stageAlpha = new Array(n).fill(0);
+    particles  = [];
+    phase = 'filling';
+    startTime = null;
+    flowStart = null;
+    requestAnimationFrame(loop);
+  }
+
+  canvas.addEventListener('click', reset);
+
+  function loop(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+
+    ctx.clearRect(0, 0, W, H);
+
+    if (phase === 'filling') {
+      // Animate each stage in sequence
+      for (let i = 0; i < n; i++) {
+        const stageStart = i * fillDuration * 0.7;
+        const t = Math.max(0, Math.min(1, (elapsed - stageStart) / fillDuration));
+        // ease out cubic
+        stageAlpha[i] = 1 - Math.pow(1 - t, 3);
+      }
+      // Draw all stages
+      for (let i = 0; i < n; i++) drawTrap(i, stageAlpha[i]);
+
+      const allDone = elapsed > (n - 1) * fillDuration * 0.7 + fillDuration;
+      if (allDone) {
+        phase = 'flowing';
+        flowStart = ts;
+        spawnParticles();
+      }
+      requestAnimationFrame(loop);
+
+    } else if (phase === 'flowing') {
+      // Draw static trapezoids
+      for (let i = 0; i < n; i++) drawTrap(i, 1);
+
+      const flowElapsed = ts - flowStart;
+      const flowProgress = flowElapsed / flowDuration;
+
+      // Update & draw particles
+      particles = particles.filter(p => p.life < p.maxLife);
+      particles.forEach(p => {
+        // Narrow particle x toward center as it falls
+        const frac = p.y / H;
+        const maxX = (W - (topW + (botW - topW) * Math.min(frac, 1))) / 2 + 6;
+        p.x = Math.max(maxX, Math.min(W - maxX, p.x + p.vx));
+        p.y  += p.vy * (1 + flowProgress);
+        p.life++;
+        if (p.y < H + 10) drawParticle(p);
+      });
+
+      // Spawn more particles over time
+      if (flowElapsed < flowDuration && Math.random() < 0.5) {
+        const sIdx = Math.floor(Math.random() * n);
+        particles.push({
+          x: W / 2 + (Math.random() - 0.5) * topW * 0.6,
+          y: -4 - Math.random() * 12,
+          vy: 1.4 + Math.random() * 1.6,
+          vx: (Math.random() - 0.5) * 0.5,
+          r:  1.5 + Math.random() * 2,
+          alpha: 0.6 + Math.random() * 0.4,
+          color: stages[sIdx].color,
+          life: 0, maxLife: 70 + Math.random() * 50
+        });
+      }
+
+      if (flowElapsed > flowDuration && particles.length === 0) {
+        phase = 'done';
+      } else {
+        requestAnimationFrame(loop);
+      }
+
+    } else {
+      // done — static
+      for (let i = 0; i < n; i++) drawTrap(i, 1);
+    }
+  }
+
+  requestAnimationFrame(loop);
+})();
 
 // C3 — grouped bar
 new Chart(document.getElementById('c3'), {
