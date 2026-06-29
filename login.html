@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zerova HR 人資管理平台 — 登入</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:       #00818E;
+      --brand-dark:  #005f6a;
+      --brand-light: #4ec8d4;
+      --brand-pale:  #dff4f6;
+      --brand-faint: #f0fafb;
+      --sidebar-bg1: #2A4F5E;
+      --sidebar-bg2: #2E5769;
+      --dark:        #1a3038;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: #f4f9fa;
+      color: var(--dark);
+    }
+
+    /* 背景點陣紋路（與主平台一致） */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,129,142,0.10) 1px, transparent 1px);
+      background-size: 22px 22px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 頂部品牌色條 */
+    .topbar-accent {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--brand), var(--brand-light), var(--brand));
+      z-index: 10;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* 登入卡片 */
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0,129,142,0.13), 0 2px 8px rgba(0,0,0,0.06);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+
+    /* 卡片頂部品牌區 */
+    .card-header {
+      background: linear-gradient(175deg, var(--sidebar-bg1) 0%, var(--sidebar-bg2) 100%);
+      padding: 2.2rem 2rem 1.8rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .card-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brand-light), transparent);
+    }
+
+    .logo-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 16px rgba(0,129,142,0.35);
+    }
+
+    .logo-box svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+    }
+
+    .brand-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--brand-light);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.03em;
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      margin-top: 0.3rem;
+    }
+
+    /* 表單區 */
+    .card-body {
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--brand);
+      opacity: 0.7;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.7rem 0.9rem 0.7rem 2.5rem;
+      border: 1.5px solid #d5edf0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--dark);
+      background: var(--brand-faint);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--brand);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0,129,142,0.12);
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--brand);
+      opacity: 0.6;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: opacity 0.15s;
+    }
+
+    .toggle-pw:hover { opacity: 1; }
+
+    /* 錯誤訊息 */
+    .error-msg {
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      background: #fff0f0;
+      border: 1.5px solid #ffc8c8;
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.8rem;
+      color: #c0392b;
+      margin-bottom: 1.2rem;
+    }
+
+    .error-msg.show { display: flex; }
+
+    /* 登入按鈕 */
+    .btn-login {
+      width: 100%;
+      padding: 0.82rem;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: opacity 0.18s, transform 0.15s, box-shadow 0.18s;
+      box-shadow: 0 4px 14px rgba(0,129,142,0.30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-login:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,129,142,0.38);
+    }
+
+    .btn-login:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* 載入動畫 */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 卡片底部 */
+    .card-footer {
+      padding: 1rem 2rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid var(--brand-pale);
+    }
+
+    .footer-note {
+      font-size: 0.72rem;
+      color: rgba(26,48,56,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    /* 搖晃動畫（錯誤時） */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .shake { animation: shake 0.4s ease; }
+  </style>
+</head>
+<body>
+
+<div class="topbar-accent"></div>
+
+<div class="page-wrap">
+  <div class="login-card" id="loginCard">
+
+    <!-- 頂部品牌區 -->
+    <div class="card-header">
+      <div class="logo-box">
+        <!-- HR 人形圖示 -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+        </svg>
+      </div>
+      <div class="brand-name">Zerova Technology</div>
+      <div class="card-title">人資管理平台</div>
+      <div class="card-subtitle">請登入以繼續使用</div>
+    </div>
+
+    <!-- 表單區 -->
+    <div class="card-body">
+      <div class="error-msg" id="errorMsg">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        帳號或密碼錯誤，請重新輸入
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="username">帳號</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          </span>
+          <input
+            type="text"
+            id="username"
+            class="form-input"
+            placeholder="請輸入帳號"
+            autocomplete="username"
+            spellcheck="false"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">密碼</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </span>
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="請輸入密碼"
+            autocomplete="current-password"
+          />
+          <button class="toggle-pw" type="button" id="togglePw" title="顯示/隱藏密碼">
+            <svg id="eyeIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-login" id="loginBtn" type="button">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">登　入</span>
+      </button>
+    </div>
+
+    <!-- 底部說明 -->
+    <div class="card-footer">
+      <div class="footer-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        此平台僅供 Zerova 內部人員使用
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── 驗證設定 ──────────────────────────────────────────
+  // SHA-256 hash of "zerova_hr:zerova_12340102"
+  const VALID_HASH = "13f8af5e6dcd9e954c4c0baf61f4ce7495570b10f6b3569d40cf7d5583559a67";
+  const SESSION_KEY = "zerova_hr_auth";
+  const SESSION_DURATION = 8 * 60 * 60 * 1000; // 8 小時
+
+  // ── 若已登入，直接跳轉 ────────────────────────────────
+  (function checkSession() {
+    try {
+      const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+      if (s && s.token === VALID_HASH && Date.now() < s.expires) {
+        window.location.replace("index.html");
+      }
+    } catch(e) {}
+  })();
+
+  // ── SHA-256 計算 ─────────────────────────────────────
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(str)
+    );
+    return Array.from(new Uint8Array(buf))
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  // ── DOM refs ─────────────────────────────────────────
+  const usernameEl = document.getElementById("username");
+  const passwordEl = document.getElementById("password");
+  const loginBtn   = document.getElementById("loginBtn");
+  const spinner    = document.getElementById("spinner");
+  const btnText    = document.getElementById("btnText");
+  const errorMsg   = document.getElementById("errorMsg");
+  const togglePw   = document.getElementById("togglePw");
+  const eyeIcon    = document.getElementById("eyeIcon");
+  const loginCard  = document.getElementById("loginCard");
+
+  // ── 顯示/隱藏密碼 ────────────────────────────────────
+  let pwVisible = false;
+  togglePw.addEventListener("click", () => {
+    pwVisible = !pwVisible;
+    passwordEl.type = pwVisible ? "text" : "password";
+    eyeIcon.innerHTML = pwVisible
+      ? `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>`
+      : `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
+  });
+
+  // ── 登入邏輯 ─────────────────────────────────────────
+  async function doLogin() {
+    const u = usernameEl.value.trim();
+    const p = passwordEl.value;
+
+    if (!u || !p) {
+      showError();
+      return;
+    }
+
+    // 顯示載入中
+    loginBtn.disabled = true;
+    spinner.style.display = "block";
+    btnText.textContent = "驗證中…";
+    errorMsg.classList.remove("show");
+
+    // 稍微延遲讓動畫可見
+    await new Promise(r => setTimeout(r, 500));
+
+    const hash = await sha256(u + ":" + p);
+
+    if (hash === VALID_HASH) {
+      // 登入成功 → 寫入 session 後跳轉
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        token: VALID_HASH,
+        expires: Date.now() + SESSION_DURATION
+      }));
+      btnText.textContent = "登入成功 ✓";
+      await new Promise(r => setTimeout(r, 400));
+      window.location.replace("index.html");
+    } else {
+      showError();
+      loginBtn.disabled = false;
+      spinner.style.display = "none";
+      btnText.textContent = "登　入";
+      passwordEl.value = "";
+      passwordEl.focus();
+    }
+  }
+
+  function showError() {
+    errorMsg.classList.add("show");
+    loginCard.classList.remove("shake");
+    void loginCard.offsetWidth; // reflow
+    loginCard.classList.add("shake");
+  }
+
+  // ── 事件綁定 ─────────────────────────────────────────
+  loginBtn.addEventListener("click", doLogin);
+  [usernameEl, passwordEl].forEach(el => {
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter") doLogin();
+    });
+  });
+
+  // 自動 focus 帳號欄
+  usernameEl.focus();
+</script>
+</body>
+</html>
