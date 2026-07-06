@@ -1,0 +1,116 @@
+{
+  "updated_at": "2026/07/06",
+  "total_req": 58,
+  "total_remain": 33,
+  "overall_rate": 43.1,
+  "depts": [
+    {
+      "name": "研發",
+      "req": 28,
+      "cv": 512,
+      "pass_": 75,
+      "int_": 47,
+      "hire": 23,
+      "rep": 14,
+      "wait": 1,
+      "quit": 8,
+      "remain": 13
+    },
+    {
+      "name": "技術服務",
+      "req": 4,
+      "cv": 123,
+      "pass_": 17,
+      "int_": 5,
+      "hire": 3,
+      "rep": 1,
+      "wait": 0,
+      "quit": 2,
+      "remain": 3
+    },
+    {
+      "name": "生產管理",
+      "req": 8,
+      "cv": 1980,
+      "pass_": 867,
+      "int_": 39,
+      "hire": 12,
+      "rep": 4,
+      "wait": 1,
+      "quit": 7,
+      "remain": 3
+    },
+    {
+      "name": "品管",
+      "req": 9,
+      "cv": 155,
+      "pass_": 19,
+      "int_": 8,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
+      "quit": 0,
+      "remain": 9
+    },
+    {
+      "name": "產品技術支援",
+      "req": 3,
+      "cv": 123,
+      "pass_": 71,
+      "int_": 8,
+      "hire": 4,
+      "rep": 0,
+      "wait": 2,
+      "quit": 1,
+      "remain": 0
+    },
+    {
+      "name": "供應鏈",
+      "req": 1,
+      "cv": 317,
+      "pass_": 24,
+      "int_": 6,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
+      "quit": 0,
+      "remain": 1
+    },
+    {
+      "name": "事業(業務)",
+      "req": 2,
+      "cv": 63,
+      "pass_": 7,
+      "int_": 1,
+      "hire": 1,
+      "rep": 0,
+      "wait": 1,
+      "quit": 0,
+      "remain": 1
+    },
+    {
+      "name": "商業運營",
+      "req": 1,
+      "cv": 89,
+      "pass_": 8,
+      "int_": 4,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
+      "quit": 0,
+      "remain": 1
+    },
+    {
+      "name": "市場行銷",
+      "req": 2,
+      "cv": 27,
+      "pass_": 7,
+      "int_": 0,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
+      "quit": 0,
+      "remain": 2
+    }
+  ]
+}
