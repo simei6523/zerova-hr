@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>招募進度彙總 Dashboard｜2026 Q2–Q3</title>
+<title>招募進度彙總 Dashboard｜2026 Q2</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -202,10 +202,10 @@ tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; col
   <div class="header">
     <div class="header-left">
       <h1>📋 招募進度彙總 Dashboard</h1>
-      <p>各部門 TTL 合計｜資料更新：2026/07/06</p>
+      <p>各部門 TTL 合計｜資料更新：2026/06/27</p>
     </div>
     <div class="header-badges">
-      <span class="hbadge">2026 Q3</span>
+      <span class="hbadge">2026 Q2</span>
       <span class="hbadge">9 個部門</span>
     </div>
   </div>
@@ -216,43 +216,43 @@ tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; col
     <div class="kpi kpi-neu">
       <div class="kpi-icon">🎯</div>
       <div class="kpi-label">總需求人數</div>
-      <div class="kpi-value">58</div>
+      <div class="kpi-value">56</div>
       <div class="kpi-sub">9 個部門</div>
     </div>
     <div class="kpi kpi-sky">
       <div class="kpi-icon">📨</div>
       <div class="kpi-label">收到履歷</div>
-      <div class="kpi-value">3,389</div>
-      <div class="kpi-sub">合格 1,095 份</div>
+      <div class="kpi-value">3,235</div>
+      <div class="kpi-sub">合格 1,011 份</div>
     </div>
     <div class="kpi kpi-indigo">
       <div class="kpi-icon">🤝</div>
       <div class="kpi-label">面談人數</div>
-      <div class="kpi-value">118</div>
-      <div class="kpi-sub">面談率 10.78%</div>
+      <div class="kpi-value">115</div>
+      <div class="kpi-sub">面談率 11.37%</div>
     </div>
     <div class="kpi kpi-violet">
       <div class="kpi-icon">✅</div>
       <div class="kpi-label">錄取人數</div>
       <div class="kpi-value">43</div>
-      <div class="kpi-sub">錄取率 36.44%</div>
+      <div class="kpi-sub">錄取率 37.39%</div>
     </div>
     <div class="kpi kpi-teal">
       <div class="kpi-icon">🏢</div>
       <div class="kpi-label">已報到</div>
-      <div class="kpi-value">19</div>
-      <div class="kpi-sub">報到率 55.81%</div>
+      <div class="kpi-value">15</div>
+      <div class="kpi-sub">報到率 58.14%</div>
     </div>
     <div class="kpi kpi-amber">
       <div class="kpi-icon">⏳</div>
       <div class="kpi-label">待招募人數</div>
-      <div class="kpi-value">33</div>
+      <div class="kpi-value">31</div>
       <div class="kpi-sub">尚未到位</div>
     </div>
     <div class="kpi kpi-rose">
       <div class="kpi-icon">📈</div>
       <div class="kpi-label">整體遞補率</div>
-      <div class="kpi-value">43.10%</div>
+      <div class="kpi-value">44.64%</div>
       <div class="kpi-sub">招募達成率</div>
     </div>
   </div>
@@ -322,22 +322,70 @@ tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; col
     </table>
   </div>
 
-  <div class="footer">自動產生｜最新更新：2026/07/06</div>
+  <div class="footer">自動產生｜最新更新：<span id="updatedAt">載入中…</span></div>
 </div>
 
 <script>
-const depts = [
-  { name:'研發',         req:28, cv:512,  pass:75,  int:47, hire:23, rep:14, wait:1,  quit:8,  remain:13 },
-  { name:'技術服務',     req:4,  cv:123,  pass:17,  int:5,  hire:3,  rep:1,  wait:0,  quit:2,  remain:3  },
-  { name:'生產管理',     req:8,  cv:1980, pass:867, int:39, hire:12, rep:4,  wait:1,  quit:7,  remain:3  },
-  { name:'品管',         req:9,  cv:155,  pass:19,  int:8,  hire:0,  rep:0,  wait:0,  quit:0,  remain:9  },
-  { name:'產品技術支援', req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:1,  wait:2,  quit:1,  remain:0  },
-  { name:'供應鏈',       req:1,  cv:317,  pass:24,  int:6,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
-  { name:'事業(業務)',   req:2,  cv:63,   pass:7,   int:1,  hire:1,  rep:0,  wait:1,  quit:0,  remain:1  },
-  { name:'商業運營',     req:1,  cv:89,   pass:8,   int:4,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
-  { name:'市場行銷',     req:2,  cv:27,   pass:7,   int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
-];
-const total = { name:'合計', req:58, cv:3389, pass:1095, int:118, hire:43, rep:19, wait:5, quit:18, remain:33 };
+// ══════════════════════════════════════════════════
+//  從 recruit.json 動態載入資料（auto run 模式）
+// ══════════════════════════════════════════════════
+const JSON_URL = 'https://simei6523.github.io/zerova-hr/recruit.json';
+
+fetch(JSON_URL + '?t=' + Date.now())
+  .then(r => r.json())
+  .then(json => {
+    // 將 JSON 資料轉換成 dashboard 原有格式
+    const depts = json.depts.map(d => ({
+      name:   d.name,
+      req:    d.req,
+      cv:     d.cv,
+      pass:   d.pass_,
+      int:    d.int_,
+      hire:   d.hire,
+      rep:    d.rep,
+      wait:   d.wait,
+      quit:   d.quit,
+      remain: d.remain,
+    }));
+    const total = {
+      name:   '合計',
+      req:    json.total_req,
+      remain: json.total_remain,
+      cv:     depts.reduce((s,d)=>s+d.cv,   0),
+      pass:   depts.reduce((s,d)=>s+d.pass, 0),
+      int:    depts.reduce((s,d)=>s+d.int,  0),
+      hire:   depts.reduce((s,d)=>s+d.hire, 0),
+      rep:    depts.reduce((s,d)=>s+d.rep,  0),
+      wait:   depts.reduce((s,d)=>s+d.wait, 0),
+      quit:   depts.reduce((s,d)=>s+d.quit, 0),
+    };
+
+    // 更新日期顯示
+    const updEl = document.getElementById('updatedAt');
+    if (updEl) updEl.textContent = json.updated_at;
+
+    // 呼叫原本的繪圖函式
+    renderDashboard(depts, total);
+  })
+  .catch(err => {
+    console.error('載入 recruit.json 失敗，使用備用資料', err);
+    // 載入失敗時使用備用靜態資料
+    const depts = [
+      { name:'研發',         req:28, cv:512,  pass:75,  int:47, hire:23, rep:14, wait:1,  quit:8,  remain:13 },
+      { name:'技術服務',     req:4,  cv:123,  pass:17,  int:5,  hire:3,  rep:1,  wait:0,  quit:2,  remain:3  },
+      { name:'生產管理',     req:8,  cv:1980, pass:867, int:39, hire:12, rep:4,  wait:1,  quit:7,  remain:3  },
+      { name:'品管',         req:9,  cv:155,  pass:19,  int:8,  hire:0,  rep:0,  wait:0,  quit:0,  remain:9  },
+      { name:'產品技術支援', req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:1,  wait:2,  quit:1,  remain:0  },
+      { name:'供應鏈',       req:1,  cv:317,  pass:24,  int:6,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
+      { name:'事業(業務)',   req:2,  cv:63,   pass:7,   int:1,  hire:1,  rep:0,  wait:1,  quit:0,  remain:1  },
+      { name:'商業運營',     req:1,  cv:89,   pass:8,   int:4,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
+      { name:'市場行銷',     req:2,  cv:27,   pass:7,   int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
+    ];
+    const total = { name:'合計', req:58, cv:3389, pass:1095, int:118, hire:43, rep:19, wait:5, quit:18, remain:33 };
+    renderDashboard(depts, total);
+  });
+
+function renderDashboard(depts, total) {
 
 const pct2 = (a, b) => b > 0 ? (a / b * 100).toFixed(2) + '%' : '-';
 const progPct = d => +((d.req - d.remain) / d.req * 100).toFixed(2);
@@ -376,11 +424,11 @@ new Chart(document.getElementById('c1'), {
   const W = 300, H = 260;
 
   const stages = [
-    { label:'需求人數', value:58,   color:'#F59E42', glow:'rgba(245,158,66,0.4)' },
-    { label:'合格履歷', value:1095, color:'#38BDF8', glow:'rgba(56,189,248,0.4)' },
-    { label:'面談人數', value:118,  color:'#A78BFA', glow:'rgba(167,139,250,0.4)' },
+    { label:'需求人數', value:56,   color:'#F59E42', glow:'rgba(245,158,66,0.4)' },
+    { label:'合格履歷', value:1011, color:'#38BDF8', glow:'rgba(56,189,248,0.4)' },
+    { label:'面談人數', value:115,  color:'#A78BFA', glow:'rgba(167,139,250,0.4)' },
     { label:'錄取人數', value:43,   color:'#F472B6', glow:'rgba(244,114,182,0.4)' },
-    { label:'已報到',   value:19,   color:'#2DD4BF', glow:'rgba(45,212,191,0.4)' },
+    { label:'已報到',   value:15,   color:'#2DD4BF', glow:'rgba(45,212,191,0.4)' },
   ];
 
   const n = stages.length;
@@ -661,6 +709,7 @@ const tbody = document.getElementById('tbody');
     <td class="r">${pillHtml}</td>
   </tr>`;
 });
+} // end renderDashboard
 </script>
 </body>
 </html>
