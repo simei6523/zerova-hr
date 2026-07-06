@@ -1170,17 +1170,17 @@
     const depts = [
       { req:28, remain:13 },  // 研發
       { req:4,  remain:3  },  // 技術服務
-      { req:7,  remain:2  },  // 生產管理
-      { req:8,  remain:8  },  // 品管
+      { req:8,  remain:3  },  // 生產管理
+      { req:9,  remain:9  },  // 品管
       { req:3,  remain:0  },  // 產品技術支援
       { req:1,  remain:1  },  // 供應鏈
       { req:2,  remain:1  },  // 事業(業務)
       { req:1,  remain:1  },  // 商業運營
       { req:2,  remain:2  },  // 市場行銷
     ];
-    const totalReq    = depts.reduce((s, d) => s + d.req,    0); // 56
-    const totalRemain = depts.reduce((s, d) => s + d.remain, 0); // 31
-    const rate = ((totalReq - totalRemain) / totalReq * 100).toFixed(2) + '%'; // 44.64%
+    const totalReq    = depts.reduce((s, d) => s + d.req,    0); // 58
+    const totalRemain = depts.reduce((s, d) => s + d.remain, 0); // 33
+    const rate = ((totalReq - totalRemain) / totalReq * 100).toFixed(2) + '%'; // 43.10%
     const el = document.getElementById('statRecruitRate');
     if (el) el.textContent = rate;
   });
