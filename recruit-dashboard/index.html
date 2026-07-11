@@ -330,17 +330,19 @@ const pct2 = (a, b) => b > 0 ? (a / b * 100).toFixed(2) + '%' : '-';
 const progPct = d => +((d.req - d.remain) / d.req * 100).toFixed(2);
 
 const fallbackDepts = [
-  { name:'研發',         req:28, cv:512,  pass:75,  int:47, hire:23, rep:14, wait:1,  quit:8,  remain:13 },
-  { name:'技術服務',     req:4,  cv:123,  pass:17,  int:5,  hire:3,  rep:1,  wait:0,  quit:2,  remain:3  },
-  { name:'生產管理',     req:8,  cv:1980, pass:867, int:39, hire:12, rep:4,  wait:1,  quit:7,  remain:3  },
-  { name:'品管',         req:9,  cv:155,  pass:19,  int:8,  hire:0,  rep:0,  wait:0,  quit:0,  remain:9  },
-  { name:'產品技術支援', req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:1,  wait:2,  quit:1,  remain:0  },
-  { name:'供應鏈',       req:1,  cv:317,  pass:24,  int:6,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
-  { name:'事業(業務)',   req:2,  cv:63,   pass:7,   int:1,  hire:1,  rep:0,  wait:1,  quit:0,  remain:1  },
-  { name:'商業運營',     req:1,  cv:89,   pass:8,   int:4,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
-  { name:'市場行銷',     req:2,  cv:27,   pass:7,   int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
+  { name:'研發',         req:28, cv:522,  pass:78,  int:49, hire:24, rep:14, wait:2,  quit:8,  remain:12 },
+  { name:'技術服務',     req:4,  cv:129,  pass:19,  int:5,  hire:3,  rep:1,  wait:0,  quit:2,  remain:3  },
+  { name:'生產管理',     req:4,  cv:778,  pass:58,  int:15, hire:2,  rep:0,  wait:1,  quit:1,  remain:3  },
+  { name:'新產品技術導入', req:10, cv:1256, pass:823, int:31, hire:11, rep:4,  wait:1,  quit:6,  remain:5  },
+  { name:'品管',         req:9,  cv:179,  pass:25,  int:9,  hire:0,  rep:0,  wait:0,  quit:0,  remain:9  },
+  { name:'產品技術支援', req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:0,  wait:1,  quit:1,  remain:0  },
+  { name:'供應鏈',       req:1,  cv:322,  pass:36,  int:7,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
+  { name:'事業(業務)',   req:2,  cv:66,   pass:7,   int:1,  hire:1,  rep:0,  wait:1,  quit:0,  remain:1  },
+  { name:'商業運營',     req:2,  cv:92,   pass:8,   int:4,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
+  { name:'市場行銷',     req:2,  cv:41,   pass:17,  int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
+  { name:'執行長辦公室', req:1,  cv:3,    pass:1,   int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
 ];
-const fallbackTotal = { name:'合計', req:58, cv:3389, pass:1095, int:118, hire:43, rep:19, wait:5, quit:18, remain:33 };
+const fallbackTotal = { name:'合計', req:66, cv:3511, pass:1143, int:129, hire:45, rep:19, wait:6, quit:18, remain:39 };
 
 fetch('https://simei6523.github.io/zerova-hr/recruit.json?t=' + Date.now())
   .then(r => r.json())
