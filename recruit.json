@@ -1,8 +1,8 @@
 {
   "updated_at": "2026/07/11",
-  "total_req": 2,
-  "total_remain": 2,
-  "overall_rate": 0.0,
+  "total_req": 66,
+  "total_remain": 39,
+  "overall_rate": 40.91,
   "depts": [
     {
       "name": "研發",
@@ -111,6 +111,30 @@
       "wait": 0,
       "quit": 0,
       "remain": 2
+    },
+    {
+      "name": "市場行銷",
+      "req": 2,
+      "cv": 41,
+      "pass_": 17,
+      "int_": 0,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
+      "quit": 0,
+      "remain": 2
+    },
+    {
+      "name": "執行長辦公室",
+      "req": 1,
+      "cv": 3,
+      "pass_": 1,
+      "int_": 0,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
+      "quit": 0,
+      "remain": 1
     }
   ]
 }
