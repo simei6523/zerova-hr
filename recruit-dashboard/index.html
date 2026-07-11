@@ -216,43 +216,43 @@ tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; col
     <div class="kpi kpi-neu">
       <div class="kpi-icon">🎯</div>
       <div class="kpi-label">總需求人數</div>
-      <div class="kpi-value">58</div>
-      <div class="kpi-sub">9 個部門</div>
+      <div class="kpi-value" id="kpi-req">—</div>
+      <div class="kpi-sub" id="kpi-dept-count">— 個部門</div>
     </div>
     <div class="kpi kpi-sky">
       <div class="kpi-icon">📨</div>
       <div class="kpi-label">收到履歷</div>
-      <div class="kpi-value">3,389</div>
-      <div class="kpi-sub">合格 1,095 份</div>
+      <div class="kpi-value" id="kpi-cv">—</div>
+      <div class="kpi-sub" id="kpi-pass">合格 — 份</div>
     </div>
     <div class="kpi kpi-indigo">
       <div class="kpi-icon">🤝</div>
       <div class="kpi-label">面談人數</div>
-      <div class="kpi-value">118</div>
-      <div class="kpi-sub">面談率 10.78%</div>
+      <div class="kpi-value" id="kpi-int">—</div>
+      <div class="kpi-sub" id="kpi-int-rate">面談率 —%</div>
     </div>
     <div class="kpi kpi-violet">
       <div class="kpi-icon">✅</div>
       <div class="kpi-label">錄取人數</div>
-      <div class="kpi-value">43</div>
-      <div class="kpi-sub">錄取率 36.44%</div>
+      <div class="kpi-value" id="kpi-hire">—</div>
+      <div class="kpi-sub" id="kpi-hire-rate">錄取率 —%</div>
     </div>
     <div class="kpi kpi-teal">
       <div class="kpi-icon">🏢</div>
       <div class="kpi-label">已報到</div>
-      <div class="kpi-value">19</div>
-      <div class="kpi-sub">報到率 55.81%</div>
+      <div class="kpi-value" id="kpi-rep">—</div>
+      <div class="kpi-sub" id="kpi-rep-rate">報到率 —%</div>
     </div>
     <div class="kpi kpi-amber">
       <div class="kpi-icon">⏳</div>
       <div class="kpi-label">待招募人數</div>
-      <div class="kpi-value">33</div>
+      <div class="kpi-value" id="kpi-remain">—</div>
       <div class="kpi-sub">尚未到位</div>
     </div>
     <div class="kpi kpi-rose">
       <div class="kpi-icon">📈</div>
       <div class="kpi-label">整體遞補率</div>
-      <div class="kpi-value">43.10%</div>
+      <div class="kpi-value" id="kpi-rate">—</div>
       <div class="kpi-sub">招募達成率</div>
     </div>
   </div>
@@ -329,18 +329,22 @@ tbody tr.total-row td { background: rgba(56,189,248,0.10); font-weight: 700; col
 const pct2 = (a, b) => b > 0 ? (a / b * 100).toFixed(2) + '%' : '-';
 const progPct = d => +((d.req - d.remain) / d.req * 100).toFixed(2);
 
+const INDIGO='#4F46E5', TEAL='#0D9488', AMBER='#F59E0B', ROSE='#F43F5E', SKY='#0EA5E9', VIOLET='#7C3AED';
+const GRID='rgba(99,102,241,0.08)', TMUT='#6366F1', TPRI='#1E1B4B', TGRAY='#64748B';
+
+// 備用資料（fetch 失敗時使用，數字來自 2026/07/11 Excel）
 const fallbackDepts = [
-  { name:'研發',         req:28, cv:522,  pass:78,  int:49, hire:24, rep:14, wait:2,  quit:8,  remain:12 },
-  { name:'技術服務',     req:4,  cv:129,  pass:19,  int:5,  hire:3,  rep:1,  wait:0,  quit:2,  remain:3  },
-  { name:'生產管理',     req:4,  cv:778,  pass:58,  int:15, hire:2,  rep:0,  wait:1,  quit:1,  remain:3  },
-  { name:'新產品技術導入', req:10, cv:1256, pass:823, int:31, hire:11, rep:4,  wait:1,  quit:6,  remain:5  },
-  { name:'品管',         req:9,  cv:179,  pass:25,  int:9,  hire:0,  rep:0,  wait:0,  quit:0,  remain:9  },
-  { name:'產品技術支援', req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:0,  wait:1,  quit:1,  remain:0  },
-  { name:'供應鏈',       req:1,  cv:322,  pass:36,  int:7,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
-  { name:'事業(業務)',   req:2,  cv:66,   pass:7,   int:1,  hire:1,  rep:0,  wait:1,  quit:0,  remain:1  },
-  { name:'商業運營',     req:2,  cv:92,   pass:8,   int:4,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
-  { name:'市場行銷',     req:2,  cv:41,   pass:17,  int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:2  },
-  { name:'執行長辦公室', req:1,  cv:3,    pass:1,   int:0,  hire:0,  rep:0,  wait:0,  quit:0,  remain:1  },
+  { name:'研發',           req:28, cv:522,  pass:78,  int:49, hire:24, rep:14, wait:2, quit:8, remain:12 },
+  { name:'技術服務',       req:4,  cv:129,  pass:19,  int:5,  hire:3,  rep:1,  wait:0, quit:2, remain:3  },
+  { name:'生產管理',       req:4,  cv:778,  pass:58,  int:15, hire:2,  rep:0,  wait:1, quit:1, remain:3  },
+  { name:'新產品技術導入', req:10, cv:1256, pass:823, int:31, hire:11, rep:4,  wait:1, quit:6, remain:5  },
+  { name:'品管',           req:9,  cv:179,  pass:25,  int:9,  hire:0,  rep:0,  wait:0, quit:0, remain:9  },
+  { name:'產品技術支援',   req:3,  cv:123,  pass:71,  int:8,  hire:4,  rep:0,  wait:1, quit:1, remain:0  },
+  { name:'供應鏈',         req:1,  cv:322,  pass:36,  int:7,  hire:0,  rep:0,  wait:0, quit:0, remain:1  },
+  { name:'事業(業務)',     req:2,  cv:66,   pass:7,   int:1,  hire:1,  rep:0,  wait:1, quit:0, remain:1  },
+  { name:'商業運營',       req:2,  cv:92,   pass:8,   int:4,  hire:0,  rep:0,  wait:0, quit:0, remain:2  },
+  { name:'市場行銷',       req:2,  cv:41,   pass:17,  int:0,  hire:0,  rep:0,  wait:0, quit:0, remain:2  },
+  { name:'執行長辦公室',   req:1,  cv:3,    pass:1,   int:0,  hire:0,  rep:0,  wait:0, quit:0, remain:1  },
 ];
 const fallbackTotal = { name:'合計', req:66, cv:3511, pass:1143, int:129, hire:45, rep:19, wait:6, quit:18, remain:39 };
 
@@ -353,10 +357,13 @@ fetch('https://simei6523.github.io/zerova-hr/recruit.json?t=' + Date.now())
     }));
     const total = {
       name:'合計', req:json.total_req, remain:json.total_remain,
-      cv:depts.reduce((s,d)=>s+(d.cv||0),0),   pass:depts.reduce((s,d)=>s+(d.pass||0),0),
-      int:depts.reduce((s,d)=>s+(d.int||0),0), hire:depts.reduce((s,d)=>s+(d.hire||0),0),
-      rep:depts.reduce((s,d)=>s+(d.rep||0),0), wait:depts.reduce((s,d)=>s+(d.wait||0),0),
-      quit:depts.reduce((s,d)=>s+(d.quit||0),0),
+      cv:   depts.reduce((s,d)=>s+(d.cv||0),0),
+      pass: depts.reduce((s,d)=>s+(d.pass||0),0),
+      int:  depts.reduce((s,d)=>s+(d.int||0),0),
+      hire: depts.reduce((s,d)=>s+(d.hire||0),0),
+      rep:  depts.reduce((s,d)=>s+(d.rep||0),0),
+      wait: depts.reduce((s,d)=>s+(d.wait||0),0),
+      quit: depts.reduce((s,d)=>s+(d.quit||0),0),
     };
     const el = document.getElementById('updatedAt');
     if (el) el.textContent = json.updated_at;
@@ -365,8 +372,24 @@ fetch('https://simei6523.github.io/zerova-hr/recruit.json?t=' + Date.now())
   .catch(() => renderDashboard(fallbackDepts, fallbackTotal));
 
 function renderDashboard(depts, total) {
-const INDIGO='#4F46E5', TEAL='#0D9488', AMBER='#F59E0B', ROSE='#F43F5E', SKY='#0EA5E9', VIOLET='#7C3AED';
-const GRID='rgba(99,102,241,0.08)', TMUT='#6366F1', TPRI='#1E1B4B', TGRAY='#64748B';
+  // 更新頂部 KPI 數字
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  const intRate  = total.int  > 0 ? (total.int  / total.pass * 100).toFixed(2) : '—';
+  const hireRate = total.hire > 0 ? (total.hire / total.int  * 100).toFixed(2) : '—';
+  const repRate  = total.hire > 0 ? (total.rep  / total.hire * 100).toFixed(2) : '—';
+  const rate     = total.req  > 0 ? ((total.req - total.remain) / total.req * 100).toFixed(2) : '0.00';
+  set('kpi-req',        total.req.toLocaleString());
+  set('kpi-dept-count', depts.length + ' 個部門');
+  set('kpi-cv',         total.cv.toLocaleString());
+  set('kpi-pass',       '合格 ' + total.pass.toLocaleString() + ' 份');
+  set('kpi-int',        total.int.toLocaleString());
+  set('kpi-int-rate',   '面談率 ' + intRate + '%');
+  set('kpi-hire',       total.hire.toLocaleString());
+  set('kpi-hire-rate',  '錄取率 ' + hireRate + '%');
+  set('kpi-rep',        total.rep.toLocaleString());
+  set('kpi-rep-rate',   '報到率 ' + repRate + '%');
+  set('kpi-remain',     total.remain.toLocaleString());
+  set('kpi-rate',       rate + '%');
 
 // C1 — horizontal bar
 new Chart(document.getElementById('c1'), {
