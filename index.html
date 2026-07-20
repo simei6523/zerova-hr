@@ -1165,7 +1165,7 @@
   //  招募達成率 Icon — 從 recruit.json 自動讀取（與 Dashboard 同步）
   // ══════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
-    fetch('https://simei6523.github.io/zerova-hr/recruit.json?t=' + Date.now())
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/recruit.json?t=' + Date.now())
       .then(r => r.json())
       .then(json => {
         const el = document.getElementById('statRecruitRate');
