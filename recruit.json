@@ -1,8 +1,8 @@
 {
   "updated_at": "2026/07/20",
   "total_req": 68,
-  "total_remain": 41,
-  "overall_rate": 39.71,
+  "total_remain": 42,
+  "overall_rate": 38.24,
   "depts": [
     {
       "name": "研發",
@@ -12,9 +12,9 @@
       "int_": 53,
       "hire": 25,
       "rep": 14,
-      "wait": 3,
-      "quit": 8,
-      "remain": 12
+      "wait": 2,
+      "quit": 9,
+      "remain": 13
     },
     {
       "name": "技術服務",
