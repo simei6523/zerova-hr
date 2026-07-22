@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>馳諾瓦 全球人員進出 Dashboard · 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #0B1120;
+    --surface:  #131C2E;
+    --surface2: #1A2540;
+    --border:   rgba(99,130,230,0.15);
+    --teal:     #00C2B2;
+    --blue:     #4A90E2;
+    --rose:     #F05A7E;
+    --amber:    #F5A623;
+    --green:    #52C41A;
+    --violet:   #9B72F5;
+    --text-pri: #E8EDF8;
+    --text-sec: #8A9BBD;
+    --text-dim: #4A5A7A;
+    --font:     'Segoe UI', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text-pri);
+    font-family: var(--font);
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px; gap: 16px;
+  }
+  .header-left h1 {
+    font-size: 22px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.5px;
+  }
+  .header-left .sub {
+    font-size: 12px; color: var(--text-sec); margin-top: 4px;
+  }
+  .badge {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 12px; color: var(--text-sec); white-space: nowrap;
+  }
+  .badge span { color: var(--teal); font-weight: 700; }
+
+  /* ── KPI Strip ── */
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .kpi.teal::before  { background: var(--teal); }
+  .kpi.rose::before  { background: var(--rose); }
+  .kpi.amber::before { background: var(--amber); }
+  .kpi.blue::before  { background: var(--blue); }
+  .kpi.violet::before{ background: var(--violet); }
+  .kpi-label { font-size: 11px; color: var(--text-sec); margin-bottom: 6px; }
+  .kpi-val {
+    font-size: 28px; font-weight: 700; letter-spacing: -1px; line-height: 1;
+  }
+  .kpi.teal  .kpi-val { color: var(--teal); }
+  .kpi.rose  .kpi-val { color: var(--rose); }
+  .kpi.amber .kpi-val { color: var(--amber); }
+  .kpi.blue  .kpi-val { color: var(--blue); }
+  .kpi.violet .kpi-val { color: var(--violet); }
+  .kpi-sub { font-size: 11px; color: var(--text-dim); margin-top: 5px; }
+
+  /* ── Grid layouts ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 22px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 600; color: var(--text-sec);
+    letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+
+  /* ── Site 人數表格 ── */
+  .site-table { width: 100%; border-collapse: collapse; }
+  .site-table th {
+    font-size: 10px; font-weight: 600; color: var(--text-dim);
+    text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--border);
+  }
+  .site-table th:first-child { text-align: left; }
+  .site-table td {
+    font-size: 12px; color: var(--text-pri); padding: 7px 8px;
+    border-bottom: 1px solid rgba(99,130,230,0.07); text-align: right;
+  }
+  .site-table td:first-child { text-align: left; color: var(--text-sec); }
+  .site-table tr:last-child td { border-bottom: none; }
+  .site-table .total-row td { color: var(--teal); font-weight: 700; border-top: 1px solid var(--border); }
+
+  .tag-new  { color: var(--green);  font-weight: 600; }
+  .tag-left { color: var(--rose);   font-weight: 600; }
+  .tag-rate { color: var(--amber);  font-weight: 600; }
+  .tag-diff-pos { color: var(--green); }
+  .tag-diff-neg { color: var(--rose); }
+
+  /* ── 月別趨勢迷你指示 ── */
+  .trend-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 0; border-bottom: 1px solid rgba(99,130,230,0.07);
+  }
+  .trend-row:last-child { border-bottom: none; }
+  .trend-name { width: 120px; font-size: 12px; color: var(--text-sec); flex-shrink: 0; }
+  .trend-bars { display: flex; align-items: flex-end; gap: 2px; flex: 1; height: 28px; }
+  .trend-bar  { flex: 1; border-radius: 2px 2px 0 0; min-height: 2px; }
+  .trend-val  { width: 36px; text-align: right; font-size: 12px; font-weight: 700; color: var(--text-pri); flex-shrink: 0; }
+  .trend-rate { width: 50px; text-align: right; font-size: 11px; flex-shrink: 0; }
+
+  /* ── 離職率 bar ── */
+  .rate-bar-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .rate-bar-label { width: 110px; font-size: 11px; color: var(--text-sec); flex-shrink: 0; }
+  .rate-bar-bg { flex: 1; height: 7px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .rate-bar-fill { height: 100%; border-radius: 4px; }
+  .rate-bar-pct { width: 44px; text-align: right; font-size: 11px; font-weight: 700; }
+
+  /* ── Monthly flow table ── */
+  .flow-table { width: 100%; border-collapse: collapse; }
+  .flow-table th {
+    font-size: 10px; font-weight: 600; color: var(--text-dim);
+    padding: 4px 10px; text-align: center; border-bottom: 1px solid var(--border);
+  }
+  .flow-table th:first-child { text-align: left; }
+  .flow-table td {
+    font-size: 11px; padding: 6px 10px; text-align: center;
+    border-bottom: 1px solid rgba(99,130,230,0.07); color: var(--text-pri);
+  }
+  .flow-table td:first-child { text-align: left; font-size: 12px; color: var(--text-sec); }
+  .flow-table .sum-row td { font-weight: 700; color: var(--teal); border-top: 1px solid var(--border); }
+
+  .chart-wrap { position: relative; height: 220px; width: 100%; }
+  .chart-wrap-lg { position: relative; height: 260px; width: 100%; }
+  .chart-wrap-xl { position: relative; height: 300px; width: 100%; }
+  .footer {
+    text-align: right; font-size: 11px; color: var(--text-dim); margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <h1>🌐 全球人員進出 Dashboard</h1>
+    <div class="sub">各 Site 在職人數、新進、離職與離職率分析｜資料更新：2026/07</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+    <div class="badge">2026 Q1–Q3</div>
+    <div class="badge">基準日 <span>2025/12/31</span></div>
+    <div class="badge">全球 <span>673</span> 人</div>
+  </div>
+</div>
+
+<!-- KPI Strip -->
+<div class="kpi-strip">
+  <div class="kpi teal">
+    <div class="kpi-label">全球最新人數（Jul）</div>
+    <div class="kpi-val">673</div>
+    <div class="kpi-sub">vs 年初 827 人 ▼154</div>
+  </div>
+  <div class="kpi rose">
+    <div class="kpi-label">年度累計離職（Jan–Jul）</div>
+    <div class="kpi-val">196</div>
+    <div class="kpi-sub">年度離職率 23.7%</div>
+  </div>
+  <div class="kpi green" style="--green:#52C41A;">
+    <div class="kpi-label">年度累計新進（Jan–Jul）</div>
+    <div class="kpi-val" style="color:var(--green);">52</div>
+    <div class="kpi-sub">淨人數變動 ▼144</div>
+  </div>
+  <div class="kpi amber">
+    <div class="kpi-label">台灣（不含台幹）最新</div>
+    <div class="kpi-val">310</div>
+    <div class="kpi-sub">vs 年初 325 ▼15</div>
+  </div>
+  <div class="kpi violet">
+    <div class="kpi-label">中國（ZCM）最新</div>
+    <div class="kpi-val">96</div>
+    <div class="kpi-sub">vs 年初 222 ▼126</div>
+  </div>
+</div>
+
+<!-- Row 1: 全球月趨勢 + Site 人數總表 -->
+<div class="grid-2">
+
+  <!-- 全球總人數月趨勢 -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal)"></span>各 Site 人數月趨勢（Jan–Jul）</div>
+    <div class="chart-wrap"><canvas id="c-trend"></canvas></div>
+  </div>
+
+  <!-- Site 人數總表 -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--blue)"></span>各 Site 在職人數總表</div>
+    <table class="site-table">
+      <thead>
+        <tr>
+          <th>Site</th>
+          <th>年初</th>
+          <th>Jul</th>
+          <th>新進</th>
+          <th>離職</th>
+          <th>離職率</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>台灣（不含台幹）</td><td>325</td><td>310</td><td class="tag-new">+38</td><td class="tag-left">-57</td><td class="tag-rate">17.5%</td></tr>
+        <tr><td>日本（ZJS）</td><td>41</td><td>41</td><td class="tag-new">+6</td><td class="tag-left">-5</td><td class="tag-rate">12.2%</td></tr>
+        <tr><td>歐洲（ZNS）</td><td>24</td><td>28</td><td class="tag-new">+6</td><td class="tag-left">-2</td><td class="tag-rate">8.3%</td></tr>
+        <tr><td>美國（ZAS）</td><td>42</td><td>41</td><td class="tag-new">+2</td><td class="tag-left">-2</td><td class="tag-rate">4.8%</td></tr>
+        <tr><td>中國（ZCM）</td><td>222</td><td>96</td><td class="tag-new">+0</td><td class="tag-left">-129</td><td class="tag-rate">58.1%</td></tr>
+        <tr><td>中國上海（ZCT）</td><td>7</td><td>6</td><td class="tag-new">+0</td><td class="tag-left">-1</td><td class="tag-rate">14.3%</td></tr>
+        <tr><td>越南</td><td>163</td><td>148</td><td class="tag-new">+0</td><td class="tag-left">-0</td><td class="tag-rate">0.0%</td></tr>
+        <tr><td>新加坡（ZSH）</td><td>3</td><td>3</td><td class="tag-new">+0</td><td class="tag-left">-0</td><td class="tag-rate">0.0%</td></tr>
+        <tr class="total-row"><td>全球合計</td><td>827</td><td>673</td><td class="tag-new">+52</td><td class="tag-left">-196</td><td class="tag-rate">23.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Row 2: 台灣各單位 + 月別新進離職 -->
+<div class="grid-2">
+
+  <!-- 台灣各單位人數 -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>台灣各功能單位（Jul 最新人數）</div>
+    <div class="chart-wrap-xl"><canvas id="c-tw-dept"></canvas></div>
+  </div>
+
+  <!-- 月別新進離職流量 -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--rose)"></span>全球月別新進 / 離職流量</div>
+    <div class="chart-wrap"><canvas id="c-flow"></canvas></div>
+  </div>
+</div>
+
+<!-- Row 3: 各單位離職率 + 月別在職人數 -->
+<div class="grid-2">
+
+  <!-- 各單位離職率橫條 -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--rose)"></span>各 Site 年度離職率（Jan–Jul / 年初人數）</div>
+    <div style="margin-top:4px;">
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">中國（ZCM）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:100%;background:var(--rose)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--rose)">58.1%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">全球合計</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:40.8%;background:var(--amber)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--amber)">23.7%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">台灣（不含台幹）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:30.2%;background:var(--amber)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--amber)">17.5%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">中國上海（ZCT）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:24.6%;background:var(--blue)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--blue)">14.3%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">日本（ZJS）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:21%;background:var(--blue)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--blue)">12.2%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">歐洲（ZNS）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:14.3%;background:var(--teal)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--teal)">8.3%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">美國（ZAS）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:8.3%;background:var(--teal)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--teal)">4.8%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">越南</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:0%;background:var(--teal)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--text-dim)">0.0%</div>
+      </div>
+      <div class="rate-bar-wrap">
+        <div class="rate-bar-label">新加坡（ZSH）</div>
+        <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:0%;background:var(--teal)"></div></div>
+        <div class="rate-bar-pct" style="color:var(--text-dim)">0.0%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月別各Site在職人數堆疊 -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--violet)"></span>各 Site 月別在職人數（堆疊）</div>
+    <div class="chart-wrap-lg"><canvas id="c-stack"></canvas></div>
+  </div>
+</div>
+
+<!-- Row 4: 全寬 月別進出明細表 -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title"><span class="dot" style="background:var(--amber)"></span>月別人員進出明細（全球各 Site）</div>
+  <table class="flow-table">
+    <thead>
+      <tr>
+        <th>Site</th>
+        <th>年初人數</th>
+        <th>Jan新進</th><th>Jan離職</th>
+        <th>Feb新進</th><th>Feb離職</th>
+        <th>Mar新進</th><th>Mar離職</th>
+        <th>Apr新進</th><th>Apr離職</th>
+        <th>May新進</th><th>May離職</th>
+        <th>Jun新進</th><th>Jun離職</th>
+        <th>Jul新進</th><th>Jul離職</th>
+        <th>合計新進</th><th>合計離職</th>
+        <th>Jul人數</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>台灣（不含台幹）</td><td>325</td>
+        <td class="tag-new">2</td><td class="tag-left">3</td>
+        <td class="tag-new">2</td><td class="tag-left">10</td>
+        <td class="tag-new">8</td><td class="tag-left">11</td>
+        <td class="tag-new">5</td><td class="tag-left">12</td>
+        <td class="tag-new">9</td><td class="tag-left">14</td>
+        <td class="tag-new">12</td><td class="tag-left">7</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">38</td><td class="tag-left">57</td><td>310</td>
+      </tr>
+      <tr>
+        <td>日本（ZJS）</td><td>41</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">2</td><td class="tag-left">1</td>
+        <td class="tag-new">3</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">1</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">6</td><td class="tag-left">5</td><td>41</td>
+      </tr>
+      <tr>
+        <td>歐洲（ZNS）</td><td>24</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">3</td><td class="tag-left">0</td>
+        <td class="tag-new">1</td><td class="tag-left">0</td>
+        <td class="tag-new">2</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">6</td><td class="tag-left">2</td><td>28</td>
+      </tr>
+      <tr>
+        <td>美國（ZAS）</td><td>42</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">1</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">1</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">2</td><td class="tag-left">2</td><td>41</td>
+      </tr>
+      <tr>
+        <td>中國（ZCM）</td><td>222</td>
+        <td class="tag-new">0</td><td class="tag-left">94</td>
+        <td class="tag-new">0</td><td class="tag-left">1</td>
+        <td class="tag-new">0</td><td class="tag-left">22</td>
+        <td class="tag-new">0</td><td class="tag-left">3</td>
+        <td class="tag-new">0</td><td class="tag-left">6</td>
+        <td class="tag-new">0</td><td class="tag-left">3</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">129</td><td>96</td>
+      </tr>
+      <tr>
+        <td>越南</td><td>163</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td><td>148</td>
+      </tr>
+      <tr>
+        <td>新加坡（ZSH）</td><td>3</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td><td>3</td>
+      </tr>
+      <tr class="sum-row">
+        <td>全球合計</td><td>827</td>
+        <td class="tag-new">2</td><td class="tag-left">99</td>
+        <td class="tag-new">5</td><td class="tag-left">12</td>
+        <td class="tag-new">14</td><td class="tag-left">35</td>
+        <td class="tag-new">6</td><td class="tag-left">16</td>
+        <td class="tag-new">12</td><td class="tag-left">22</td>
+        <td class="tag-new">13</td><td class="tag-left">12</td>
+        <td class="tag-new">0</td><td class="tag-left">0</td>
+        <td class="tag-new">52</td><td class="tag-left">196</td><td>673</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">自動產生｜資料來源：馳諾瓦全球人數_每月更新_2026.xlsx｜更新日期：2026/07/20</div>
+
+<script>
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
+const TEAL   = '#00C2B2';
+const ROSE   = '#F05A7E';
+const AMBER  = '#F5A623';
+const BLUE   = '#4A90E2';
+const VIOLET = '#9B72F5';
+const GREEN  = '#52C41A';
+const GRID   = 'rgba(99,130,230,0.08)';
+
+Chart.defaults.color = '#8A9BBD';
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+Chart.defaults.font.size = 11;
+
+// C1 — 各 Site 月趨勢折線
+new Chart(document.getElementById('c-trend'), {
+  type: 'line',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      { label:'台灣', data:[327,318,316,310,305,310,310], borderColor:AMBER,  backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'中國(ZCM)', data:[119,113,110,100,100,96,96], borderColor:ROSE,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'越南',   data:[173,182,150,184,167,148,148], borderColor:GREEN,  backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'日本',   data:[40,41,43,42,42,41,41],        borderColor:TEAL,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'歐洲',   data:[24,24,27,28,29,28,28],        borderColor:BLUE,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'美國',   data:[41,42,40,40,40,41,41],        borderColor:VIOLET, backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:12 } } },
+    scales:{
+      x:{ grid:{ color:GRID } },
+      y:{ grid:{ color:GRID }, ticks:{ stepSize:50 } }
+    }
+  }
+});
+
+// C2 — 台灣各單位人數橫條
+new Chart(document.getElementById('c-tw-dept'), {
+  type: 'bar',
+  data: {
+    labels: ['全球生產管理','全球研發','台灣(不含台幹)','全球品管','全球產品技術','全球產品管理','全球商業運營','全球技術服務','新產品導入','全球供應鏈','全球財會','全球市場行銷','全球人資','全球資訊管理'],
+    datasets: [{
+      label: 'Jul 人數',
+      data: [59, 70, 310, 33, 27, 14, 14, 17, 21, 9, 10, 1, 5, 8],
+      backgroundColor: [TEAL,TEAL,AMBER,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL],
+      borderRadius: 3, barThickness: 14,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ display:false } },
+    scales:{
+      x:{ grid:{ color:GRID }, ticks:{ stepSize:50 } },
+      y:{ grid:{ color:'transparent' }, ticks:{ font:{ size:10 } } }
+    }
+  }
+});
+
+// C3 — 月別新進離職流量
+new Chart(document.getElementById('c-flow'), {
+  type: 'bar',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      { label:'新進', data:[2,5,14,6,12,13,0], backgroundColor: GREEN+'CC', borderRadius:3, barThickness:16 },
+      { label:'離職', data:[-99,-12,-35,-16,-22,-12,0], backgroundColor: ROSE+'CC', borderRadius:3, barThickness:16 },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:12 } } },
+    scales:{
+      x:{ grid:{ color:GRID }, stacked:false },
+      y:{ grid:{ color:GRID }, stacked:false }
+    }
+  }
+});
+
+// C4 — 堆疊月別各Site在職人數
+new Chart(document.getElementById('c-stack'), {
+  type: 'bar',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      { label:'台灣',   data:[327,318,316,310,305,310,310], backgroundColor:AMBER+'CC' },
+      { label:'越南',   data:[173,182,150,184,167,148,148], backgroundColor:GREEN+'CC' },
+      { label:'中國',   data:[119,113,110,100,100,96,96],   backgroundColor:ROSE+'CC' },
+      { label:'日本',   data:[40,41,43,42,42,41,41],        backgroundColor:TEAL+'CC' },
+      { label:'歐洲',   data:[24,24,27,28,29,28,28],        backgroundColor:BLUE+'CC' },
+      { label:'美國',   data:[41,42,40,40,40,41,41],        backgroundColor:VIOLET+'CC' },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:10 } } },
+    scales:{
+      x:{ stacked:true, grid:{ color:GRID } },
+      y:{ stacked:true, grid:{ color:GRID } }
+    }
+  }
+});
+</script>
+</body>
+</html>
