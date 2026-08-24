@@ -1168,9 +1168,20 @@
         if (el) el.textContent = json.overall_rate.toFixed(2) + '%';
       })
       .catch(() => {
-        // fetch 失敗時用靜態備用值
         const el = document.getElementById('statRecruitRate');
         if (el) el.textContent = '43.10%';
+      });
+
+    // 離職率 Icon — 從 turnover.json 自動讀取
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/turnover.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(json => {
+        const el = document.getElementById('statTurnoverRate');
+        if (el) el.textContent = json.global_turnover_rate + '%';
+      })
+      .catch(() => {
+        const el = document.getElementById('statTurnoverRate');
+        if (el) el.textContent = '23.7%';
       });
   });
 </script>
