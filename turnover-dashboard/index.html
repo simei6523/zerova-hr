@@ -165,7 +165,7 @@
 <div class="header">
   <div class="header-left">
     <h1>🌐 全球人員進出 Dashboard</h1>
-    <div class="sub">各 Site 在職人數、新進、離職與離職率分析｜資料更新：2026/07/31</div>
+    <div class="sub">各 Site 在職人數、新進、離職與離職率分析｜資料更新：2026/09/01</div>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
     <div class="badge">2026 Q1–Q3</div>
@@ -438,7 +438,7 @@
 Chart.register(ChartDataLabels);
 Chart.defaults.plugins.datalabels.display = false;
 
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 const TEAL   = '#00C2B2';
 const ROSE   = '#F05A7E';
 const AMBER  = '#F5A623';
@@ -457,12 +457,12 @@ new Chart(document.getElementById('c-trend'), {
   data: {
     labels: MONTHS,
     datasets: [
-      { label:'台灣', data:[327,318,316,310,305,310,307], borderColor:AMBER,  backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
-      { label:'中國(ZCM)', data:[119,113,110,100,100,96,96], borderColor:ROSE,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
-      { label:'越南',   data:[173,182,150,184,167,148,149], borderColor:GREEN,  backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
-      { label:'日本',   data:[40,41,43,42,42,41,42],        borderColor:TEAL,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
-      { label:'歐洲',   data:[24,24,27,28,29,28,26],        borderColor:BLUE,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
-      { label:'美國',   data:[41,42,40,40,40,41,42],        borderColor:VIOLET, backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'台灣', data:[327, 318, 316, 310, 305, 310, 307], borderColor:AMBER,  backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'中國(ZCM)', data:[119, 113, 110, 100, 100, 96, 96], borderColor:ROSE,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'越南',   data:[173, 182, 150, 184, 167, 148, 149], borderColor:GREEN,  backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'日本',   data:[40, 41, 43, 42, 42, 41, 42],        borderColor:TEAL,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'歐洲',   data:[24, 24, 27, 28, 29, 28, 26],        borderColor:BLUE,   backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+      { label:'美國',   data:[41, 42, 40, 40, 40, 41, 42],        borderColor:VIOLET, backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
     ]
   },
   options: {
@@ -488,27 +488,18 @@ new Chart(document.getElementById('c-trend'), {
 new Chart(document.getElementById('c-tw-dept'), {
   type: 'bar',
   data: {
-    labels: ['全球生產管理','全球研發','台灣(不含台幹)','全球品管','全球產品技術','全球產品管理','全球商業運營','全球技術服務','新產品導入','全球供應鏈','全球財會','全球市場行銷','全球人資','全球資訊管理'],
+    labels: ["研發", "生產管理", "品管", "產品技術支援", "新產品導入", "技術服務", "產品管理", "商業運營", "事業", "財會管理", "供應鏈", "資訊管理", "董事長室", "人力資源", "執行長辦公室", "產品策略中心", "市場行銷"],
     datasets: [{
       label: 'Jul 人數',
-      data: [59, 70, 310, 33, 27, 14, 14, 17, 21, 9, 10, 1, 5, 8],
-      backgroundColor: [TEAL,TEAL,AMBER,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL],
+      data: [72, 60, 32, 26, 21, 19, 14, 14, 13, 11, 9, 8, 5, 5, 4, 3, 1],
+      backgroundColor: [AMBER,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL,TEAL],
       borderRadius: 3, barThickness: 14,
     }]
   },
   options: {
     indexAxis: 'y',
     responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{ display:false },
-      datalabels:{
-        display: true,
-        color: '#E8EDF8',
-        font:{ size:10, weight:'bold' },
-        anchor: 'end', align: 'right',
-        formatter: v => v
-      }
-    },
+    plugins:{ legend:{ display:false } },
     scales:{
       x:{ grid:{ color:GRID }, ticks:{ stepSize:50 } },
       y:{ grid:{ color:'transparent' }, ticks:{ font:{ size:10 } } }
@@ -522,8 +513,8 @@ new Chart(document.getElementById('c-flow'), {
   data: {
     labels: MONTHS,
     datasets: [
-      { label:'新進', data:[2,5,14,6,12,13,21], backgroundColor: GREEN+'CC', borderRadius:3, barThickness:16 },
-      { label:'離職', data:[-99,-12,-35,-16,-22,-12,-23], backgroundColor: ROSE+'CC', borderRadius:3, barThickness:16 },
+      { label:'新進', data:[2, 5, 14, 6, 12, 13, 21], backgroundColor: GREEN+'CC', borderRadius:3, barThickness:16 },
+      { label:'離職', data:[-99, -12, -35, -16, -22, -12, -23], backgroundColor: ROSE+'CC', borderRadius:3, barThickness:16 },
     ]
   },
   options: {
@@ -552,12 +543,12 @@ new Chart(document.getElementById('c-stack'), {
   data: {
     labels: MONTHS,
     datasets: [
-      { label:'台灣',   data:[327,318,316,310,305,310,307], backgroundColor:AMBER+'CC' },
-      { label:'越南',   data:[173,182,150,184,167,148,149], backgroundColor:GREEN+'CC' },
+      { label:'台灣',   data:[327, 318, 316, 310, 305, 310, 307], backgroundColor:AMBER+'CC' },
+      { label:'越南',   data:[173, 182, 150, 184, 167, 148, 149], backgroundColor:GREEN+'CC' },
       { label:'中國',   data:[119,113,110,100,100,96,96],   backgroundColor:ROSE+'CC' },
-      { label:'日本',   data:[40,41,43,42,42,41,42],        backgroundColor:TEAL+'CC' },
-      { label:'歐洲',   data:[24,24,27,28,29,28,26],        backgroundColor:BLUE+'CC' },
-      { label:'美國',   data:[41,42,40,40,40,41,42],        backgroundColor:VIOLET+'CC' },
+      { label:'日本',   data:[40, 41, 43, 42, 42, 41, 42],        backgroundColor:TEAL+'CC' },
+      { label:'歐洲',   data:[24, 24, 27, 28, 29, 28, 26],        backgroundColor:BLUE+'CC' },
+      { label:'美國',   data:[41, 42, 40, 40, 40, 41, 42],        backgroundColor:VIOLET+'CC' },
     ]
   },
   options: {
