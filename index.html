@@ -758,7 +758,7 @@
         <!-- 本季專案進度 → 跳至本季專案進度 -->
         <a class="stats-bar__item" href="#" title="查看本季專案進度" onclick="scrollToSection('section-project');return false;">
           <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div><div class="stats-bar__num">69%</div><div class="stats-bar__label">本季專案進度</div></div>
+          <div><div class="stats-bar__num" id="statProjectProgress">31.4%</div><div class="stats-bar__label">本季專案進度</div></div>
         </a>
         <!-- 學習文章 → 跳至 HR 學習資料 -->
         <a class="stats-bar__item" href="#" title="查看學習資料" onclick="scrollToSection('section-hr-learn');return false;">
@@ -856,15 +856,17 @@
           <div id="section-project">
             <div class="section-header"><h2 class="section-title">本季專案進度</h2><a href="#" class="section-link">詳情 →</a></div>
             <div class="card" style="padding:1rem 1.1rem;">
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">工程研發部</span><span class="progress-pct">82%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:82%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">產品設計部</span><span class="progress-pct">71%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:71%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">業務行銷部</span><span class="progress-pct">65%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">人力資源部</span><span class="progress-pct">90%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:90%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">財務法務部</span><span class="progress-pct">58%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:58%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">製造供應鏈</span><span class="progress-pct">45%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%"></div></div></div>
+              <div id="projectProgressList">
+                <!-- 由 project_progress.json 動態產生；以下為載入前的預設值（本季 Q3 專案） -->
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">人力預算作業</span><span class="progress-pct">0%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">教育訓練需求調查</span><span class="progress-pct">14.3%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:14.3%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">晉升調薪專案</span><span class="progress-pct">100%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">員工分紅作業</span><span class="progress-pct">0%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">TTQS訓練品質計畫</span><span class="progress-pct">42.9%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:42.9%"></div></div></div>
+              </div>
               <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">
-                <div class="progress-label"><span class="progress-name" style="font-weight:700;">整體完成率</span><span class="progress-pct" style="font-size:1rem;">69%</span></div>
-                <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:69%"></div></div>
+                <div class="progress-label"><span class="progress-name" style="font-weight:700;">本季平均達成率</span><span class="progress-pct" id="projectProgressAvg" style="font-size:1rem;">31.4%</span></div>
+                <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" id="projectProgressAvgBar" style="width:31.4%"></div></div>
               </div>
             </div>
           </div>
@@ -1168,20 +1170,42 @@
         if (el) el.textContent = json.overall_rate.toFixed(2) + '%';
       })
       .catch(() => {
+        // fetch 失敗時用靜態備用值
         const el = document.getElementById('statRecruitRate');
         if (el) el.textContent = '43.10%';
       });
+  });
+</script>
 
-    // 離職率 Icon — 從 turnover.json 自動讀取
-    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/turnover.json?t=' + Date.now())
+<script>
+  // ══════════════════════════════════════════════════════
+  //  本季專案進度 — 從 project_progress.json 自動讀取（人資專案進度管控表）
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/project_progress.json?t=' + Date.now())
       .then(r => r.json())
       .then(json => {
-        const el = document.getElementById('statTurnoverRate');
-        if (el) el.textContent = json.global_turnover_rate + '%';
+        const list = document.getElementById('projectProgressList');
+        if (list && json.this_quarter_projects) {
+          list.innerHTML = json.this_quarter_projects.map(p => `
+            <div class="progress-item">
+              <div class="progress-label"><span class="progress-name">${p.name}</span><span class="progress-pct">${p.progress_pct}%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.progress_pct}%"></div></div>
+            </div>
+          `).join('');
+        }
+        if (json.summary && typeof json.summary.this_quarter_avg_pct === 'number') {
+          const avg = json.summary.this_quarter_avg_pct;
+          const avgEl = document.getElementById('projectProgressAvg');
+          const avgBar = document.getElementById('projectProgressAvgBar');
+          const iconEl = document.getElementById('statProjectProgress');
+          if (avgEl) avgEl.textContent = avg + '%';
+          if (avgBar) avgBar.style.width = avg + '%';
+          if (iconEl) iconEl.textContent = avg + '%';
+        }
       })
       .catch(() => {
-        const el = document.getElementById('statTurnoverRate');
-        if (el) el.textContent = '23.7%';
+        // fetch 失敗時保留 HTML 中寫死的預設值，不做任何更動
       });
   });
 </script>
