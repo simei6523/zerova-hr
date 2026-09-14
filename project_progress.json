@@ -1,0 +1,299 @@
+{
+  "updated_at": "2026-09-14",
+  "current_quarter": 3,
+  "projects": [
+    {
+      "no": 1,
+      "name": "人力預算作業",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-09",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 2,
+      "name": "主管健康管理計畫",
+      "category": "內部專案",
+      "quarter": 2,
+      "quarter_cn": "二",
+      "start_month": "2026-06",
+      "stages": {
+        "plan": true,
+        "kickoff": true,
+        "execute": true,
+        "integrate": true,
+        "sign_off": true,
+        "approve": true,
+        "close": true
+      },
+      "progress": 1.0,
+      "progress_pct": 100.0
+    },
+    {
+      "no": 3,
+      "name": "教育訓練需求調查",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-09",
+      "stages": {
+        "plan": true,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.1429,
+      "progress_pct": 14.3
+    },
+    {
+      "no": 4,
+      "name": "績效評估作業",
+      "category": "內部專案",
+      "quarter": 4,
+      "quarter_cn": "四",
+      "start_month": "2026-10",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 5,
+      "name": "年終獎金計算",
+      "category": "內部專案",
+      "quarter": 4,
+      "quarter_cn": "四",
+      "start_month": "2026-12",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 6,
+      "name": "優良員工選拔",
+      "category": "內部專案",
+      "quarter": 4,
+      "quarter_cn": "四",
+      "start_month": "2026-12",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 7,
+      "name": "晉升調薪專案",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-07",
+      "stages": {
+        "plan": true,
+        "kickoff": true,
+        "execute": true,
+        "integrate": true,
+        "sign_off": true,
+        "approve": true,
+        "close": true
+      },
+      "progress": 1.0,
+      "progress_pct": 100.0
+    },
+    {
+      "no": 8,
+      "name": "員工分紅作業",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-10",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 9,
+      "name": "TTQS訓練品質計畫",
+      "category": "外部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-09",
+      "stages": {
+        "plan": true,
+        "kickoff": true,
+        "execute": true,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.4286,
+      "progress_pct": 42.9
+    },
+    {
+      "no": 10,
+      "name": "大型人力資源提升計畫申請",
+      "category": "外部專案",
+      "quarter": 4,
+      "quarter_cn": "四",
+      "start_month": "2026-11",
+      "stages": {
+        "plan": true,
+        "kickoff": true,
+        "execute": true,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.4286,
+      "progress_pct": 42.9
+    }
+  ],
+  "this_quarter_projects": [
+    {
+      "no": 1,
+      "name": "人力預算作業",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-09",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 3,
+      "name": "教育訓練需求調查",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-09",
+      "stages": {
+        "plan": true,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.1429,
+      "progress_pct": 14.3
+    },
+    {
+      "no": 7,
+      "name": "晉升調薪專案",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-07",
+      "stages": {
+        "plan": true,
+        "kickoff": true,
+        "execute": true,
+        "integrate": true,
+        "sign_off": true,
+        "approve": true,
+        "close": true
+      },
+      "progress": 1.0,
+      "progress_pct": 100.0
+    },
+    {
+      "no": 8,
+      "name": "員工分紅作業",
+      "category": "內部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-10",
+      "stages": {
+        "plan": false,
+        "kickoff": false,
+        "execute": false,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.0,
+      "progress_pct": 0.0
+    },
+    {
+      "no": 9,
+      "name": "TTQS訓練品質計畫",
+      "category": "外部專案",
+      "quarter": 3,
+      "quarter_cn": "三",
+      "start_month": "2026-09",
+      "stages": {
+        "plan": true,
+        "kickoff": true,
+        "execute": true,
+        "integrate": false,
+        "sign_off": false,
+        "approve": false,
+        "close": false
+      },
+      "progress": 0.4286,
+      "progress_pct": 42.9
+    }
+  ],
+  "summary": {
+    "this_quarter_avg_pct": 31.4,
+    "this_quarter_count": 5,
+    "annual_avg_pct": 30.0,
+    "annual_count": 10
+  }
+}
