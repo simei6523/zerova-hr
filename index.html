@@ -376,11 +376,17 @@
     .cal-nav { background: var(--brand-faint); border: 1px solid var(--brand-pale); color: var(--brand-dark); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; line-height: 1; }
     .cal-nav:hover { background: var(--brand-pale); }
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.62rem; color: var(--gray); font-weight: 600; margin-bottom: 0.3rem; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-    .cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--dark); border-radius: 6px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 2px; min-height: 68px; padding: 4px 3px; border-radius: 6px; }
     .cal-day.is-empty { visibility: hidden; }
-    .cal-day.has-event { background: var(--brand-faint); font-weight: 700; cursor: default; }
-    .cal-day .cal-dot { position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; }
+    .cal-day.has-event { background: var(--brand-faint); }
+    .cal-day-num { font-size: 0.68rem; font-weight: 600; color: var(--dark); text-align: left; padding-left: 2px; }
+    .cal-block { border-radius: 4px; padding: 1px 4px; font-size: 0.6rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+    .cal-block-recruit { background: #fbcfe8; color: #9d174d; }
+    .cal-block-training { background: #fde68a; color: #92400e; }
+    .cal-block-comp { background: #bfdbfe; color: #1e3a8a; }
+    .cal-block-event { background: #bbf7d0; color: #065f46; }
+    .cal-block-other { background: var(--gray-light); color: var(--dark); }
     .cal-dot-amber { background: #b05a10; }
     .cal-dot-brand { background: var(--brand); }
     .cal-dot-green { background: #147a3a; }
@@ -861,8 +867,8 @@
           </div>
         </div>
 
-        <!-- ③ HR 重要工作行事曆 ＋ 本季專案進度 ─ 左右並排 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.85rem;" class="fade-in fd-3">
+        <!-- ③ HR 重要工作行事曆 ＋ 本季專案進度 ─ 上下堆疊 -->
+        <div style="display:flex;flex-direction:column;gap:1.4rem;margin-bottom:1.85rem;" class="fade-in fd-3">
 
           <!-- HR 重要工作行事曆（月曆式） -->
           <div>
@@ -1262,11 +1268,11 @@
     }
 
     var CATEGORY_LABELS = {
-      recruit: { label: '招募', dot: 'cal-dot-recruit' },
-      training: { label: '訓練', dot: 'cal-dot-training' },
-      comp: { label: '薪酬', dot: 'cal-dot-comp' },
-      event: { label: '活動', dot: 'cal-dot-event' },
-      other: { label: '其他', dot: 'cal-dot-other' }
+      recruit: { label: '招募', dot: 'cal-dot-recruit', block: 'cal-block-recruit' },
+      training: { label: '訓練', dot: 'cal-dot-training', block: 'cal-block-training' },
+      comp: { label: '薪酬', dot: 'cal-dot-comp', block: 'cal-block-comp' },
+      event: { label: '活動', dot: 'cal-dot-event', block: 'cal-block-event' },
+      other: { label: '其他', dot: 'cal-dot-other', block: 'cal-block-other' }
     };
 
     function renderLegend(monthEvents) {
@@ -1314,15 +1320,30 @@
       for (var d = 1; d <= daysInMonth; d++) {
         var cell = document.createElement('div');
         cell.className = 'cal-day';
-        cell.textContent = d;
+
+        var num = document.createElement('div');
+        num.className = 'cal-day-num';
+        num.textContent = d;
+        cell.appendChild(num);
+
         var dayEvents = monthEvents.filter(function (e) { return e.day === d; });
         if (dayEvents.length > 0) {
           cell.classList.add('has-event');
-          var dot = document.createElement('span');
-          var catInfo = CATEGORY_LABELS[dayEvents[0].categoryColor] || CATEGORY_LABELS.other;
-          dot.className = 'cal-dot ' + catInfo.dot;
-          cell.appendChild(dot);
-          cell.title = dayEvents.map(function (e) { return e.title; }).join('、');
+          var maxShow = 2;
+          dayEvents.slice(0, maxShow).forEach(function (e) {
+            var catInfo = CATEGORY_LABELS[e.categoryColor] || CATEGORY_LABELS.other;
+            var block = document.createElement('div');
+            block.className = 'cal-block ' + catInfo.block;
+            block.textContent = e.title;
+            block.title = e.title;
+            cell.appendChild(block);
+          });
+          if (dayEvents.length > maxShow) {
+            var more = document.createElement('div');
+            more.className = 'cal-block cal-block-other';
+            more.textContent = '+' + (dayEvents.length - maxShow) + ' 項';
+            cell.appendChild(more);
+          }
         }
         calGrid.appendChild(cell);
       }
