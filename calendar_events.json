@@ -5,28 +5,34 @@
       "year": 2026,
       "month": 9,
       "day": 15,
-      "title": "Power Automate 訓練課程",
+      "title": "Power Automate訓練課程",
       "meta": "全員必填",
       "badge": "amber",
-      "badgeLabel": "待辦"
+      "badgeLabel": "待辦",
+      "category": "訓練",
+      "categoryColor": "training"
     },
     {
       "year": 2026,
       "month": 9,
       "day": 21,
       "title": "訓練需求調查_個人",
-      "meta": "人資部",
+      "meta": "人力資源部",
       "badge": "brand",
-      "badgeLabel": "預定"
+      "badgeLabel": "預定",
+      "category": "訓練",
+      "categoryColor": "training"
     },
     {
       "year": 2026,
       "month": 9,
-      "day": 29,
-      "title": "TTQS評核",
-      "meta": "人資部",
-      "badge": "brand",
-      "badgeLabel": "預定"
+      "day": 22,
+      "title": "Power Automate訓練課程",
+      "meta": "全員必填",
+      "badge": "amber",
+      "badgeLabel": "待辦",
+      "category": "訓練",
+      "categoryColor": "training"
     },
     {
       "year": 2026,
@@ -35,7 +41,42 @@
       "title": "9月薪資發放日",
       "meta": "財務部執行",
       "badge": "brand",
-      "badgeLabel": "預定"
+      "badgeLabel": "預定",
+      "category": "薪酬",
+      "categoryColor": "comp"
+    },
+    {
+      "year": 2026,
+      "month": 10,
+      "day": 5,
+      "title": "中秋獎金發放日",
+      "meta": "財務部執行",
+      "badge": "brand",
+      "badgeLabel": "預定",
+      "category": "薪酬",
+      "categoryColor": "comp"
+    },
+    {
+      "year": 2026,
+      "month": 10,
+      "day": 21,
+      "title": "訓練需求調查_部門",
+      "meta": "人力資源部",
+      "badge": "brand",
+      "badgeLabel": "預定",
+      "category": "訓練",
+      "categoryColor": "training"
+    },
+    {
+      "year": 2026,
+      "month": 10,
+      "day": 31,
+      "title": "績效評估作業啟動",
+      "meta": "人力資源部",
+      "badge": "brand",
+      "badgeLabel": "預定",
+      "category": "薪酬",
+      "categoryColor": "comp"
     },
     {
       "year": 2026,
@@ -44,7 +85,9 @@
       "title": "10月薪資發放日",
       "meta": "財務部執行",
       "badge": "brand",
-      "badgeLabel": "預定"
+      "badgeLabel": "預定",
+      "category": "薪酬",
+      "categoryColor": "comp"
     }
   ]
 }
