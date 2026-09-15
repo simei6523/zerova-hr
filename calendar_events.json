@@ -13,15 +13,33 @@
     {
       "year": 2026,
       "month": 9,
+      "day": 21,
+      "title": "訓練需求調查_個人",
+      "meta": "人資部",
+      "badge": "brand",
+      "badgeLabel": "預定"
+    },
+    {
+      "year": 2026,
+      "month": 9,
       "day": 29,
       "title": "TTQS評核",
-      "meta": "",
+      "meta": "人資部",
       "badge": "brand",
       "badgeLabel": "預定"
     },
     {
       "year": 2026,
       "month": 10,
+      "day": 5,
+      "title": "9月薪資發放日",
+      "meta": "財務部執行",
+      "badge": "brand",
+      "badgeLabel": "預定"
+    },
+    {
+      "year": 2026,
+      "month": 11,
       "day": 5,
       "title": "10月薪資發放日",
       "meta": "財務部執行",
