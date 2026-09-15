@@ -1,0 +1,23 @@
+{
+  "updated_at": "2026-09-15",
+  "events": [
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 20,
+      "title": "Q3 績效評核截止",
+      "meta": "全員必填",
+      "badge": "amber",
+      "badgeLabel": "待辦"
+    },
+    {
+      "year": 2026,
+      "month": 10,
+      "day": 5,
+      "title": "10月薪資發放日",
+      "meta": "財務部執行",
+      "badge": "brand",
+      "badgeLabel": "預定"
+    }
+  ]
+}
