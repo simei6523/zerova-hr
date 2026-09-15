@@ -1228,17 +1228,11 @@
 </script>
 <script>
   // ══════════════════════════════════════════════════════
-  //  HR 重要工作行事曆 — 月曆式呈現
-  //  之後要新增/修改事項，直接編輯下面 calEvents 這個陣列即可（手動維護，非自動化）
+  //  HR 重要工作行事曆 — 月曆式呈現，從 calendar_events.json 動態讀取
+  //  之後要新增/修改事項：編輯「行事曆事項.xlsx」→ 雙擊 update_calendar.bat，不用再改這份 HTML
   // ══════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
-    var calEvents = [
-      { year: 2026, month: 6, day: 20, title: 'Q2 績效評核截止', meta: '全員必填', badge: 'amber', badgeLabel: '待辦' },
-      { year: 2026, month: 6, day: 25, title: '6 月薪資發放日', meta: '財務部執行', badge: 'brand', badgeLabel: '預定' },
-      { year: 2026, month: 7, day: 10, title: '新人教育訓練', meta: '本月新進 12 名', badge: 'green', badgeLabel: '確認' },
-      { year: 2026, month: 7, day: 15, title: 'Q2 績效面談週', meta: '各部門主管執行', badge: 'brand', badgeLabel: '預定' },
-      { year: 2026, month: 7, day: 31, title: '年度健檢報名截止', meta: '福委會辦理', badge: 'amber', badgeLabel: '待辦' }
-    ];
+    var calEvents = [];
 
     var calGrid = document.getElementById('calGrid');
     var calTitle = document.getElementById('calTitle');
@@ -1247,10 +1241,9 @@
     var calNext = document.getElementById('calNext');
     if (!calGrid) return;
 
-    var months = calEvents.map(function (e) { return e.year * 100 + e.month; });
-    var start = months.length ? Math.min.apply(null, months) : 202609;
-    var currentYear = Math.floor(start / 100);
-    var currentMonth = start % 100;
+    var today = new Date();
+    var currentYear = today.getFullYear();
+    var currentMonth = today.getMonth() + 1;
 
     function eventsInMonth(year, month) {
       return calEvents.filter(function (e) { return e.year === year && e.month === month; });
@@ -1300,6 +1293,14 @@
       renderEventList(monthEvents);
     }
 
+    function pickStartMonth() {
+      if (calEvents.length === 0) return currentYear * 100 + currentMonth;
+      var currentKey = currentYear * 100 + currentMonth;
+      var keys = calEvents.map(function (e) { return e.year * 100 + e.month; });
+      var future = keys.filter(function (k) { return k >= currentKey; });
+      return future.length ? Math.min.apply(null, future) : Math.min.apply(null, keys);
+    }
+
     calPrev.addEventListener('click', function () {
       currentMonth -= 1;
       if (currentMonth < 1) { currentMonth = 12; currentYear -= 1; }
@@ -1311,7 +1312,22 @@
       renderCalendar();
     });
 
-    renderCalendar();
+    renderCalendar(); // 先顯示空的當月月曆，資料抓到後再補上
+
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/calendar_events.json?t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (json && Array.isArray(json.events)) {
+          calEvents = json.events;
+          var startKey = pickStartMonth();
+          currentYear = Math.floor(startKey / 100);
+          currentMonth = startKey % 100;
+          renderCalendar();
+        }
+      })
+      .catch(function () {
+        // 抓不到資料時，維持顯示空白的當月月曆
+      });
   });
 </script>
 </body>
