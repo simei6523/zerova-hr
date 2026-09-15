@@ -384,6 +384,16 @@
     .cal-dot-amber { background: #b05a10; }
     .cal-dot-brand { background: var(--brand); }
     .cal-dot-green { background: #147a3a; }
+    .cal-dot-recruit { background: #ec4899; }
+    .cal-dot-training { background: #f5a623; }
+    .cal-dot-comp { background: #4f8ff7; }
+    .cal-dot-event { background: #34a869; }
+    .cal-dot-other { background: var(--gray); }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--brand-pale); }
+    .cal-legend__item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; color: var(--gray); }
+    .cal-legend__dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .event-info__cat { display: inline-flex; align-items: center; gap: 0.28rem; font-size: 0.68rem; color: var(--gray); margin-top: 0.1rem; }
+    .event-info__cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .cal-event-list { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--brand-pale); display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* Bottom grid */
@@ -865,6 +875,7 @@
               </div>
               <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
               <div class="cal-grid" id="calGrid"></div>
+              <div class="cal-legend" id="calLegend"></div>
               <div class="cal-event-list" id="calEventList"></div>
             </div>
           </div>
@@ -1237,6 +1248,7 @@
     var calGrid = document.getElementById('calGrid');
     var calTitle = document.getElementById('calTitle');
     var calEventList = document.getElementById('calEventList');
+    var calLegend = document.getElementById('calLegend');
     var calPrev = document.getElementById('calPrev');
     var calNext = document.getElementById('calNext');
     if (!calGrid) return;
@@ -1249,15 +1261,38 @@
       return calEvents.filter(function (e) { return e.year === year && e.month === month; });
     }
 
+    var CATEGORY_LABELS = {
+      recruit: { label: '招募', dot: 'cal-dot-recruit' },
+      training: { label: '訓練', dot: 'cal-dot-training' },
+      comp: { label: '薪酬', dot: 'cal-dot-comp' },
+      event: { label: '活動', dot: 'cal-dot-event' },
+      other: { label: '其他', dot: 'cal-dot-other' }
+    };
+
+    function renderLegend(monthEvents) {
+      var usedColors = {};
+      monthEvents.forEach(function (e) { usedColors[e.categoryColor || 'other'] = true; });
+      var keys = Object.keys(usedColors);
+      if (keys.length === 0) { calLegend.innerHTML = ''; return; }
+      calLegend.innerHTML = keys.map(function (key) {
+        var info = CATEGORY_LABELS[key] || CATEGORY_LABELS.other;
+        return '<div class="cal-legend__item"><span class="cal-legend__dot ' + info.dot + '"></span>' + info.label + '</div>';
+      }).join('');
+    }
+
     function renderEventList(monthEvents) {
       if (monthEvents.length === 0) {
         calEventList.innerHTML = '<div style="font-size:0.75rem;color:var(--gray);text-align:center;padding:0.5rem 0;">本月無重要事項</div>';
         return;
       }
       calEventList.innerHTML = monthEvents.slice().sort(function (a, b) { return a.day - b.day; }).map(function (e) {
+        var catInfo = CATEGORY_LABELS[e.categoryColor] || null;
+        var catTag = catInfo
+          ? '<div class="event-info__cat"><span class="event-info__cat-dot ' + catInfo.dot + '"></span>' + catInfo.label + '</div>'
+          : '';
         return '<div class="event-item">' +
           '<div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + currentMonth + '月</div></div>' +
-          '<div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta">' + e.meta + '</div></div>' +
+          '<div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta">' + e.meta + '</div>' + catTag + '</div>' +
           '<span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span>' +
           '</div>';
       }).join('');
@@ -1284,12 +1319,14 @@
         if (dayEvents.length > 0) {
           cell.classList.add('has-event');
           var dot = document.createElement('span');
-          dot.className = 'cal-dot cal-dot-' + dayEvents[0].badge;
+          var catInfo = CATEGORY_LABELS[dayEvents[0].categoryColor] || CATEGORY_LABELS.other;
+          dot.className = 'cal-dot ' + catInfo.dot;
           cell.appendChild(dot);
           cell.title = dayEvents.map(function (e) { return e.title; }).join('、');
         }
         calGrid.appendChild(cell);
       }
+      renderLegend(monthEvents);
       renderEventList(monthEvents);
     }
 
