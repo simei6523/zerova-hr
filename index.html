@@ -342,6 +342,13 @@
 
     /* Notice & Events */
     .notice-list { display: flex; flex-direction: column; }
+    .notice-carousel { border: 1px solid var(--gray-light); border-radius: 9px; background: white; padding: 0.95rem 1.1rem 0.8rem; }
+    .notice-carousel__item { display: flex; gap: 0.68rem; align-items: flex-start; min-height: 44px; transition: opacity 0.3s ease; cursor: pointer; }
+    .notice-carousel__item.no-link { cursor: default; }
+    .notice-carousel__item:not(.no-link):hover .notice-title { color: var(--brand-dark); }
+    .notice-carousel__dots { display: flex; gap: 6px; justify-content: center; margin-top: 0.8rem; }
+    .notice-carousel__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-light); cursor: pointer; transition: background 0.2s; }
+    .notice-carousel__dot.active { background: var(--brand); }
     .notice-item {
       padding: 0.8rem 1rem; border: 1px solid var(--gray-light); border-bottom: none;
       background: white; display: flex; gap: 0.68rem; align-items: flex-start;
@@ -487,7 +494,7 @@
 
     <nav class="sidebar__nav">
       <div class="sidebar__nav-section">
-        <div class="sidebar__nav-label">主選單</div>
+        <div class="sidebar__nav-label">HR 制度及相關規範</div>
         <ul class="sidebar__nav-list">
 
           <!-- 首頁 -->
@@ -673,14 +680,8 @@
       </div>
 
       <div class="sidebar__nav-section">
-        <div class="sidebar__nav-label">學習資源</div>
+        <div class="sidebar__nav-label">HR人員管理</div>
         <ul class="sidebar__nav-list">
-          <li class="nav-item" id="nav-hr">
-            <div class="nav-link" onclick="showPage('coming','HR學習資料')">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-              HR 學習資料
-            </div>
-          </li>
           <li class="nav-item" id="nav-people">
             <div class="nav-link" onclick="showPage('coming','人員管理')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -709,6 +710,18 @@
             <div class="nav-link" onclick="showPage('coming','系統設定')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L17.66 6.34M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>
               系統設定
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar__nav-section">
+        <div class="sidebar__nav-label">HR學習資源</div>
+        <ul class="sidebar__nav-list">
+          <li class="nav-item" id="nav-hr">
+            <div class="nav-link" onclick="showPage('coming','HR學習資料')">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              HR 學習資料
             </div>
           </li>
         </ul>
@@ -801,15 +814,12 @@
 
       <div class="content">
 
-        <!-- ① HR 系統公告 ─ 最上方，全寬 -->
+        <!-- ① HR 系統公告 ─ 最上方，全寬（滾輪式，每 2.5 秒自動切換） -->
         <div class="fade-in fd-2" id="section-notice" style="margin-bottom:1.85rem;">
-          <div class="section-header"><h2 class="section-title">HR 系統公告</h2><a href="#" class="section-link">查看全部 →</a></div>
-          <div class="notice-list">
-            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">Q2 績效評核系統已開放填寫，請各部門主管於截止日前完成</div><div class="notice-date">2025/06/01</div></div></div>
-            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">7 月勞健保費率調整通知，請人員確認新費率明細</div><div class="notice-date">2025/05/28</div></div></div>
-            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">新版在職訓練課程已上線，歡迎同仁報名參加</div><div class="notice-date">2025/05/15</div></div></div>
-            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">年度員工滿意度調查結果公布，整體滿意度達 87%</div><div class="notice-date">2025/05/10</div></div></div>
-            <div class="notice-item" style="border-radius:0 0 9px 9px;border-bottom:1px solid var(--gray-light);"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">試用期滿考核作業辦法修訂版本已上傳，請查閱規章制度</div><div class="notice-date">2025/04/30</div></div></div>
+          <div class="section-header"><h2 class="section-title">HR 系統公告</h2></div>
+          <div class="notice-carousel">
+            <div class="notice-carousel__item" id="noticeCarouselItem"></div>
+            <div class="notice-carousel__dots" id="noticeDots"></div>
           </div>
         </div>
 
@@ -1369,7 +1379,60 @@
       })
       .catch(function () {
         // 抓不到資料時，維持顯示空白的當月月曆
+<script>
+  // ══════════════════════════════════════════════════════
+  //  HR 系統公告 — 滾輪式（每 2.5 秒自動切換一則）
+  //  之後要新增/修改公告，直接編輯下面 noticeItems 這個陣列即可
+  //  url 留空（null）代表這則公告目前沒有對應文件，點了不會有反應
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    var noticeItems = [
+      { title: 'Q2 績效評核系統已開放填寫，請各部門主管於截止日前完成', date: '2025/06/01', url: null },
+      { title: '7 月勞健保費率調整通知，請人員確認新費率明細', date: '2025/05/28', url: null },
+      { title: '新版在職訓練課程已上線，歡迎同仁報名參加', date: '2025/05/15', url: null },
+      { title: '年度員工滿意度調查結果公布，整體滿意度達 87%', date: '2025/05/10', url: null },
+      { title: '試用期滿考核作業辦法修訂版本已上傳，請查閱規章制度', date: '2025/04/30', url: null }
+    ];
+
+    var itemEl = document.getElementById('noticeCarouselItem');
+    var dotsEl = document.getElementById('noticeDots');
+    if (!itemEl) return;
+
+    noticeItems.forEach(function (_, i) {
+      var dot = document.createElement('span');
+      dot.className = 'notice-carousel__dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', function () { goTo(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    var idx = 0;
+
+    function render(i) {
+      var n = noticeItems[i];
+      itemEl.classList.toggle('no-link', !n.url);
+      itemEl.innerHTML =
+        '<div class="notice-dot"></div>' +
+        '<div><div class="notice-title">' + n.title + '</div><div class="notice-date">' + n.date + '</div></div>';
+      itemEl.onclick = n.url ? function () { window.open(n.url, '_blank'); } : null;
+      Array.prototype.forEach.call(dotsEl.children, function (dot, j) {
+        dot.classList.toggle('active', j === i);
       });
+    }
+
+    function goTo(i) {
+      idx = i;
+      itemEl.style.opacity = '0';
+      setTimeout(function () {
+        render(idx);
+        itemEl.style.opacity = '1';
+      }, 200);
+    }
+
+    render(0);
+
+    setInterval(function () {
+      goTo((idx + 1) % noticeItems.length);
+    }, 2500);
   });
 </script>
 </body>
