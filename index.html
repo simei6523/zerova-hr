@@ -371,6 +371,20 @@
     .eb-green { background: #d9f5e8; color: #147a3a; }
     .eb-amber { background: #fff3d6; color: #b05a10; }
     .eb-brand { background: var(--brand-pale); color: var(--brand-dark); }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .cal-title { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+    .cal-nav { background: var(--brand-faint); border: 1px solid var(--brand-pale); color: var(--brand-dark); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; line-height: 1; }
+    .cal-nav:hover { background: var(--brand-pale); }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.62rem; color: var(--gray); font-weight: 600; margin-bottom: 0.3rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--dark); border-radius: 6px; }
+    .cal-day.is-empty { visibility: hidden; }
+    .cal-day.has-event { background: var(--brand-faint); font-weight: 700; cursor: default; }
+    .cal-day .cal-dot { position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; }
+    .cal-dot-amber { background: #b05a10; }
+    .cal-dot-brand { background: var(--brand); }
+    .cal-dot-green { background: #147a3a; }
+    .cal-event-list { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--brand-pale); display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* Bottom grid */
     .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.4rem; margin-bottom: 2rem; }
@@ -840,21 +854,24 @@
         <!-- ③ HR 重要工作行事曆 ＋ 本季專案進度 ─ 左右並排 -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.85rem;" class="fade-in fd-3">
 
-          <!-- HR 重要工作行事曆 -->
+          <!-- HR 重要工作行事曆（月曆式） -->
           <div>
             <div class="section-header"><h2 class="section-title">HR 重要工作行事曆</h2></div>
-            <div class="upcoming-list">
-              <div class="event-item"><div class="event-date"><div class="event-date__day">20</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">Q2 績效評核截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>全員必填</div></div><span class="event-badge eb-amber">待辦</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">25</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">6 月薪資發放日</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>財務部執行</div></div><span class="event-badge eb-brand">預定</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">10</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">新人教育訓練</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>本月新進 12 名</div></div><span class="event-badge eb-green">確認</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">15</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">Q2 績效面談週</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>各部門主管執行</div></div><span class="event-badge eb-brand">預定</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">31</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">年度健檢報名截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>福委會辦理</div></div><span class="event-badge eb-amber">待辦</span></div>
+            <div class="card" style="padding:0.9rem 1rem;">
+              <div class="cal-header">
+                <button class="cal-nav" id="calPrev" aria-label="上一月">‹</button>
+                <div class="cal-title" id="calTitle">2026年6月</div>
+                <button class="cal-nav" id="calNext" aria-label="下一月">›</button>
+              </div>
+              <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div class="cal-event-list" id="calEventList"></div>
             </div>
           </div>
 
           <!-- 本季專案進度 -->
           <div id="section-project">
-            <div class="section-header"><h2 class="section-title">本季專案進度</h2><a href="#" class="section-link">詳情 →</a></div>
+            <div class="section-header"><h2 class="section-title">本季專案進度</h2></div>
             <div class="card" style="padding:1rem 1.1rem;">
               <div id="projectProgressList">
                 <!-- 由 project_progress.json 動態產生；以下為載入前的預設值（本季 Q3 專案） -->
@@ -1207,6 +1224,94 @@
       .catch(() => {
         // fetch 失敗時保留 HTML 中寫死的預設值，不做任何更動
       });
+  });
+</script>
+<script>
+  // ══════════════════════════════════════════════════════
+  //  HR 重要工作行事曆 — 月曆式呈現
+  //  之後要新增/修改事項，直接編輯下面 calEvents 這個陣列即可（手動維護，非自動化）
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    var calEvents = [
+      { year: 2026, month: 6, day: 20, title: 'Q2 績效評核截止', meta: '全員必填', badge: 'amber', badgeLabel: '待辦' },
+      { year: 2026, month: 6, day: 25, title: '6 月薪資發放日', meta: '財務部執行', badge: 'brand', badgeLabel: '預定' },
+      { year: 2026, month: 7, day: 10, title: '新人教育訓練', meta: '本月新進 12 名', badge: 'green', badgeLabel: '確認' },
+      { year: 2026, month: 7, day: 15, title: 'Q2 績效面談週', meta: '各部門主管執行', badge: 'brand', badgeLabel: '預定' },
+      { year: 2026, month: 7, day: 31, title: '年度健檢報名截止', meta: '福委會辦理', badge: 'amber', badgeLabel: '待辦' }
+    ];
+
+    var calGrid = document.getElementById('calGrid');
+    var calTitle = document.getElementById('calTitle');
+    var calEventList = document.getElementById('calEventList');
+    var calPrev = document.getElementById('calPrev');
+    var calNext = document.getElementById('calNext');
+    if (!calGrid) return;
+
+    var months = calEvents.map(function (e) { return e.year * 100 + e.month; });
+    var start = months.length ? Math.min.apply(null, months) : 202609;
+    var currentYear = Math.floor(start / 100);
+    var currentMonth = start % 100;
+
+    function eventsInMonth(year, month) {
+      return calEvents.filter(function (e) { return e.year === year && e.month === month; });
+    }
+
+    function renderEventList(monthEvents) {
+      if (monthEvents.length === 0) {
+        calEventList.innerHTML = '<div style="font-size:0.75rem;color:var(--gray);text-align:center;padding:0.5rem 0;">本月無重要事項</div>';
+        return;
+      }
+      calEventList.innerHTML = monthEvents.slice().sort(function (a, b) { return a.day - b.day; }).map(function (e) {
+        return '<div class="event-item">' +
+          '<div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + currentMonth + '月</div></div>' +
+          '<div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta">' + e.meta + '</div></div>' +
+          '<span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    function renderCalendar() {
+      calTitle.textContent = currentYear + '年' + currentMonth + '月';
+      calGrid.innerHTML = '';
+
+      var firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+      var daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+      var monthEvents = eventsInMonth(currentYear, currentMonth);
+
+      for (var i = 0; i < firstDay; i++) {
+        var empty = document.createElement('div');
+        empty.className = 'cal-day is-empty';
+        calGrid.appendChild(empty);
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        var cell = document.createElement('div');
+        cell.className = 'cal-day';
+        cell.textContent = d;
+        var dayEvents = monthEvents.filter(function (e) { return e.day === d; });
+        if (dayEvents.length > 0) {
+          cell.classList.add('has-event');
+          var dot = document.createElement('span');
+          dot.className = 'cal-dot cal-dot-' + dayEvents[0].badge;
+          cell.appendChild(dot);
+          cell.title = dayEvents.map(function (e) { return e.title; }).join('、');
+        }
+        calGrid.appendChild(cell);
+      }
+      renderEventList(monthEvents);
+    }
+
+    calPrev.addEventListener('click', function () {
+      currentMonth -= 1;
+      if (currentMonth < 1) { currentMonth = 12; currentYear -= 1; }
+      renderCalendar();
+    });
+    calNext.addEventListener('click', function () {
+      currentMonth += 1;
+      if (currentMonth > 12) { currentMonth = 1; currentYear += 1; }
+      renderCalendar();
+    });
+
+    renderCalendar();
   });
 </script>
 </body>
