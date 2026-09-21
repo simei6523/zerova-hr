@@ -342,6 +342,13 @@
 
     /* Notice & Events */
     .notice-list { display: flex; flex-direction: column; }
+    .notice-carousel { border: 1px solid var(--gray-light); border-radius: 9px; background: white; padding: 0.95rem 1.1rem 0.8rem; }
+    .notice-carousel__item { display: flex; gap: 0.68rem; align-items: flex-start; min-height: 44px; transition: opacity 0.3s ease; cursor: pointer; }
+    .notice-carousel__item.no-link { cursor: default; }
+    .notice-carousel__item:not(.no-link):hover .notice-title { color: var(--brand-dark); }
+    .notice-carousel__dots { display: flex; gap: 6px; justify-content: center; margin-top: 0.8rem; }
+    .notice-carousel__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-light); cursor: pointer; transition: background 0.2s; }
+    .notice-carousel__dot.active { background: var(--brand); }
     .notice-item {
       padding: 0.8rem 1rem; border: 1px solid var(--gray-light); border-bottom: none;
       background: white; display: flex; gap: 0.68rem; align-items: flex-start;
@@ -372,21 +379,29 @@
     .eb-amber { background: #fff3d6; color: #b05a10; }
     .eb-brand { background: var(--brand-pale); color: var(--brand-dark); }
     .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
-    .cal-title { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
-    .cal-nav { background: var(--brand-faint); border: 1px solid var(--brand-pale); color: var(--brand-dark); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; line-height: 1; }
-    .cal-nav:hover { background: var(--brand-pale); }
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.62rem; color: var(--gray); font-weight: 600; margin-bottom: 0.3rem; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .cal-day { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 2px; min-height: 68px; padding: 4px 3px; border-radius: 6px; }
+    .cal-title { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
+    .cal-nav { background: var(--brand-faint); border: 1px solid var(--brand-pale); color: var(--brand-dark); width: 28px; height: 28px; border-radius: 999px; cursor: pointer; font-size: 1rem; line-height: 1; transition: transform 0.12s ease, background 0.12s ease; }
+    .cal-nav:hover { background: var(--brand-pale); transform: scale(1.12); }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.66rem; color: var(--gray); font-weight: 700; margin-bottom: 0.4rem; }
+    .cal-weekdays span:first-child, .cal-weekdays span:last-child { color: var(--brand); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+    .cal-day { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 2px; min-height: 70px; padding: 5px 4px; border-radius: 10px; border: 1.5px solid transparent; transition: transform 0.12s ease, box-shadow 0.12s ease; }
     .cal-day.is-empty { visibility: hidden; }
+    .cal-day:nth-child(7n+1), .cal-day:nth-child(7n) { background: #fbf9f3; }
     .cal-day.has-event { background: var(--brand-faint); }
-    .cal-day-num { font-size: 0.68rem; font-weight: 600; color: var(--dark); text-align: left; padding-left: 2px; }
-    .cal-block { border-radius: 4px; padding: 1px 4px; font-size: 0.6rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+    .cal-day.has-event:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,129,142,0.14); }
+    .cal-day.is-today { border-color: var(--brand); box-shadow: 0 0 0 2px var(--brand-pale) inset; }
+    .cal-day-num { font-size: 0.7rem; font-weight: 700; color: var(--dark); text-align: left; padding-left: 2px; }
+    .cal-day.is-today .cal-day-num { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brand); color: white; padding: 0; }
+    .cal-block { border-radius: 999px; padding: 2px 7px; font-size: 0.6rem; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
     .cal-block-recruit { background: #fbcfe8; color: #9d174d; }
     .cal-block-training { background: #fde68a; color: #92400e; }
     .cal-block-comp { background: #bfdbfe; color: #1e3a8a; }
     .cal-block-event { background: #bbf7d0; color: #065f46; }
     .cal-block-other { background: var(--gray-light); color: var(--dark); }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.7rem; padding-top: 0.65rem; border-top: 1px solid var(--brand-pale); }
+    .cal-legend__item { display: flex; align-items: center; gap: 0.32rem; font-size: 0.68rem; color: var(--dark); font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--brand-faint); }
+    .cal-legend__dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .cal-dot-amber { background: #b05a10; }
     .cal-dot-brand { background: var(--brand); }
     .cal-dot-green { background: #147a3a; }
@@ -395,12 +410,6 @@
     .cal-dot-comp { background: #4f8ff7; }
     .cal-dot-event { background: #34a869; }
     .cal-dot-other { background: var(--gray); }
-    .cal-legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--brand-pale); }
-    .cal-legend__item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; color: var(--gray); }
-    .cal-legend__dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .event-info__cat { display: inline-flex; align-items: center; gap: 0.28rem; font-size: 0.68rem; color: var(--gray); margin-top: 0.1rem; }
-    .event-info__cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-    .cal-event-list { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--brand-pale); display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* Bottom grid */
     .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.4rem; margin-bottom: 2rem; }
@@ -485,7 +494,7 @@
 
     <nav class="sidebar__nav">
       <div class="sidebar__nav-section">
-        <div class="sidebar__nav-label">主選單</div>
+        <div class="sidebar__nav-label">HR 制度及相關規範</div>
         <ul class="sidebar__nav-list">
 
           <!-- 首頁 -->
@@ -671,14 +680,8 @@
       </div>
 
       <div class="sidebar__nav-section">
-        <div class="sidebar__nav-label">學習資源</div>
+        <div class="sidebar__nav-label">HR人員管理</div>
         <ul class="sidebar__nav-list">
-          <li class="nav-item" id="nav-hr">
-            <div class="nav-link" onclick="showPage('coming','HR學習資料')">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-              HR 學習資料
-            </div>
-          </li>
           <li class="nav-item" id="nav-people">
             <div class="nav-link" onclick="showPage('coming','人員管理')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -707,6 +710,18 @@
             <div class="nav-link" onclick="showPage('coming','系統設定')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L17.66 6.34M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>
               系統設定
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar__nav-section">
+        <div class="sidebar__nav-label">HR學習資源</div>
+        <ul class="sidebar__nav-list">
+          <li class="nav-item" id="nav-hr">
+            <div class="nav-link" onclick="showPage('coming','HR學習資料')">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              HR 學習資料
             </div>
           </li>
         </ul>
@@ -799,15 +814,12 @@
 
       <div class="content">
 
-        <!-- ① HR 系統公告 ─ 最上方，全寬 -->
+        <!-- ① HR 系統公告 ─ 最上方，全寬（滾輪式，每 2.5 秒自動切換） -->
         <div class="fade-in fd-2" id="section-notice" style="margin-bottom:1.85rem;">
-          <div class="section-header"><h2 class="section-title">HR 系統公告</h2><a href="#" class="section-link">查看全部 →</a></div>
-          <div class="notice-list">
-            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">Q2 績效評核系統已開放填寫，請各部門主管於截止日前完成</div><div class="notice-date">2025/06/01</div></div></div>
-            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">7 月勞健保費率調整通知，請人員確認新費率明細</div><div class="notice-date">2025/05/28</div></div></div>
-            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">新版在職訓練課程已上線，歡迎同仁報名參加</div><div class="notice-date">2025/05/15</div></div></div>
-            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">年度員工滿意度調查結果公布，整體滿意度達 87%</div><div class="notice-date">2025/05/10</div></div></div>
-            <div class="notice-item" style="border-radius:0 0 9px 9px;border-bottom:1px solid var(--gray-light);"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">試用期滿考核作業辦法修訂版本已上傳，請查閱規章制度</div><div class="notice-date">2025/04/30</div></div></div>
+          <div class="section-header"><h2 class="section-title">HR 系統公告</h2></div>
+          <div class="notice-carousel">
+            <div class="notice-carousel__item" id="noticeCarouselItem"></div>
+            <div class="notice-carousel__dots" id="noticeDots"></div>
           </div>
         </div>
 
@@ -882,7 +894,6 @@
               <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
               <div class="cal-grid" id="calGrid"></div>
               <div class="cal-legend" id="calLegend"></div>
-              <div class="cal-event-list" id="calEventList"></div>
             </div>
           </div>
 
@@ -1253,7 +1264,6 @@
 
     var calGrid = document.getElementById('calGrid');
     var calTitle = document.getElementById('calTitle');
-    var calEventList = document.getElementById('calEventList');
     var calLegend = document.getElementById('calLegend');
     var calPrev = document.getElementById('calPrev');
     var calNext = document.getElementById('calNext');
@@ -1268,11 +1278,11 @@
     }
 
     var CATEGORY_LABELS = {
-      recruit: { label: '招募', dot: 'cal-dot-recruit', block: 'cal-block-recruit' },
-      training: { label: '訓練', dot: 'cal-dot-training', block: 'cal-block-training' },
-      comp: { label: '薪酬', dot: 'cal-dot-comp', block: 'cal-block-comp' },
-      event: { label: '活動', dot: 'cal-dot-event', block: 'cal-block-event' },
-      other: { label: '其他', dot: 'cal-dot-other', block: 'cal-block-other' }
+      recruit: { label: '招募', icon: '🧑\u200d💼', dot: 'cal-dot-recruit', block: 'cal-block-recruit' },
+      training: { label: '訓練', icon: '📚', dot: 'cal-dot-training', block: 'cal-block-training' },
+      comp: { label: '薪酬', icon: '💰', dot: 'cal-dot-comp', block: 'cal-block-comp' },
+      event: { label: '活動', icon: '🎉', dot: 'cal-dot-event', block: 'cal-block-event' },
+      other: { label: '其他', icon: '📌', dot: 'cal-dot-other', block: 'cal-block-other' }
     };
 
     function renderLegend(monthEvents) {
@@ -1282,30 +1292,12 @@
       if (keys.length === 0) { calLegend.innerHTML = ''; return; }
       calLegend.innerHTML = keys.map(function (key) {
         var info = CATEGORY_LABELS[key] || CATEGORY_LABELS.other;
-        return '<div class="cal-legend__item"><span class="cal-legend__dot ' + info.dot + '"></span>' + info.label + '</div>';
-      }).join('');
-    }
-
-    function renderEventList(monthEvents) {
-      if (monthEvents.length === 0) {
-        calEventList.innerHTML = '<div style="font-size:0.75rem;color:var(--gray);text-align:center;padding:0.5rem 0;">本月無重要事項</div>';
-        return;
-      }
-      calEventList.innerHTML = monthEvents.slice().sort(function (a, b) { return a.day - b.day; }).map(function (e) {
-        var catInfo = CATEGORY_LABELS[e.categoryColor] || null;
-        var catTag = catInfo
-          ? '<div class="event-info__cat"><span class="event-info__cat-dot ' + catInfo.dot + '"></span>' + catInfo.label + '</div>'
-          : '';
-        return '<div class="event-item">' +
-          '<div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + currentMonth + '月</div></div>' +
-          '<div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta">' + e.meta + '</div>' + catTag + '</div>' +
-          '<span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span>' +
-          '</div>';
+        return '<div class="cal-legend__item"><span class="cal-legend__dot ' + info.dot + '"></span>' + info.icon + ' ' + info.label + '</div>';
       }).join('');
     }
 
     function renderCalendar() {
-      calTitle.textContent = currentYear + '年' + currentMonth + '月';
+      calTitle.textContent = '🗓️ ' + currentYear + '年' + currentMonth + '月';
       calGrid.innerHTML = '';
 
       var firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
@@ -1320,6 +1312,9 @@
       for (var d = 1; d <= daysInMonth; d++) {
         var cell = document.createElement('div');
         cell.className = 'cal-day';
+        if (currentYear === today.getFullYear() && currentMonth === today.getMonth() + 1 && d === today.getDate()) {
+          cell.classList.add('is-today');
+        }
 
         var num = document.createElement('div');
         num.className = 'cal-day-num';
@@ -1334,7 +1329,7 @@
             var catInfo = CATEGORY_LABELS[e.categoryColor] || CATEGORY_LABELS.other;
             var block = document.createElement('div');
             block.className = 'cal-block ' + catInfo.block;
-            block.textContent = e.title;
+            block.textContent = catInfo.icon + ' ' + e.title;
             block.title = e.title;
             cell.appendChild(block);
           });
@@ -1348,7 +1343,6 @@
         calGrid.appendChild(cell);
       }
       renderLegend(monthEvents);
-      renderEventList(monthEvents);
     }
 
     function pickStartMonth() {
@@ -1386,6 +1380,62 @@
       .catch(function () {
         // 抓不到資料時，維持顯示空白的當月月曆
       });
+  });
+</script>
+<script>
+  // ══════════════════════════════════════════════════════
+  //  HR 系統公告 — 滾輪式（每 2.5 秒自動切換一則）
+  //  之後要新增/修改公告，直接編輯下面 noticeItems 這個陣列即可
+  //  url 留空（null）代表這則公告目前沒有對應文件，點了不會有反應
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    var noticeItems = [
+      { title: 'Q2 績效評核系統已開放填寫，請各部門主管於截止日前完成', date: '2025/06/01', url: null },
+      { title: '7 月勞健保費率調整通知，請人員確認新費率明細', date: '2025/05/28', url: null },
+      { title: '新版在職訓練課程已上線，歡迎同仁報名參加', date: '2025/05/15', url: null },
+      { title: '年度員工滿意度調查結果公布，整體滿意度達 87%', date: '2025/05/10', url: null },
+      { title: '試用期滿考核作業辦法修訂版本已上傳，請查閱規章制度', date: '2025/04/30', url: null }
+    ];
+
+    var itemEl = document.getElementById('noticeCarouselItem');
+    var dotsEl = document.getElementById('noticeDots');
+    if (!itemEl) return;
+
+    noticeItems.forEach(function (_, i) {
+      var dot = document.createElement('span');
+      dot.className = 'notice-carousel__dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', function () { goTo(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    var idx = 0;
+
+    function render(i) {
+      var n = noticeItems[i];
+      itemEl.classList.toggle('no-link', !n.url);
+      itemEl.innerHTML =
+        '<div class="notice-dot"></div>' +
+        '<div><div class="notice-title">' + n.title + '</div><div class="notice-date">' + n.date + '</div></div>';
+      itemEl.onclick = n.url ? function () { window.open(n.url, '_blank'); } : null;
+      Array.prototype.forEach.call(dotsEl.children, function (dot, j) {
+        dot.classList.toggle('active', j === i);
+      });
+    }
+
+    function goTo(i) {
+      idx = i;
+      itemEl.style.opacity = '0';
+      setTimeout(function () {
+        render(idx);
+        itemEl.style.opacity = '1';
+      }, 200);
+    }
+
+    render(0);
+
+    setInterval(function () {
+      goTo((idx + 1) % noticeItems.length);
+    }, 2500);
   });
 </script>
 </body>
