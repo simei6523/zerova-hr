@@ -11,15 +11,15 @@
       "start_month": "2026-09",
       "stages": {
         "plan": true,
-        "kickoff": false,
+        "kickoff": true,
         "execute": false,
         "integrate": false,
         "sign_off": false,
         "approve": false,
         "close": false
       },
-      "progress": 0.1429,
-      "progress_pct": 14.3
+      "progress": 0.2857,
+      "progress_pct": 28.6
     },
     {
       "no": 2,
@@ -165,13 +165,13 @@
         "plan": true,
         "kickoff": true,
         "execute": true,
-        "integrate": false,
+        "integrate": true,
         "sign_off": false,
         "approve": false,
         "close": false
       },
-      "progress": 0.4286,
-      "progress_pct": 42.9
+      "progress": 0.5714,
+      "progress_pct": 57.1
     },
     {
       "no": 10,
@@ -203,15 +203,15 @@
       "start_month": "2026-09",
       "stages": {
         "plan": true,
-        "kickoff": false,
+        "kickoff": true,
         "execute": false,
         "integrate": false,
         "sign_off": false,
         "approve": false,
         "close": false
       },
-      "progress": 0.1429,
-      "progress_pct": 14.3
+      "progress": 0.2857,
+      "progress_pct": 28.6
     },
     {
       "no": 3,
@@ -281,19 +281,19 @@
         "plan": true,
         "kickoff": true,
         "execute": true,
-        "integrate": false,
+        "integrate": true,
         "sign_off": false,
         "approve": false,
         "close": false
       },
-      "progress": 0.4286,
-      "progress_pct": 42.9
+      "progress": 0.5714,
+      "progress_pct": 57.1
     }
   ],
   "summary": {
-    "this_quarter_avg_pct": 37.1,
+    "this_quarter_avg_pct": 42.9,
     "this_quarter_count": 5,
-    "annual_avg_pct": 31.4,
+    "annual_avg_pct": 34.3,
     "annual_count": 10
   }
 }
