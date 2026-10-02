@@ -105,7 +105,7 @@
       "quarter_cn": "四",
       "start_month": "2026-12",
       "stages": {
-        "plan": false,
+        "plan": true,
         "kickoff": false,
         "execute": false,
         "integrate": false,
@@ -113,8 +113,8 @@
         "approve": false,
         "close": false
       },
-      "progress": 0.0,
-      "progress_pct": 0.0
+      "progress": 0.1429,
+      "progress_pct": 14.3
     },
     {
       "no": 7,
@@ -240,7 +240,7 @@
       "quarter_cn": "四",
       "start_month": "2026-12",
       "stages": {
-        "plan": false,
+        "plan": true,
         "kickoff": false,
         "execute": false,
         "integrate": false,
@@ -248,8 +248,8 @@
         "approve": false,
         "close": false
       },
-      "progress": 0.0,
-      "progress_pct": 0.0
+      "progress": 0.1429,
+      "progress_pct": 14.3
     },
     {
       "no": 10,
@@ -272,9 +272,9 @@
     }
   ],
   "summary": {
-    "this_quarter_avg_pct": 17.9,
+    "this_quarter_avg_pct": 21.4,
     "this_quarter_count": 4,
-    "annual_avg_pct": 38.6,
+    "annual_avg_pct": 40.0,
     "annual_count": 10
   }
 }
