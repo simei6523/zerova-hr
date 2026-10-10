@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026/10/03 19:53",
-  "latest_date": "2026/10/02",
-  "total_headcount": 672,
+  "updated_at": "2026/10/10 20:58",
+  "latest_date": "2026/10/09",
+  "total_headcount": 678,
   "prev_headcount": 653,
   "region_totals": {
     "日本": 43,
     "歐洲": 28,
     "美國": 42,
     "中國": 104,
-    "越南": 142,
+    "越南": 148,
     "新加坡": 3,
     "台灣": 310
   }
