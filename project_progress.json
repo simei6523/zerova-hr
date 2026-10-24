@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02",
+  "updated_at": "2026-10-24",
   "current_quarter": 4,
   "projects": [
     {
@@ -13,13 +13,13 @@
         "plan": true,
         "kickoff": true,
         "execute": true,
-        "integrate": false,
+        "integrate": true,
         "sign_off": false,
         "approve": false,
         "close": false
       },
-      "progress": 0.4286,
-      "progress_pct": 42.9
+      "progress": 0.5714,
+      "progress_pct": 57.1
     },
     {
       "no": 2,
@@ -50,14 +50,14 @@
       "stages": {
         "plan": true,
         "kickoff": true,
-        "execute": false,
+        "execute": true,
         "integrate": false,
         "sign_off": false,
         "approve": false,
         "close": false
       },
-      "progress": 0.2857,
-      "progress_pct": 28.6
+      "progress": 0.4286,
+      "progress_pct": 42.9
     },
     {
       "no": 4,
@@ -166,12 +166,12 @@
         "kickoff": true,
         "execute": true,
         "integrate": true,
-        "sign_off": false,
-        "approve": false,
-        "close": false
+        "sign_off": true,
+        "approve": true,
+        "close": true
       },
-      "progress": 0.5714,
-      "progress_pct": 57.1
+      "progress": 1.0,
+      "progress_pct": 100.0
     },
     {
       "no": 10,
@@ -274,7 +274,7 @@
   "summary": {
     "this_quarter_avg_pct": 21.4,
     "this_quarter_count": 4,
-    "annual_avg_pct": 40.0,
+    "annual_avg_pct": 47.1,
     "annual_count": 10
   }
 }
