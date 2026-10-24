@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02",
+  "updated_at": "2026-10-24",
   "events": [
     {
       "year": 2026,
@@ -33,6 +33,17 @@
       "badgeLabel": "確認",
       "category": "訓練",
       "categoryColor": "training"
+    },
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 23,
+      "title": "人力預算編制作業啟動",
+      "meta": "人力資源部",
+      "badge": "green",
+      "badgeLabel": "確認",
+      "category": "規劃",
+      "categoryColor": "other"
     },
     {
       "year": 2026,
