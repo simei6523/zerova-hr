@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球各Site人員人數 Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:rgba(255,255,255,0.07);--text:#e8eaf0;--muted:#7a7f99;--accent:#4f9cf9;--accent2:#a78bfa;--green:#34d399;--red:#f87171;--amber:#fbbf24;--teal:#2dd4bf;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem}
+.header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.header h1{font-size:1.75rem;font-weight:700}
+.header p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.tag{display:inline-block;font-size:.7rem;font-family:'DM Mono',monospace;background:rgba(79,156,249,.12);color:var(--accent);border:1px solid rgba(79,156,249,.2);border-radius:4px;padding:2px 8px;margin:4px 4px 0 0;cursor:pointer;transition:all .15s}
+.tag:hover,.tag.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.badge{font-family:'DM Mono',monospace;font-size:.72rem;background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:20px;color:var(--muted)}
+.filters{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.filters label{font-size:.8rem;color:var(--muted)}
+.btn-group{display:flex;gap:4px}
+.btn{padding:5px 14px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--muted);font-size:.8rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn.active,.btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1rem;margin-bottom:1.5rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.25rem 1rem;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.a::before{background:var(--accent)}.kpi.b::before{background:var(--teal)}.kpi.c::before{background:var(--accent2)}.kpi.d::before{background:var(--amber)}.kpi.e::before{background:var(--green)}
+.kpi-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.kpi-value{font-size:2rem;font-weight:700;font-family:'DM Mono',monospace;line-height:1}
+.kpi.a .kpi-value{color:var(--accent)}.kpi.b .kpi-value{color:var(--teal)}.kpi.c .kpi-value{color:var(--accent2)}.kpi.d .kpi-value{color:var(--amber)}.kpi.e .kpi-value{color:var(--green);font-size:1.1rem;padding-top:6px}
+.kpi-delta{font-size:.75rem;font-family:'DM Mono',monospace;margin-top:4px}
+.up{color:var(--green)}.down{color:var(--red)}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1rem}
+.grid2b{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.card-title{font-size:.75rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+.site-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.site-table th{padding:6px 8px;font-size:.68rem;color:var(--muted);border-bottom:1px solid var(--border);text-align:left}
+.site-table td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.site-table tr:last-child td{border-bottom:none}
+.num{font-family:'DM Mono',monospace;font-size:.9rem;text-align:right}
+.spark{display:block;width:80px;height:28px}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-top:.75rem}
+.leg{display:flex;align-items:center;gap:6px;font-size:.73rem;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rbar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rbar-label{font-size:.75rem;min-width:110px;flex-shrink:0}
+.rbar-track{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.rbar-fill{height:100%;border-radius:4px}
+.rbar-num{font-size:.8rem;font-family:'DM Mono',monospace;color:var(--muted);min-width:36px;text-align:right}
+#regionPanel{display:none;margin-bottom:1rem;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.rp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.rkpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+.rkpi{background:var(--surface2);border-radius:8px;padding:.875rem 1rem}
+.rkpi-label{font-size:.68rem;color:var(--muted);margin-bottom:.35rem}
+.rkpi-value{font-size:1.4rem;font-weight:700;font-family:'DM Mono',monospace}
+footer{margin-top:2rem;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border);padding-top:1rem}
+@media(max-width:768px){body{padding:1rem}.grid2,.grid2b{grid-template-columns:1fr}.rkpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>🌏 全球各 Site 人員人數</h1>
+    <p>Global Headcount Dashboard</p>
+    <div id="tags" style="margin-top:6px">
+      <span class="tag" onclick="showRegion('台灣',this)">台灣</span>
+      <span class="tag" onclick="showRegion('日本',this)">日本</span>
+      <span class="tag" onclick="showRegion('歐洲',this)">歐洲</span>
+      <span class="tag" onclick="showRegion('美國',this)">美國</span>
+      <span class="tag" onclick="showRegion('中國',this)">中國</span>
+      <span class="tag" onclick="showRegion('越南',this)">越南</span>
+      <span class="tag" onclick="showRegion('新加坡',this)">新加坡</span>
+      <span class="tag" id="closeTag" onclick="closeRegion()" style="display:none;background:rgba(248,113,113,.15);color:#f87171;border-color:rgba(248,113,113,.3)">✕ 關閉</span>
+    </div>
+  </div>
+  <div><span class="badge">最新資料：2026/10/23</span></div>
+</div>
+<div class="filters">
+  <label>顯示期間：</label>
+  <div class="btn-group">
+    <button class="btn" onclick="setRange(6,this)">6個月</button>
+    <button class="btn active" onclick="setRange(12,this)">12個月</button>
+    <button class="btn" onclick="setRange(0,this)">全部</button>
+  </div>
+  <label style="margin-left:1rem">圖表：</label>
+  <div class="btn-group">
+    <button class="btn active" id="btnLine" onclick="setType('line')">折線</button>
+    <button class="btn" id="btnBar" onclick="setType('bar')">長條</button>
+  </div>
+</div>
+<div class="kpis">
+  <div class="kpi a"><div class="kpi-label">全球總人數（最新）</div><div class="kpi-value" id="kTotal">—</div><div class="kpi-delta" id="kTotalD">—</div></div>
+  <div class="kpi b"><div class="kpi-label">台灣（含工廠）</div><div class="kpi-value" id="kTW">—</div><div class="kpi-delta" id="kTWD">—</div></div>
+  <div class="kpi c"><div class="kpi-label">中國（含工廠）</div><div class="kpi-value" id="kCN">—</div><div class="kpi-delta" id="kCND">—</div></div>
+  <div class="kpi d"><div class="kpi-label">越南（含工廠）</div><div class="kpi-value" id="kVN">—</div><div class="kpi-delta" id="kVND">—</div></div>
+  <div class="kpi e"><div class="kpi-label">資料期間</div><div class="kpi-value" id="kSpan">—</div><div class="kpi-delta" id="kRange" style="color:var(--muted)">—</div></div>
+</div>
+<div id="regionPanel" class="card">
+  <div class="rp-header"><div id="rpTitle" style="font-size:1rem;font-weight:600"></div><button class="btn" onclick="closeRegion()" style="font-size:.75rem;padding:3px 10px">✕ 關閉</button></div>
+  <div class="rkpis" id="rkpis"></div>
+  <div style="height:200px"><canvas id="regionChart"></canvas></div>
+  <div class="legend" id="regionLegend"></div>
+</div>
+<div class="grid2">
+  <div class="card"><div class="card-title">全球總人數趨勢</div><div style="height:260px"><canvas id="totalChart"></canvas></div></div>
+  <div class="card"><div class="card-title">各地區佔比（最新）</div><div style="height:260px"><canvas id="pieChart"></canvas></div></div>
+</div>
+<div class="grid2b">
+  <div class="card"><div class="card-title">各地區人數趨勢</div><div style="height:220px"><canvas id="multiChart"></canvas></div><div class="legend" id="multiLegend"></div></div>
+  <div class="card"><div class="card-title">各地區最新人數</div><div id="regionBars" style="margin-top:8px"></div></div>
+</div>
+<div class="card" style="margin-bottom:1rem">
+  <div class="card-title">各 Site 詳細人數</div>
+  <table class="site-table"><thead><tr><th>Site</th><th style="text-align:right">最新</th><th style="text-align:right">前期</th><th style="text-align:right">變動</th><th style="text-align:right">最高</th><th style="text-align:right">最低</th><th>趨勢</th></tr></thead><tbody id="tbody"></tbody></table>
+</div>
+<footer>※大陸廠區計算基準為扣除月底當天為最後工作日者，故與組織圖略有差異。 ｜ 最新更新：2026/10/24 ｜ 自動產生</footer>
+<script>
+const DATES=['2026/10/23', '2026/09/25', '2026/08/28', '2026/07/31', '2026/06/26', '2026/05/29', '2026/04/30', '2026/03/26', '2026/02/06', '2026/01/31', '2025/12/31', '2025/11/30', '2025/10/31', '2025/09/30', '2025/08/31', '2025/07/31', '2025/06/30', '2025/05/31', '2025/04/30', '2025/03/31', '2025/02/28', '2024/12/31', '2024/06/30', '2023/12/31', '2023/06/30'];
+const SITES=[{name:"日本(ZJM)-含工廠",region:"日本",color:"#4f9cf9",values:[44, 44, 41, 42, 44, 41, 43, 42, 40, 39, 36, 41, 42, 44, 42, 42, 42, 43, 43, 41, 41, 40, 25, 19, 18]},{name:"歐洲(ZNS)",region:"歐洲",color:"#a78bfa",values:[28, 28, 27, 26, 28, 29, 27, 24, 24, 24, 24, 24, 24, 22, 21, 21, 23, 22, 21, 22, 23, 23, 22, 21, 18]},{name:"美國(ZAS)",region:"美國",color:"#fbbf24",values:[42, 42, 41, 42, 40, 40, 40, 41, 41, 41, 43, 42, 41, 41, 43, 43, 44, 44, 44, 44, 46, 50, 49, 56, 55]},{name:"中國 - 馳諾瓦科技(ZCM)-含工廠",region:"中國",color:"#f87171",values:[99, 98, 103, 96, 97, 101, 98, 113, 113, 114, 136, 146, 148, 148, 174, 261, 185, 189, 187, 197, 199, 216, 238, 240, 277]},{name:"中國 - 馳諾瓦貿易(ZCS)",region:"中國",color:"#fca5a5",values:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3]},{name:"中國 - 馳諾瓦上海(ZCT)",region:"中國",color:"#fb923c",values:[6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10]},{name:"越南-含工廠",region:"越南",color:"#34d399",values:[160, 123, 135, 149, 148, 167, 153, 182, 148, 173, 163, 172, 183, 174, 179, 158, 174, 183, 184, 149, 147, 164, 196, 165, 157]},{name:"新加坡(ZSH)",region:"新加坡",color:"#2dd4bf",values:[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0]},{name:"台灣(ZTMN)-含工廠",region:"台灣",color:"#c084fc",values:[312, 309, 310, 307, 311, 305, 316, 319, 329, 327, 325, 327, 334, 343, 353, 364, 374, 381, 380, 400, 416, 415, 432, 383, 360]}];
+const TOTAL=[694, 653, 666, 671, 677, 692, 686, 730, 704, 727, 736, 762, 783, 783, 824, 901, 854, 874, 871, 865, 884, 921, 976, 897, 848];
+let range=12,ctype='line',tChart=null,mChart=null,pChart=null,rChart=null;
+const fmt=s=>{const d=new Date(s.replace(/\//g,'-'));return d.toLocaleDateString('zh-TW',{year:'2-digit',month:'2-digit'})};
+function slice(){const n=DATES.length,e=range===0?n:Math.min(range,n);return{dates:DATES.slice(0,e),total:TOTAL.slice(0,e),sites:SITES.map(s=>({...s,v:s.values.slice(0,e)}))}}
+function kpi(id,did,latest,prev){document.getElementById(id).textContent=latest.toLocaleString();const d=latest-prev,el=document.getElementById(did);el.innerHTML='vs 前期 '+(d>=0?'▲':'▼')+Math.abs(d);el.className='kpi-delta '+(d>=0?'up':'down')}
+function updateKPIs(){kpi('kTotal','kTotalD',TOTAL[0],TOTAL[1]);const tw=SITES.find(s=>s.region==='台灣');if(tw)kpi('kTW','kTWD',tw.values[0],tw.values[1]);const cnL=SITES.filter(s=>s.region==='中國').reduce((a,s)=>a+s.values[0],0);const cnP=SITES.filter(s=>s.region==='中國').reduce((a,s)=>a+s.values[1],0);kpi('kCN','kCND',cnL,cnP);const vn=SITES.find(s=>s.region==='越南');if(vn)kpi('kVN','kVND',vn.values[0],vn.values[1]);document.getElementById('kSpan').textContent=DATES.length+' 個時間點';document.getElementById('kRange').textContent=DATES[DATES.length-1].slice(0,7)+' ～ '+DATES[0].slice(0,7)}
+function buildTotal(){const{dates,total}=slice();const labels=[...dates].reverse().map(fmt),data=[...total].reverse();const ctx=document.getElementById('totalChart').getContext('2d');const g=ctx.createLinearGradient(0,0,0,260);g.addColorStop(0,'rgba(79,156,249,.25)');g.addColorStop(1,'rgba(79,156,249,0)');if(tChart)tChart.destroy();tChart=new Chart(ctx,{type:ctype,data:{labels,datasets:[{label:'全球總人數',data,borderColor:'#4f9cf9',backgroundColor:ctype==='line'?g:'rgba(79,156,249,.6)',borderWidth:2.5,pointRadius:ctype==='line'?4:0,tension:.35,fill:ctype==='line'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1d27',borderColor:'rgba(255,255,255,.1)',borderWidth:1,callbacks:{label:c=>` ${c.parsed.y.toLocaleString()} 人`}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a7f99',font:{size:10},maxRotation:45}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a7f99',font:{size:10}}}}}})}
+function buildMulti(){const{dates,sites}=slice();const labels=[...dates].reverse().map(fmt);const ctx=document.getElementById('multiChart').getContext('2d');const ds=sites.map(s=>({label:s.name,data:[...s.v].reverse(),borderColor:s.color,backgroundColor:s.color+'22',borderWidth:1.8,pointRadius:2,tension:.35,spanGaps:true}));if(mChart)mChart.destroy();mChart=new Chart(ctx,{type:'line',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a7f99',font:{size:9},maxRotation:45}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a7f99',font:{size:9}}}}}});const lg=document.getElementById('multiLegend');lg.innerHTML='';sites.forEach(s=>{const i=document.createElement('div');i.className='leg';i.innerHTML=`<div class="dot" style="background:${s.color}"></div><span>${s.name}</span>`;lg.appendChild(i)})}
+function buildPie(){const ctx=document.getElementById('pieChart').getContext('2d');if(pChart)pChart.destroy();pChart=new Chart(ctx,{type:'doughnut',data:{labels:SITES.map(s=>s.name),datasets:[{data:SITES.map(s=>s.values[0]||0),backgroundColor:SITES.map(s=>s.color+'cc'),borderColor:SITES.map(s=>s.color),borderWidth:1,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1d27',callbacks:{label:c=>{const t=c.dataset.data.reduce((a,b)=>a+b,0);return ` ${c.parsed} 人 (${((c.parsed/t)*100).toFixed(1)}%)`}}}}}})}
+function buildBars(){const c=document.getElementById('regionBars');c.innerHTML='';const mx=Math.max(...SITES.map(s=>s.values[0]||0));SITES.forEach(s=>{const v=s.values[0]||0,p=mx>0?(v/mx*100).toFixed(1):0;const r=document.createElement('div');r.className='rbar-row';r.innerHTML=`<div class="rbar-label">${s.name.length>12?s.name.slice(0,12)+'…':s.name}</div><div class="rbar-track"><div class="rbar-fill" style="width:${p}%;background:${s.color}"></div></div><div class="rbar-num">${v}</div>`;c.appendChild(r)})}
+function spark(vals,color){const W=80,H=28,p=2,cl=[...vals].reverse();const mx=Math.max(...cl),mn=Math.min(...cl),rng=mx-mn||1,n=cl.length;const pts=cl.map((v,i)=>`${(p+(i/(n-1))*(W-p*2)).toFixed(1)},${(H-p-(v-mn)/rng*(H-p*2)).toFixed(1)}`).join(' ');const lx=(p+((n-1)/(n-1))*(W-p*2)).toFixed(1),ly=(H-p-(cl[n-1]-mn)/rng*(H-p*2)).toFixed(1);return `<svg class="spark" viewBox="0 0 ${W} ${H}"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${lx}" cy="${ly}" r="2" fill="${color}"/></svg>`}
+function buildTable(){const tb=document.getElementById('tbody');tb.innerHTML='';SITES.forEach(s=>{const l=s.values[0]??0,pr=s.values[1]??0,d=l-pr;const ds=d===0?`<span style="color:var(--muted)">—</span>`:`<span class="${d>0?'up':'down'}">${d>0?'▲':'▼'}${Math.abs(d)}</span>`;const tr=document.createElement('tr');tr.innerHTML=`<td style="font-weight:500;color:${s.color}">${s.name}</td><td class="num" style="color:${s.color}">${l}</td><td class="num" style="color:var(--muted)">${pr}</td><td class="num">${ds}</td><td class="num" style="color:var(--muted)">${Math.max(...s.values)}</td><td class="num" style="color:var(--muted)">${Math.min(...s.values.filter(v=>v>0))}</td><td>${spark(s.values,s.color)}</td>`;tb.appendChild(tr)});const l=TOTAL[0],pr=TOTAL[1],d=l-pr;const ds=`<span class="${d>=0?'up':'down'}">${d>=0?'▲':'▼'}${Math.abs(d)}</span>`;const tr=document.createElement('tr');tr.style.borderTop='1px solid rgba(255,255,255,.15)';tr.innerHTML=`<td style="font-weight:700;color:var(--accent)">全球總人數</td><td class="num" style="color:var(--accent);font-weight:700">${l.toLocaleString()}</td><td class="num" style="color:var(--muted)">${pr.toLocaleString()}</td><td class="num">${ds}</td><td class="num" style="color:var(--muted)">${Math.max(...TOTAL).toLocaleString()}</td><td class="num" style="color:var(--muted)">${Math.min(...TOTAL).toLocaleString()}</td><td>${spark(TOTAL,'#4f9cf9')}</td>`;tb.appendChild(tr)}
+function showRegion(name,el){document.querySelectorAll('.tag').forEach(t=>t.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('closeTag').style.display='inline-block';const matched=SITES.filter(s=>s.region===name);document.getElementById('regionPanel').style.display='block';document.getElementById('rpTitle').textContent='📍 '+name+' 地區詳情';const rk=document.getElementById('rkpis');rk.innerHTML='';matched.forEach(s=>{const d=s.values[0]-s.values[1];const dc=d>0?'var(--green)':d<0?'var(--red)':'var(--muted)';rk.innerHTML+=`<div class="rkpi"><div class="rkpi-label">${s.name}</div><div class="rkpi-value" style="color:${s.color}">${s.values[0]}</div><div style="font-size:.75rem;color:${dc};margin-top:4px">vs 前期 ${d>0?'▲':d<0?'▼':'±'}${Math.abs(d)}</div></div>`});const labels=[...DATES].reverse().map(fmt);const ds=matched.map(s=>({label:s.name,data:[...s.values].reverse(),borderColor:s.color,backgroundColor:s.color+'22',borderWidth:2,pointRadius:3,tension:.35,spanGaps:true}));const ctx=document.getElementById('regionChart').getContext('2d');if(rChart)rChart.destroy();rChart=new Chart(ctx,{type:'line',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a7f99',font:{size:10},maxRotation:45}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a7f99',font:{size:10}}}}}});const lg=document.getElementById('regionLegend');lg.innerHTML='';matched.forEach(s=>{const i=document.createElement('div');i.className='leg';i.innerHTML=`<div class="dot" style="background:${s.color}"></div><span>${s.name}</span>`;lg.appendChild(i)});document.getElementById('regionPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function closeRegion(){document.getElementById('regionPanel').style.display='none';document.querySelectorAll('.tag').forEach(t=>t.classList.remove('active'));document.getElementById('closeTag').style.display='none';if(rChart){rChart.destroy();rChart=null}}
+function setRange(r,btn){range=r;document.querySelectorAll('.btn-group .btn').forEach(b=>{if(b.onclick&&b.onclick.toString().includes('setRange'))b.classList.remove('active')});btn.classList.add('active');buildTotal();buildMulti()}
+function setType(t){ctype=t;document.getElementById('btnLine').classList.toggle('active',t==='line');document.getElementById('btnBar').classList.toggle('active',t==='bar');buildTotal()}
+updateKPIs();buildTotal();buildMulti();buildPie();buildBars();buildTable();
+</script>
+</body>
+</html>
