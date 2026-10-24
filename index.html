@@ -785,7 +785,7 @@
         <div class="fade-in fd-2" id="section-dashboard" style="margin-bottom:1.85rem;">
           <div class="section-header">
             <h2 class="section-title">人力資源數據儀表板專區</h2>
-            <a href="https://simei6523.github.io/hr-dashboard-1/" target="_blank" class="section-link">開新視窗 ↗</a>
+            <a href="headcount-dashboard/index.html" target="_blank" class="section-link">開新視窗 ↗</a>
           </div>
 
           <!-- Dashboard 1：人員人數 -->
@@ -796,12 +796,12 @@
                 <div class="dashboard-titlebar__name">全球各 Site 人員人數 Dashboard</div>
                 <div class="dashboard-titlebar__sub">即時人力分佈數據 · Zerova Technology</div>
               </div>
-              <a href="https://simei6523.github.io/hr-dashboard-1/" target="_blank" class="dashboard-titlebar__btn">
+              <a href="headcount-dashboard/index.html" target="_blank" class="dashboard-titlebar__btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 獨立開啟
               </a>
             </div>
-            <iframe src="https://simei6523.github.io/hr-dashboard-1/" title="全球各 Site 人員人數 Dashboard" loading="lazy"></iframe>
+            <iframe src="headcount-dashboard/index.html" title="全球各 Site 人員人數 Dashboard" loading="lazy"></iframe>
           </div>
 
           <!-- Dashboard 2：離職率 -->
@@ -1142,7 +1142,7 @@
 
 <script>
   // 自動從 data.json 讀取最新人數
-  fetch('https://simei6523.github.io/zerova-hr/data.json?t=' + Date.now())
+  fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/data.json?t=' + Date.now())
     .then(r => r.json())
     .then(d => {
       const el = document.getElementById('statTotal');
