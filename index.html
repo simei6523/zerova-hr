@@ -758,7 +758,7 @@
         <!-- 本季專案進度 → 跳至本季專案進度 -->
         <a class="stats-bar__item" href="#" title="查看本季專案進度" onclick="scrollToSection('section-project');return false;">
           <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div><div class="stats-bar__num">69%</div><div class="stats-bar__label">本季專案進度</div></div>
+          <div><div class="stats-bar__num" id="statProjectProgress">69%</div><div class="stats-bar__label">本季專案進度</div></div>
         </a>
         <!-- 學習文章 → 跳至 HR 學習資料 -->
         <a class="stats-bar__item" href="#" title="查看學習資料" onclick="scrollToSection('section-hr-learn');return false;">
@@ -843,7 +843,7 @@
           <!-- HR 重要工作行事曆 -->
           <div>
             <div class="section-header"><h2 class="section-title">HR 重要工作行事曆</h2></div>
-            <div class="upcoming-list">
+            <div class="upcoming-list" id="calendarEventsList">
               <div class="event-item"><div class="event-date"><div class="event-date__day">20</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">Q2 績效評核截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>全員必填</div></div><span class="event-badge eb-amber">待辦</span></div>
               <div class="event-item"><div class="event-date"><div class="event-date__day">25</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">6 月薪資發放日</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>財務部執行</div></div><span class="event-badge eb-brand">預定</span></div>
               <div class="event-item"><div class="event-date"><div class="event-date__day">10</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">新人教育訓練</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>本月新進 12 名</div></div><span class="event-badge eb-green">確認</span></div>
@@ -855,7 +855,7 @@
           <!-- 本季專案進度 -->
           <div id="section-project">
             <div class="section-header"><h2 class="section-title">本季專案進度</h2><a href="#" class="section-link">詳情 →</a></div>
-            <div class="card" style="padding:1rem 1.1rem;">
+            <div class="card" style="padding:1rem 1.1rem;" id="projectProgressCard">
               <div class="progress-item"><div class="progress-label"><span class="progress-name">工程研發部</span><span class="progress-pct">82%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:82%"></div></div></div>
               <div class="progress-item"><div class="progress-label"><span class="progress-name">產品設計部</span><span class="progress-pct">71%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:71%"></div></div></div>
               <div class="progress-item"><div class="progress-label"><span class="progress-name">業務行銷部</span><span class="progress-pct">65%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%"></div></div></div>
@@ -1191,6 +1191,66 @@
         const el = document.getElementById('statTurnoverRate');
         if (el) el.textContent = '23.7%';
       });
+  });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  本季專案進度 — 從 project_progress.json 自動讀取
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/project_progress.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(json => {
+        const pct = json.summary.this_quarter_avg_pct;
+        const el = document.getElementById('statProjectProgress');
+        if (el) el.textContent = pct.toFixed(1) + '%';
+
+        const card = document.getElementById('projectProgressCard');
+        if (card && json.this_quarter_projects) {
+          let html = '';
+          json.this_quarter_projects.forEach(p => {
+            html += '<div class="progress-item"><div class="progress-label"><span class="progress-name">' + p.name + '</span><span class="progress-pct">' + p.progress_pct.toFixed(1) + '%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + p.progress_pct + '%"></div></div></div>';
+          });
+          html += '<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">';
+          html += '<div class="progress-label"><span class="progress-name" style="font-weight:700;">本季整體完成率</span><span class="progress-pct" style="font-size:1rem;">' + pct.toFixed(1) + '%</span></div>';
+          html += '<div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>';
+          html += '</div>';
+          card.innerHTML = html;
+        }
+      })
+      .catch(() => {
+        const el = document.getElementById('statProjectProgress');
+        if (el) el.textContent = '69%';
+      });
+  });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  HR 重要工作行事曆 — 從 calendar_events.json 自動讀取
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/calendar_events.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(json => {
+        const list = document.getElementById('calendarEventsList');
+        if (!list || !json.events) return;
+        const today = new Date(); today.setHours(0,0,0,0);
+        const withDate = json.events.map(e => ({...e, d: new Date(e.year, e.month - 1, e.day)}));
+        let upcoming = withDate.filter(e => e.d >= today).sort((a,b) => a.d - b.d);
+        if (upcoming.length === 0) {
+          upcoming = withDate.sort((a,b) => b.d - a.d);
+        }
+        const show = upcoming.slice(0, 5);
+        let html = '';
+        show.forEach(e => {
+          html += '<div class="event-item"><div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + MON[e.month-1] + '</div></div><div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' + e.meta + '</div></div><span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span></div>';
+        });
+        list.innerHTML = html;
+      })
+      .catch(() => {});
   });
 </script>
 </body>
