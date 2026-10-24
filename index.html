@@ -371,6 +371,30 @@
     .eb-green { background: #d9f5e8; color: #147a3a; }
     .eb-amber { background: #fff3d6; color: #b05a10; }
     .eb-brand { background: var(--brand-pale); color: var(--brand-dark); }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .cal-title { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+    .cal-nav { background: var(--brand-faint); border: 1px solid var(--brand-pale); color: var(--brand-dark); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; line-height: 1; }
+    .cal-nav:hover { background: var(--brand-pale); }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.62rem; color: var(--gray); font-weight: 600; margin-bottom: 0.3rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--dark); border-radius: 6px; }
+    .cal-day.is-empty { visibility: hidden; }
+    .cal-day.has-event { background: var(--brand-faint); font-weight: 700; cursor: default; }
+    .cal-day .cal-dot { position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; }
+    .cal-dot-amber { background: #b05a10; }
+    .cal-dot-brand { background: var(--brand); }
+    .cal-dot-green { background: #147a3a; }
+    .cal-dot-recruit { background: #ec4899; }
+    .cal-dot-training { background: #f5a623; }
+    .cal-dot-comp { background: #4f8ff7; }
+    .cal-dot-event { background: #34a869; }
+    .cal-dot-other { background: var(--gray); }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--brand-pale); }
+    .cal-legend__item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; color: var(--gray); }
+    .cal-legend__dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .event-info__cat { display: inline-flex; align-items: center; gap: 0.28rem; font-size: 0.68rem; color: var(--gray); margin-top: 0.1rem; }
+    .event-info__cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .cal-event-list { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--brand-pale); display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* Bottom grid */
     .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.4rem; margin-bottom: 2rem; }
@@ -758,7 +782,7 @@
         <!-- 本季專案進度 → 跳至本季專案進度 -->
         <a class="stats-bar__item" href="#" title="查看本季專案進度" onclick="scrollToSection('section-project');return false;">
           <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div><div class="stats-bar__num" id="statProjectProgress">69%</div><div class="stats-bar__label">本季專案進度</div></div>
+          <div><div class="stats-bar__num" id="statProjectProgress">31.4%</div><div class="stats-bar__label">本季專案進度</div></div>
         </a>
         <!-- 學習文章 → 跳至 HR 學習資料 -->
         <a class="stats-bar__item" href="#" title="查看學習資料" onclick="scrollToSection('section-hr-learn');return false;">
@@ -840,31 +864,37 @@
         <!-- ③ HR 重要工作行事曆 ＋ 本季專案進度 ─ 左右並排 -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.85rem;" class="fade-in fd-3">
 
-          <!-- HR 重要工作行事曆 -->
+          <!-- HR 重要工作行事曆（月曆式） -->
           <div>
             <div class="section-header"><h2 class="section-title">HR 重要工作行事曆</h2></div>
-            <div class="upcoming-list" id="calendarEventsList">
-              <div class="event-item"><div class="event-date"><div class="event-date__day">20</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">Q2 績效評核截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>全員必填</div></div><span class="event-badge eb-amber">待辦</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">25</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">6 月薪資發放日</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>財務部執行</div></div><span class="event-badge eb-brand">預定</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">10</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">新人教育訓練</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>本月新進 12 名</div></div><span class="event-badge eb-green">確認</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">15</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">Q2 績效面談週</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>各部門主管執行</div></div><span class="event-badge eb-brand">預定</span></div>
-              <div class="event-item"><div class="event-date"><div class="event-date__day">31</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">年度健檢報名截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>福委會辦理</div></div><span class="event-badge eb-amber">待辦</span></div>
+            <div class="card" style="padding:0.9rem 1rem;">
+              <div class="cal-header">
+                <button class="cal-nav" id="calPrev" aria-label="上一月">‹</button>
+                <div class="cal-title" id="calTitle">2026年6月</div>
+                <button class="cal-nav" id="calNext" aria-label="下一月">›</button>
+              </div>
+              <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div class="cal-legend" id="calLegend"></div>
+              <div class="cal-event-list" id="calEventList"></div>
             </div>
           </div>
 
           <!-- 本季專案進度 -->
           <div id="section-project">
-            <div class="section-header"><h2 class="section-title">本季專案進度</h2><a href="#" class="section-link">詳情 →</a></div>
-            <div class="card" style="padding:1rem 1.1rem;" id="projectProgressCard">
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">工程研發部</span><span class="progress-pct">82%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:82%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">產品設計部</span><span class="progress-pct">71%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:71%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">業務行銷部</span><span class="progress-pct">65%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">人力資源部</span><span class="progress-pct">90%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:90%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">財務法務部</span><span class="progress-pct">58%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:58%"></div></div></div>
-              <div class="progress-item"><div class="progress-label"><span class="progress-name">製造供應鏈</span><span class="progress-pct">45%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%"></div></div></div>
+            <div class="section-header"><h2 class="section-title">本季專案進度</h2></div>
+            <div class="card" style="padding:1rem 1.1rem;">
+              <div id="projectProgressList">
+                <!-- 由 project_progress.json 動態產生；以下為載入前的預設值 -->
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">人力預算作業</span><span class="progress-pct">0%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">教育訓練需求調查</span><span class="progress-pct">14.3%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:14.3%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">晉升調薪專案</span><span class="progress-pct">100%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">員工分紅作業</span><span class="progress-pct">0%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">TTQS訓練品質計畫</span><span class="progress-pct">42.9%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:42.9%"></div></div></div>
+              </div>
               <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">
-                <div class="progress-label"><span class="progress-name" style="font-weight:700;">整體完成率</span><span class="progress-pct" style="font-size:1rem;">69%</span></div>
-                <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:69%"></div></div>
+                <div class="progress-label"><span class="progress-name" style="font-weight:700;">本季平均達成率</span><span class="progress-pct" id="projectProgressAvg" style="font-size:1rem;">31.4%</span></div>
+                <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" id="projectProgressAvgBar" style="width:31.4%"></div></div>
               </div>
             </div>
           </div>
@@ -1196,61 +1226,165 @@
 
 <script>
   // ══════════════════════════════════════════════════════
-  //  本季專案進度 — 從 project_progress.json 自動讀取
+  //  本季專案進度 — 從 project_progress.json 自動讀取（人資專案進度管控表）
   // ══════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
     fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/project_progress.json?t=' + Date.now())
       .then(r => r.json())
       .then(json => {
-        const pct = json.summary.this_quarter_avg_pct;
-        const el = document.getElementById('statProjectProgress');
-        if (el) el.textContent = pct.toFixed(1) + '%';
-
-        const card = document.getElementById('projectProgressCard');
-        if (card && json.this_quarter_projects) {
-          let html = '';
-          json.this_quarter_projects.forEach(p => {
-            html += '<div class="progress-item"><div class="progress-label"><span class="progress-name">' + p.name + '</span><span class="progress-pct">' + p.progress_pct.toFixed(1) + '%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + p.progress_pct + '%"></div></div></div>';
-          });
-          html += '<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">';
-          html += '<div class="progress-label"><span class="progress-name" style="font-weight:700;">本季整體完成率</span><span class="progress-pct" style="font-size:1rem;">' + pct.toFixed(1) + '%</span></div>';
-          html += '<div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>';
-          html += '</div>';
-          card.innerHTML = html;
+        const list = document.getElementById('projectProgressList');
+        if (list && json.this_quarter_projects) {
+          list.innerHTML = json.this_quarter_projects.map(p => `
+            <div class="progress-item">
+              <div class="progress-label"><span class="progress-name">${p.name}</span><span class="progress-pct">${p.progress_pct}%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.progress_pct}%"></div></div>
+            </div>
+          `).join('');
+        }
+        if (json.summary && typeof json.summary.this_quarter_avg_pct === 'number') {
+          const avg = json.summary.this_quarter_avg_pct;
+          const avgEl = document.getElementById('projectProgressAvg');
+          const avgBar = document.getElementById('projectProgressAvgBar');
+          const iconEl = document.getElementById('statProjectProgress');
+          if (avgEl) avgEl.textContent = avg + '%';
+          if (avgBar) avgBar.style.width = avg + '%';
+          if (iconEl) iconEl.textContent = avg + '%';
         }
       })
       .catch(() => {
-        const el = document.getElementById('statProjectProgress');
-        if (el) el.textContent = '69%';
+        // fetch 失敗時保留 HTML 中寫死的預設值，不做任何更動
       });
   });
 </script>
 
 <script>
   // ══════════════════════════════════════════════════════
-  //  HR 重要工作行事曆 — 從 calendar_events.json 自動讀取
+  //  HR 重要工作行事曆 — 月曆式呈現，從 calendar_events.json 動態讀取
+  //  之後要新增/修改事項：編輯「行事曆事項.xlsx」→ 雙擊 update_calendar.bat，不用再改這份 HTML
   // ══════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
-    const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/calendar_events.json?t=' + Date.now())
-      .then(r => r.json())
-      .then(json => {
-        const list = document.getElementById('calendarEventsList');
-        if (!list || !json.events) return;
-        const today = new Date(); today.setHours(0,0,0,0);
-        const withDate = json.events.map(e => ({...e, d: new Date(e.year, e.month - 1, e.day)}));
-        let upcoming = withDate.filter(e => e.d >= today).sort((a,b) => a.d - b.d);
-        if (upcoming.length === 0) {
-          upcoming = withDate.sort((a,b) => b.d - a.d);
+    var calEvents = [];
+
+    var calGrid = document.getElementById('calGrid');
+    var calTitle = document.getElementById('calTitle');
+    var calEventList = document.getElementById('calEventList');
+    var calLegend = document.getElementById('calLegend');
+    var calPrev = document.getElementById('calPrev');
+    var calNext = document.getElementById('calNext');
+    if (!calGrid) return;
+
+    var today = new Date();
+    var currentYear = today.getFullYear();
+    var currentMonth = today.getMonth() + 1;
+
+    var CATEGORY_LABELS = {
+      recruit: { label: '招募', dot: 'cal-dot-recruit' },
+      training: { label: '訓練', dot: 'cal-dot-training' },
+      comp: { label: '薪酬', dot: 'cal-dot-comp' },
+      event: { label: '活動', dot: 'cal-dot-event' },
+      other: { label: '其他', dot: 'cal-dot-other' }
+    };
+
+    function eventsInMonth(year, month) {
+      return calEvents.filter(function (e) { return e.year === year && e.month === month; });
+    }
+
+    function renderLegend(monthEvents) {
+      var usedColors = {};
+      monthEvents.forEach(function (e) { usedColors[e.categoryColor || 'other'] = true; });
+      var keys = Object.keys(usedColors);
+      if (keys.length === 0) { calLegend.innerHTML = ''; return; }
+      calLegend.innerHTML = keys.map(function (key) {
+        var info = CATEGORY_LABELS[key] || CATEGORY_LABELS.other;
+        return '<div class="cal-legend__item"><span class="cal-legend__dot ' + info.dot + '"></span>' + info.label + '</div>';
+      }).join('');
+    }
+
+    function renderEventList(monthEvents) {
+      if (monthEvents.length === 0) {
+        calEventList.innerHTML = '<div style="font-size:0.75rem;color:var(--gray);text-align:center;padding:0.5rem 0;">本月無重要事項</div>';
+        return;
+      }
+      calEventList.innerHTML = monthEvents.slice().sort(function (a, b) { return a.day - b.day; }).map(function (e) {
+        var catInfo = CATEGORY_LABELS[e.categoryColor] || null;
+        var catTag = catInfo
+          ? '<div class="event-info__cat"><span class="event-info__cat-dot ' + catInfo.dot + '"></span>' + catInfo.label + '</div>'
+          : '';
+        return '<div class="event-item">' +
+          '<div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + currentMonth + '月</div></div>' +
+          '<div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta">' + e.meta + '</div>' + catTag + '</div>' +
+          '<span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    function renderCalendar() {
+      calTitle.textContent = currentYear + '年' + currentMonth + '月';
+      calGrid.innerHTML = '';
+
+      var firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+      var daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+      var monthEvents = eventsInMonth(currentYear, currentMonth);
+
+      for (var i = 0; i < firstDay; i++) {
+        var empty = document.createElement('div');
+        empty.className = 'cal-day is-empty';
+        calGrid.appendChild(empty);
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        var cell = document.createElement('div');
+        cell.className = 'cal-day';
+        cell.textContent = d;
+        var dayEvents = monthEvents.filter(function (e) { return e.day === d; });
+        if (dayEvents.length > 0) {
+          cell.classList.add('has-event');
+          var dot = document.createElement('span');
+          var catInfo = CATEGORY_LABELS[dayEvents[0].categoryColor] || CATEGORY_LABELS.other;
+          dot.className = 'cal-dot ' + catInfo.dot;
+          cell.appendChild(dot);
+          cell.title = dayEvents.map(function (e) { return e.title; }).join('、');
         }
-        const show = upcoming.slice(0, 5);
-        let html = '';
-        show.forEach(e => {
-          html += '<div class="event-item"><div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + MON[e.month-1] + '</div></div><div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' + e.meta + '</div></div><span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span></div>';
-        });
-        list.innerHTML = html;
+        calGrid.appendChild(cell);
+      }
+      renderLegend(monthEvents);
+      renderEventList(monthEvents);
+    }
+
+    function pickStartMonth() {
+      if (calEvents.length === 0) return currentYear * 100 + currentMonth;
+      var currentKey = currentYear * 100 + currentMonth;
+      var keys = calEvents.map(function (e) { return e.year * 100 + e.month; });
+      var future = keys.filter(function (k) { return k >= currentKey; });
+      return future.length ? Math.min.apply(null, future) : Math.min.apply(null, keys);
+    }
+
+    calPrev.addEventListener('click', function () {
+      currentMonth -= 1;
+      if (currentMonth < 1) { currentMonth = 12; currentYear -= 1; }
+      renderCalendar();
+    });
+    calNext.addEventListener('click', function () {
+      currentMonth += 1;
+      if (currentMonth > 12) { currentMonth = 1; currentYear += 1; }
+      renderCalendar();
+    });
+
+    renderCalendar(); // 先顯示空的當月月曆，資料抓到後再補上
+
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/calendar_events.json?t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (json && Array.isArray(json.events)) {
+          calEvents = json.events;
+          var startKey = pickStartMonth();
+          currentYear = Math.floor(startKey / 100);
+          currentMonth = startKey % 100;
+          renderCalendar();
+        }
       })
-      .catch(() => {});
+      .catch(function () {
+        // 抓不到資料時，維持顯示空白的當月月曆
+      });
   });
 </script>
 </body>
