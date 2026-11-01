@@ -171,30 +171,6 @@
       "wait": 0,
       "quit": 0,
       "remain": 1
-    },
-    {
-      "name": "上週 W43(10/23) 合計",
-      "req": 82,
-      "cv": 5127,
-      "pass_": 1629,
-      "int_": 270,
-      "hire": 64,
-      "rep": 38,
-      "wait": 3,
-      "quit": 27,
-      "remain": 41
-    },
-    {
-      "name": "與上週差異",
-      "req": 0,
-      "cv": 79,
-      "pass_": 18,
-      "int_": 8,
-      "hire": 0,
-      "rep": 0,
-      "wait": 0,
-      "quit": 0,
-      "remain": 0
     }
   ]
 }
