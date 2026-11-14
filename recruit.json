@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026/11/07",
-  "total_req": 82,
-  "total_remain": 38,
-  "overall_rate": 53.66,
+  "updated_at": "2026/11/14",
+  "total_req": 83,
+  "total_remain": 39,
+  "overall_rate": 53.01,
   "depts": [
     {
       "name": "稽核部",
       "req": 1,
-      "cv": 77,
-      "pass_": 16,
-      "int_": 7,
+      "cv": 79,
+      "pass_": 17,
+      "int_": 8,
       "hire": 1,
       "rep": 0,
       "wait": 0,
@@ -19,7 +19,7 @@
     {
       "name": "全球事業單位",
       "req": 3,
-      "cv": 180,
+      "cv": 185,
       "pass_": 29,
       "int_": 16,
       "hire": 1,
@@ -43,8 +43,8 @@
     {
       "name": "全球產品管理單位",
       "req": 4,
-      "cv": 229,
-      "pass_": 37,
+      "cv": 232,
+      "pass_": 38,
       "int_": 24,
       "hire": 4,
       "rep": 3,
@@ -67,9 +67,9 @@
     {
       "name": "全球品管單位",
       "req": 8,
-      "cv": 396,
-      "pass_": 47,
-      "int_": 21,
+      "cv": 404,
+      "pass_": 48,
+      "int_": 23,
       "hire": 1,
       "rep": 1,
       "wait": 0,
@@ -103,9 +103,9 @@
     {
       "name": "全球生產管理單位",
       "req": 6,
-      "cv": 857,
+      "cv": 858,
       "pass_": 72,
-      "int_": 25,
+      "int_": 26,
       "hire": 6,
       "rep": 5,
       "wait": 0,
@@ -115,7 +115,7 @@
     {
       "name": "全球供應鏈單位",
       "req": 2,
-      "cv": 448,
+      "cv": 451,
       "pass_": 73,
       "int_": 13,
       "hire": 0,
@@ -127,7 +127,7 @@
     {
       "name": "全球商業運營單位",
       "req": 1,
-      "cv": 117,
+      "cv": 118,
       "pass_": 26,
       "int_": 7,
       "hire": 1,
@@ -138,21 +138,21 @@
     },
     {
       "name": "全球研發單位",
-      "req": 30,
-      "cv": 863,
-      "pass_": 125,
-      "int_": 78,
+      "req": 31,
+      "cv": 870,
+      "pass_": 156,
+      "int_": 79,
       "hire": 30,
       "rep": 16,
       "wait": 3,
       "quit": 12,
-      "remain": 11
+      "remain": 12
     },
     {
       "name": "全球產品技術支援單位",
       "req": 7,
-      "cv": 202,
-      "pass_": 106,
+      "cv": 208,
+      "pass_": 107,
       "int_": 19,
       "hire": 4,
       "rep": 3,
@@ -173,28 +173,28 @@
       "remain": 1
     },
     {
-      "name": "上週 W44(10/31) 合計",
+      "name": "上週 W45(11/06) 合計",
       "req": 82,
-      "cv": 5206,
-      "pass_": 1647,
-      "int_": 279,
-      "hire": 64,
-      "rep": 38,
-      "wait": 3,
+      "cv": 5292,
+      "pass_": 1665,
+      "int_": 286,
+      "hire": 67,
+      "rep": 39,
+      "wait": 5,
       "quit": 27,
-      "remain": 41
+      "remain": 38
     },
     {
       "name": "與上週差異",
-      "req": 0,
-      "cv": 86,
-      "pass_": 18,
-      "int_": 7,
-      "hire": 3,
-      "rep": 1,
-      "wait": 2,
+      "req": 1,
+      "cv": 36,
+      "pass_": 35,
+      "int_": 5,
+      "hire": 0,
+      "rep": 0,
+      "wait": 0,
       "quit": 0,
-      "remain": -3
+      "remain": 1
     }
   ]
 }
