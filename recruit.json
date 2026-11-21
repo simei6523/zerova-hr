@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026/11/14",
+  "updated_at": "2026/11/21",
   "total_req": 83,
-  "total_remain": 39,
-  "overall_rate": 53.01,
+  "total_remain": 35,
+  "overall_rate": 57.83,
   "depts": [
     {
       "name": "稽核部",
@@ -19,7 +19,7 @@
     {
       "name": "全球事業單位",
       "req": 3,
-      "cv": 185,
+      "cv": 192,
       "pass_": 29,
       "int_": 16,
       "hire": 1,
@@ -43,7 +43,7 @@
     {
       "name": "全球產品管理單位",
       "req": 4,
-      "cv": 232,
+      "cv": 234,
       "pass_": 38,
       "int_": 24,
       "hire": 4,
@@ -55,10 +55,10 @@
     {
       "name": "全球新產品導入單位",
       "req": 10,
-      "cv": 1422,
-      "pass_": 980,
-      "int_": 36,
-      "hire": 10,
+      "cv": 1429,
+      "pass_": 985,
+      "int_": 37,
+      "hire": 11,
       "rep": 5,
       "wait": 0,
       "quit": 6,
@@ -67,20 +67,20 @@
     {
       "name": "全球品管單位",
       "req": 8,
-      "cv": 404,
+      "cv": 410,
       "pass_": 48,
       "int_": 23,
-      "hire": 1,
+      "hire": 3,
       "rep": 1,
-      "wait": 0,
-      "quit": 1,
-      "remain": 7
+      "wait": 2,
+      "quit": 0,
+      "remain": 5
     },
     {
       "name": "全球技術服務單位",
       "req": 5,
-      "cv": 191,
-      "pass_": 43,
+      "cv": 192,
+      "pass_": 44,
       "int_": 9,
       "hire": 4,
       "rep": 2,
@@ -95,8 +95,8 @@
       "pass_": 55,
       "int_": 21,
       "hire": 2,
-      "rep": 1,
-      "wait": 1,
+      "rep": 2,
+      "wait": 0,
       "quit": 0,
       "remain": 0
     },
@@ -115,9 +115,9 @@
     {
       "name": "全球供應鏈單位",
       "req": 2,
-      "cv": 451,
-      "pass_": 73,
-      "int_": 13,
+      "cv": 476,
+      "pass_": 83,
+      "int_": 15,
       "hire": 0,
       "rep": 0,
       "wait": 0,
@@ -139,31 +139,31 @@
     {
       "name": "全球研發單位",
       "req": 31,
-      "cv": 870,
+      "cv": 877,
       "pass_": 156,
       "int_": 79,
-      "hire": 30,
-      "rep": 16,
-      "wait": 3,
+      "hire": 32,
+      "rep": 18,
+      "wait": 2,
       "quit": 12,
-      "remain": 12
+      "remain": 11
     },
     {
       "name": "全球產品技術支援單位",
       "req": 7,
-      "cv": 208,
+      "cv": 212,
       "pass_": 107,
       "int_": 19,
-      "hire": 4,
+      "hire": 6,
       "rep": 3,
-      "wait": 0,
+      "wait": 1,
       "quit": 2,
-      "remain": 4
+      "remain": 3
     },
     {
       "name": "全球財會單位",
       "req": 1,
-      "cv": 21,
+      "cv": 23,
       "pass_": 0,
       "int_": 0,
       "hire": 0,
@@ -173,28 +173,28 @@
       "remain": 1
     },
     {
-      "name": "上週 W45(11/06) 合計",
-      "req": 82,
-      "cv": 5292,
-      "pass_": 1665,
-      "int_": 286,
-      "hire": 67,
+      "name": "上週 W46(11/13) 合計",
+      "req": 83,
+      "cv": 5328,
+      "pass_": 1700,
+      "int_": 291,
+      "hire": 70,
       "rep": 39,
       "wait": 5,
-      "quit": 27,
-      "remain": 38
+      "quit": 26,
+      "remain": 39
     },
     {
       "name": "與上週差異",
-      "req": 1,
-      "cv": 36,
-      "pass_": 35,
-      "int_": 5,
-      "hire": 0,
-      "rep": 0,
-      "wait": 0,
+      "req": 0,
+      "cv": 61,
+      "pass_": 16,
+      "int_": 3,
+      "hire": 4,
+      "rep": 3,
+      "wait": 1,
       "quit": 0,
-      "remain": 1
+      "remain": -4
     }
   ]
 }
