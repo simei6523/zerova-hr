@@ -171,30 +171,6 @@
       "wait": 0,
       "quit": 0,
       "remain": 1
-    },
-    {
-      "name": "上週 W46(11/13) 合計",
-      "req": 83,
-      "cv": 5328,
-      "pass_": 1700,
-      "int_": 291,
-      "hire": 70,
-      "rep": 39,
-      "wait": 5,
-      "quit": 26,
-      "remain": 39
-    },
-    {
-      "name": "與上週差異",
-      "req": 0,
-      "cv": 61,
-      "pass_": 16,
-      "int_": 3,
-      "hire": 4,
-      "rep": 3,
-      "wait": 1,
-      "quit": 0,
-      "remain": -4
     }
   ]
 }
