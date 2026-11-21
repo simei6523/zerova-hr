@@ -264,9 +264,11 @@
     .stats-bar__item {
       flex: 1; padding: 0.95rem 1.35rem; border-right: 1px solid var(--gray-light);
       display: flex; align-items: center; gap: 0.7rem; transition: background 0.15s;
+      cursor: pointer; text-decoration: none; color: inherit;
     }
     .stats-bar__item:last-child { border-right: none; }
     .stats-bar__item:hover { background: var(--brand-faint); }
+    .stats-bar__item:hover .stats-bar__num { color: var(--brand); }
     .stats-bar__icon { width: 36px; height: 36px; border-radius: 9px; background: var(--brand-pale); display: flex; align-items: center; justify-content: center; color: var(--brand); flex-shrink: 0; }
     .stats-bar__num { font-size: 1.28rem; font-weight: 800; color: var(--brand-dark); }
     .stats-bar__label { font-size: 0.69rem; color: var(--gray); margin-top: 0.06rem; }
@@ -369,6 +371,30 @@
     .eb-green { background: #d9f5e8; color: #147a3a; }
     .eb-amber { background: #fff3d6; color: #b05a10; }
     .eb-brand { background: var(--brand-pale); color: var(--brand-dark); }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .cal-title { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+    .cal-nav { background: var(--brand-faint); border: 1px solid var(--brand-pale); color: var(--brand-dark); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; line-height: 1; }
+    .cal-nav:hover { background: var(--brand-pale); }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.62rem; color: var(--gray); font-weight: 600; margin-bottom: 0.3rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--dark); border-radius: 6px; }
+    .cal-day.is-empty { visibility: hidden; }
+    .cal-day.has-event { background: var(--brand-faint); font-weight: 700; cursor: default; }
+    .cal-day .cal-dot { position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; }
+    .cal-dot-amber { background: #b05a10; }
+    .cal-dot-brand { background: var(--brand); }
+    .cal-dot-green { background: #147a3a; }
+    .cal-dot-recruit { background: #ec4899; }
+    .cal-dot-training { background: #f5a623; }
+    .cal-dot-comp { background: #4f8ff7; }
+    .cal-dot-event { background: #34a869; }
+    .cal-dot-other { background: var(--gray); }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--brand-pale); }
+    .cal-legend__item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; color: var(--gray); }
+    .cal-legend__dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .event-info__cat { display: inline-flex; align-items: center; gap: 0.28rem; font-size: 0.68rem; color: var(--gray); margin-top: 0.1rem; }
+    .event-info__cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .cal-event-list { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--brand-pale); display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* Bottom grid */
     .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.4rem; margin-bottom: 2rem; }
@@ -430,6 +456,9 @@
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
 
     @media (max-width:1050px) { .two-col,.bottom-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) {
+      [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -577,7 +606,8 @@
                     <svg class="nav-sub-cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                   </div>
                   <ul class="nav-sub-items">
-                    <li class="nav-doc-item" onclick="loadForm(this,'人員晉升提報申請表修正','pdf/form-promotion.pdf','適用：人員晉升提報')">人員晉升提報申請表修正</li>
+                    <li class="nav-doc-item" onclick="loadForm(this,'人員晉升提報申請表','pdf/form-promotion.pdf','適用：人員晉升提報')">人員晉升提報申請表</li>
+                    <li class="nav-doc-item" onclick="loadHtmlForm(this,'人員晉升提報申請表電子表單','forms/promotion-form.html','適用：人員晉升提報')">人員晉升提報申請表電子表單</li>
                   </ul>
                 </div>
               </li>
@@ -618,7 +648,7 @@
 
           <!-- 薪酬管理 -->
           <li class="nav-item" id="nav-salary">
-            <div class="nav-link" onclick="showPage('coming','薪酬管理','nav-salary')">
+            <div class="nav-link" onclick="showPage('coming','薪酬管理')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
               薪酬管理
             </div>
@@ -626,7 +656,7 @@
 
           <!-- 績效管理 -->
           <li class="nav-item" id="nav-perf">
-            <div class="nav-link" onclick="showPage('coming','績效管理','nav-perf')">
+            <div class="nav-link" onclick="showPage('talent')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               績效管理
             </div>
@@ -638,25 +668,25 @@
         <div class="sidebar__nav-label">學習資源</div>
         <ul class="sidebar__nav-list">
           <li class="nav-item" id="nav-hr">
-            <div class="nav-link" onclick="showPage('coming','HR學習資料','nav-hr')">
+            <div class="nav-link" onclick="showPage('coming','HR學習資料')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
               HR 學習資料
             </div>
           </li>
           <li class="nav-item" id="nav-people">
-            <div class="nav-link" onclick="showPage('coming','人員管理','nav-people')">
+            <div class="nav-link" onclick="showPage('coming','人員管理')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
               人員管理
             </div>
           </li>
           <li class="nav-item" id="nav-attend">
-            <div class="nav-link" onclick="showPage('coming','出勤管理','nav-attend')">
+            <div class="nav-link" onclick="showPage('coming','出勤管理')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               出勤管理
             </div>
           </li>
           <li class="nav-item" id="nav-report">
-            <div class="nav-link" onclick="showPage('coming','數據報表','nav-report')">
+            <div class="nav-link" onclick="showPage('coming','數據報表')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
               數據報表
             </div>
@@ -668,7 +698,7 @@
         <div class="sidebar__nav-label">系統</div>
         <ul class="sidebar__nav-list">
           <li class="nav-item" id="nav-settings">
-            <div class="nav-link" onclick="showPage('coming','系統設定','nav-settings')">
+            <div class="nav-link" onclick="showPage('coming','系統設定')">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L17.66 6.34M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>
               系統設定
             </div>
@@ -701,6 +731,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
         </button>
         <div class="topbar__avatar">HR</div>
+        <button class="topbar__btn" title="登出" onclick="logout()" style="color:var(--brand);gap:0.3rem;display:flex;align-items:center;font-size:0.78rem;font-weight:600;padding:0.3rem 0.7rem;border-radius:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          登出
+        </button>
       </div>
     </div>
 
@@ -730,21 +764,55 @@
 
       <!-- Stats bar -->
       <div class="stats-bar fade-in fd-2">
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="stats-bar__num" id="statTotal">載入中…</div><div class="stats-bar__label">在職員工人數</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="stats-bar__num">37</div><div class="stats-bar__label">待審核表單</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="stats-bar__num">6月</div><div class="stats-bar__label">本月薪資結算</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="stats-bar__num">Q2</div><div class="stats-bar__label">績效評核進行中</div></div></div>
-        <div class="stats-bar__item"><div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><div><div class="stats-bar__num">48</div><div class="stats-bar__label">學習文章</div></div></div>
+        <!-- 在職員工人數 → 跳至儀表板 -->
+        <a class="stats-bar__item" href="#" title="查看人力儀表板" onclick="scrollToSection('section-dashboard');return false;">
+          <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div><div class="stats-bar__num" id="statTotal">載入中…</div><div class="stats-bar__label">在職員工人數</div></div>
+        </a>
+        <!-- 離職率 → 跳至離職率 Dashboard -->
+        <a class="stats-bar__item" href="#" title="查看離職率 Dashboard" onclick="scrollToSection('section-dashboard-turnover');return false;">
+          <div class="stats-bar__icon" style="background:#fde0e0;color:#a82828;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg></div>
+          <div><div class="stats-bar__num" id="statTurnoverRate" style="color:#a82828;">23.7%</div><div class="stats-bar__label">離職率</div></div>
+        </a>
+        <!-- 招募達成率 → 跳至招募達成率 Dashboard -->
+        <a class="stats-bar__item" href="#" title="查看招募達成率 Dashboard" onclick="scrollToSection('section-dashboard-recruit');return false;">
+          <div class="stats-bar__icon" style="background:#ddeeff;color:#2450b8;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+          <div><div class="stats-bar__num" id="statRecruitRate" style="color:#2450b8;">—</div><div class="stats-bar__label">招募達成率</div></div>
+        </a>
+        <!-- 本季專案進度 → 跳至本季專案進度 -->
+        <a class="stats-bar__item" href="#" title="查看本季專案進度" onclick="scrollToSection('section-project');return false;">
+          <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div><div class="stats-bar__num" id="statProjectProgress">31.4%</div><div class="stats-bar__label">本季專案進度</div></div>
+        </a>
+        <!-- 學習文章 → 跳至 HR 學習資料 -->
+        <a class="stats-bar__item" href="#" title="查看學習資料" onclick="scrollToSection('section-hr-learn');return false;">
+          <div class="stats-bar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+          <div><div class="stats-bar__num">48</div><div class="stats-bar__label">學習文章</div></div>
+        </a>
       </div>
 
       <div class="content">
 
-        <!-- Dashboard -->
-        <div class="fade-in fd-2">
+        <!-- ① HR 系統公告 ─ 最上方，全寬 -->
+        <div class="fade-in fd-2" id="section-notice" style="margin-bottom:1.85rem;">
+          <div class="section-header"><h2 class="section-title">HR 系統公告</h2><a href="#" class="section-link">查看全部 →</a></div>
+          <div class="notice-list">
+            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">Q2 績效評核系統已開放填寫，請各部門主管於截止日前完成</div><div class="notice-date">2025/06/01</div></div></div>
+            <div class="notice-item"><div class="notice-dot"></div><div><div class="notice-title">7 月勞健保費率調整通知，請人員確認新費率明細</div><div class="notice-date">2025/05/28</div></div></div>
+            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">新版在職訓練課程已上線，歡迎同仁報名參加</div><div class="notice-date">2025/05/15</div></div></div>
+            <div class="notice-item"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">年度員工滿意度調查結果公布，整體滿意度達 87%</div><div class="notice-date">2025/05/10</div></div></div>
+            <div class="notice-item" style="border-radius:0 0 9px 9px;border-bottom:1px solid var(--gray-light);"><div class="notice-dot notice-dot--gray"></div><div><div class="notice-title">試用期滿考核作業辦法修訂版本已上傳，請查閱規章制度</div><div class="notice-date">2025/04/30</div></div></div>
+          </div>
+        </div>
+
+        <!-- ② 三個 Dashboards ─ 全寬依序垂直排列 -->
+        <div class="fade-in fd-2" id="section-dashboard" style="margin-bottom:1.85rem;">
           <div class="section-header">
             <h2 class="section-title">人力資源數據儀表板專區</h2>
-            <a href="https://simei6523.github.io/hr-dashboard-1/" target="_blank" class="section-link">開新視窗 ↗</a>
+            <a href="headcount-dashboard/index.html" target="_blank" class="section-link">開新視窗 ↗</a>
           </div>
+
+          <!-- Dashboard 1：人員人數 -->
           <div class="dashboard-wrap">
             <div class="dashboard-titlebar">
               <div class="dashboard-titlebar__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
@@ -752,80 +820,109 @@
                 <div class="dashboard-titlebar__name">全球各 Site 人員人數 Dashboard</div>
                 <div class="dashboard-titlebar__sub">即時人力分佈數據 · Zerova Technology</div>
               </div>
-              <a href="https://simei6523.github.io/hr-dashboard-1/" target="_blank" class="dashboard-titlebar__btn">
+              <a href="headcount-dashboard/index.html" target="_blank" class="dashboard-titlebar__btn">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 獨立開啟
               </a>
             </div>
-            <iframe src="https://simei6523.github.io/hr-dashboard-1/" title="全球各 Site 人員人數 Dashboard" loading="lazy"></iframe>
+            <iframe src="headcount-dashboard/index.html" title="全球各 Site 人員人數 Dashboard" loading="lazy"></iframe>
+          </div>
+
+          <!-- Dashboard 2：離職率 -->
+          <div class="dashboard-wrap" style="margin-top:1.4rem;" id="section-dashboard-turnover">
+            <div class="dashboard-titlebar">
+              <div class="dashboard-titlebar__icon" style="background:#fde0e0;color:#a82828;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg></div>
+              <div>
+                <div class="dashboard-titlebar__name">離職率分析 Dashboard</div>
+                <div class="dashboard-titlebar__sub">各 Site 人員進出與離職率分析 · Zerova Technology</div>
+              </div>
+              <a href="turnover-dashboard/index.html" target="_blank" class="dashboard-titlebar__btn" style="background:#a82828;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                獨立開啟
+              </a>
+            </div>
+            <iframe src="turnover-dashboard/index.html" title="離職率分析 Dashboard" loading="lazy" style="width:100%;height:520px;border:none;display:block;"></iframe>
+          </div>
+
+          <!-- Dashboard 3：招募達成率 -->
+          <div class="dashboard-wrap" style="margin-top:1.4rem;" id="section-dashboard-recruit">
+            <div class="dashboard-titlebar">
+              <div class="dashboard-titlebar__icon" style="background:#ddeeff;color:#2450b8;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+              <div>
+                <div class="dashboard-titlebar__name">招募達成率 Dashboard</div>
+                <div class="dashboard-titlebar__sub">招募進度、各職缺達成率追蹤 · Zerova Technology</div>
+              </div>
+              <a href="recruit-dashboard/index.html" target="_blank" class="dashboard-titlebar__btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                獨立開啟
+              </a>
+            </div>
+            <iframe src="recruit-dashboard/index.html" title="招募達成率 Dashboard" loading="lazy" style="width:100%;height:520px;border:none;display:block;"></iframe>
           </div>
         </div>
 
-        <!-- Two-col -->
-        <div class="two-col fade-in fd-3">
+        <!-- ③ HR 重要工作行事曆 ＋ 本季專案進度 ─ 左右並排 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.85rem;" class="fade-in fd-3">
+
+          <!-- HR 重要工作行事曆（月曆式） -->
           <div>
-            <div class="section-header"><h2 class="section-title">HR 學習資料</h2><a href="#" class="section-link">更多文章 →</a></div>
-            <div class="article-filters">
-              <button class="filter-tag filter-tag--active">全部</button>
-              <button class="filter-tag">AI 自動化</button>
-              <button class="filter-tag">招募</button>
-              <button class="filter-tag">薪酬管理</button>
-              <button class="filter-tag">績效管理</button>
-              <button class="filter-tag">員工關係</button>
-              <button class="filter-tag">法規</button>
-              <button class="filter-tag">其它</button>
-            </div>
-            <div class="article-list">
-              <a href="#" class="article-item"><span class="article-cat cat-ai">AI 自動化</span><div class="article-meta"><div class="article-title">如何用 AI 工具自動化員工入職流程</div><div class="article-info">2025/06/05 · 8 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-recruit">招募</span><div class="article-meta"><div class="article-title">2025 年台灣人才市場趨勢分析與招募策略</div><div class="article-info">2025/05/28 · 12 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-pay">薪酬管理</span><div class="article-meta"><div class="article-title">彈性薪酬制度設計：基本薪資與績效獎金比例</div><div class="article-info">2025/05/20 · 10 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-perf">績效管理</span><div class="article-meta"><div class="article-title">OKR vs KPI：如何選擇適合貴公司的績效框架</div><div class="article-info">2025/05/15 · 9 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-emp">員工關係</span><div class="article-meta"><div class="article-title">提升員工敬業度的五個實用方法</div><div class="article-info">2025/05/08 · 7 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-law">法規</span><div class="article-meta"><div class="article-title">勞基法 2025 年修正重點整理與因應措施</div><div class="article-info">2025/05/01 · 15 分鐘</div></div></a>
-              <a href="#" class="article-item"><span class="article-cat cat-other">其它</span><div class="article-meta"><div class="article-title">遠端工作時代的 HR 管理挑戰與最佳實踐</div><div class="article-info">2025/04/22 · 11 分鐘</div></div></a>
+            <div class="section-header"><h2 class="section-title">HR 重要工作行事曆</h2></div>
+            <div class="card" style="padding:0.9rem 1rem;">
+              <div class="cal-header">
+                <button class="cal-nav" id="calPrev" aria-label="上一月">‹</button>
+                <div class="cal-title" id="calTitle">2026年6月</div>
+                <button class="cal-nav" id="calNext" aria-label="下一月">›</button>
+              </div>
+              <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div class="cal-legend" id="calLegend"></div>
+              <div class="cal-event-list" id="calEventList"></div>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:1.4rem;">
-            <div>
-              <div class="section-header"><h2 class="section-title">即將到來</h2></div>
-              <div class="upcoming-list">
-                <div class="event-item"><div class="event-date"><div class="event-date__day">20</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">Q2 績效評核截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>全員必填</div></div><span class="event-badge eb-amber">待辦</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">25</div><div class="event-date__month">JUN</div></div><div class="event-info"><div class="event-info__title">6 月薪資發放日</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>財務部執行</div></div><span class="event-badge eb-brand">預定</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">10</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">新人教育訓練</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>本月新進 12 名</div></div><span class="event-badge eb-green">確認</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">15</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">Q2 績效面談週</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>各部門主管執行</div></div><span class="event-badge eb-brand">預定</span></div>
-                <div class="event-item"><div class="event-date"><div class="event-date__day">31</div><div class="event-date__month">JUL</div></div><div class="event-info"><div class="event-info__title">年度健檢報名截止</div><div class="event-info__meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>福委會辦理</div></div><span class="event-badge eb-amber">待辦</span></div>
+
+          <!-- 本季專案進度 -->
+          <div id="section-project">
+            <div class="section-header"><h2 class="section-title">本季專案進度</h2></div>
+            <div class="card" style="padding:1rem 1.1rem;">
+              <div id="projectProgressList">
+                <!-- 由 project_progress.json 動態產生；以下為載入前的預設值 -->
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">人力預算作業</span><span class="progress-pct">0%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">教育訓練需求調查</span><span class="progress-pct">14.3%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:14.3%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">晉升調薪專案</span><span class="progress-pct">100%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">員工分紅作業</span><span class="progress-pct">0%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div></div>
+                <div class="progress-item"><div class="progress-label"><span class="progress-name">TTQS訓練品質計畫</span><span class="progress-pct">42.9%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:42.9%"></div></div></div>
+              </div>
+              <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">
+                <div class="progress-label"><span class="progress-name" style="font-weight:700;">本季平均達成率</span><span class="progress-pct" id="projectProgressAvg" style="font-size:1rem;">31.4%</span></div>
+                <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" id="projectProgressAvgBar" style="width:31.4%"></div></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Bottom -->
-        <div class="bottom-grid fade-in fd-4">
-          <div class="card">
-            <div class="section-header" style="margin-bottom:1rem;"><h2 class="section-title">薪酬管理</h2><a href="#" class="section-link">查看全部 →</a></div>
-            <table class="salary-table">
-              <thead><tr><th>項目</th><th>對象</th><th>金額 / 比例</th><th>狀態</th></tr></thead>
-              <tbody>
-                <tr><td>6月底薪</td><td>全員 1,284 人</td><td>計算中</td><td><span class="badge-status bs-review">處理中</span></td></tr>
-                <tr><td>Q2 績效獎金</td><td>正職員工</td><td>基本薪 × 0~30%</td><td><span class="badge-status bs-pending">待核准</span></td></tr>
-                <tr><td>加班費結算</td><td>非管理職</td><td>依勞基法計算</td><td><span class="badge-status bs-done">完成</span></td></tr>
-                <tr><td>勞健保調整</td><td>全員</td><td>7月生效</td><td><span class="badge-status bs-done">已通知</span></td></tr>
-                <tr><td>5月薪資單</td><td>全員 1,271 人</td><td>NT$ 148,320,000</td><td><span class="badge-status bs-done">已發放</span></td></tr>
-              </tbody>
-            </table>
+        <!-- ④ HR 學習資料 ─ 最下方，全寬 -->
+        <div class="fade-in fd-4" id="section-hr-learn" style="margin-bottom:2rem;">
+          <div class="section-header"><h2 class="section-title">HR 學習資料</h2><a href="#" class="section-link">更多文章 →</a></div>
+          <div class="article-filters">
+            <button class="filter-tag filter-tag--active">全部</button>
+            <button class="filter-tag">AI 自動化</button>
+            <button class="filter-tag">招募</button>
+            <button class="filter-tag">薪酬管理</button>
+            <button class="filter-tag">績效管理</button>
+            <button class="filter-tag">員工關係</button>
+            <button class="filter-tag">法規</button>
+            <button class="filter-tag">其它</button>
           </div>
-          <div class="card">
-            <div class="section-header" style="margin-bottom:1rem;"><h2 class="section-title">Q2 績效進度</h2><a href="#" class="section-link">詳情 →</a></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">工程研發部</span><span class="progress-pct">82%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:82%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">產品設計部</span><span class="progress-pct">71%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:71%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">業務行銷部</span><span class="progress-pct">65%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:65%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">人力資源部</span><span class="progress-pct">90%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:90%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">財務法務部</span><span class="progress-pct">58%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:58%"></div></div></div>
-            <div class="progress-item"><div class="progress-label"><span class="progress-name">製造供應鏈</span><span class="progress-pct">45%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%"></div></div></div>
-            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--brand-pale);">
-              <div class="progress-label"><span class="progress-name" style="font-weight:700;">整體完成率</span><span class="progress-pct" style="font-size:1rem;">69%</span></div>
-              <div class="progress-bar-bg" style="height:10px;"><div class="progress-bar-fill" style="width:69%"></div></div>
-            </div>
+          <!-- 文章列表：兩欄網格讓版面更好看 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-ai">AI 自動化</span><div class="article-meta"><div class="article-title">如何用 AI 工具自動化員工入職流程</div><div class="article-info">2025/06/05 · 8 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-recruit">招募</span><div class="article-meta"><div class="article-title">2025 年台灣人才市場趨勢分析與招募策略</div><div class="article-info">2025/05/28 · 12 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-pay">薪酬管理</span><div class="article-meta"><div class="article-title">彈性薪酬制度設計：基本薪資與績效獎金比例</div><div class="article-info">2025/05/20 · 10 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-perf">績效管理</span><div class="article-meta"><div class="article-title">OKR vs KPI：如何選擇適合貴公司的績效框架</div><div class="article-info">2025/05/15 · 9 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-emp">員工關係</span><div class="article-meta"><div class="article-title">提升員工敬業度的五個實用方法</div><div class="article-info">2025/05/08 · 7 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-law">法規</span><div class="article-meta"><div class="article-title">勞基法 2025 年修正重點整理與因應措施</div><div class="article-info">2025/05/01 · 15 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-other">其它</span><div class="article-meta"><div class="article-title">遠端工作時代的 HR 管理挑戰與最佳實踐</div><div class="article-info">2025/04/22 · 11 分鐘</div></div></a>
+            <a href="#" class="article-item" style="border-radius:8px;border:1px solid var(--gray-light);"><span class="article-cat cat-ai">AI 自動化</span><div class="article-meta"><div class="article-title">HR 數據分析入門：如何用數據提升人才決策</div><div class="article-info">2025/04/10 · 10 分鐘</div></div></a>
           </div>
         </div>
 
@@ -885,9 +982,18 @@
             <iframe id="formPdfIframe" src="" title="表單流程"></iframe>
           </div>
         </div>
+        <!-- HTML 電子表單閱覽 -->
+        <div id="formHtmlViewer" style="display:none; width:100%; height:calc(100vh - 140px);">
+          <iframe id="formHtmlIframe" src="" title="電子表單" style="width:100%; height:100%; border:none; display:block;"></iframe>
+        </div>
       </div>
     </div>
 
+
+    <!-- ══ PAGE: 績效管理 - 人才識別九宮格 ══ -->
+    <div class="page-section" id="page-talent" style="display:none;height:calc(100vh - 54px);overflow:hidden;">
+      <iframe id="talentIframe" data-src="talent-grid/index.html" title="人才識別九宮格" style="width:100%; height:100%; border:none; display:block;"></iframe>
+    </div>
 
     <!-- ══ PAGE: 建置中 ══ -->
     <div class="page-section" id="page-coming" style="display:none;">
@@ -903,8 +1009,41 @@
 </div>
 
 <script>
+  // ── 登入驗證 ─────────────────────────────────────────
+  (function checkAuth() {
+    const SESSION_KEY  = "zerova_hr_auth";
+    const VALID_HASH   = "13f8af5e6dcd9e954c4c0baf61f4ce7495570b10f6b3569d40cf7d5583559a67";
+    try {
+      const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+      if (!s || s.token !== VALID_HASH || Date.now() >= s.expires) {
+        window.location.replace("login.html");
+      }
+    } catch(e) {
+      window.location.replace("login.html");
+    }
+  })();
+
+  // ── 登出功能 ─────────────────────────────────────────
+  function logout() {
+    sessionStorage.removeItem("zerova_hr_auth");
+    window.location.replace("login.html");
+  }
+
+  // ── 滾動到首頁指定區塊 ──
+  function scrollToSection(sectionId) {
+    // 確保在首頁
+    showPage('home');
+    // 延遲一下讓頁面切換完成後再滾動
+    setTimeout(function() {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 80);
+  }
+
   // ── 頁面切換 ──
-  function showPage(page, title, navId) {
+  function showPage(page, title) {
     // 隱藏所有
     document.querySelectorAll('.page-section').forEach(s => {
       s.style.display = 'none';
@@ -916,9 +1055,21 @@
       target.style.display = (page === 'regulations') ? 'block' : 'block';
       target.classList.add('active');
     }
+    // ── 切換到首頁時，自動捲回最頂端 ──
+    if (page === 'home') {
+      const pageWrap = document.querySelector('.page-wrap');
+      if (pageWrap) pageWrap.scrollTop = 0;
+    }
     // 更新建置中標題
     if (page === 'coming' && title) {
       document.getElementById('comingTitle').textContent = title + '（建置中）';
+    }
+    // 績效管理頁面：首次切換時才載入 iframe
+    if (page === 'talent') {
+      const iframe = document.getElementById('talentIframe');
+      if (iframe && !iframe.src) {
+        iframe.src = iframe.dataset.src;
+      }
     }
     // 下載按鈕只在規章頁或表單頁且已選文件時顯示
     if (page !== 'regulations' && page !== 'forms') {
@@ -926,9 +1077,9 @@
     }
     // 更新側欄 active
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    const navMap = { home:'nav-home', regulations:'nav-reg', forms:'nav-forms' };
-    const targetNavId = navId || navMap[page];
-    if (targetNavId) document.getElementById(targetNavId)?.classList.add('active');
+    const navMap = { home:'nav-home', regulations:'nav-reg', forms:'nav-forms', talent:'nav-perf', coming:'nav-forms' };
+    const navId = navMap[page];
+    if (navId) document.getElementById(navId)?.classList.add('active');
   }
 
   // ── 主選單展開/收合 ──
@@ -975,7 +1126,8 @@
     document.getElementById('formTitle').innerHTML =
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + title;
     document.getElementById('formMeta').textContent = meta;
-    // iframe
+    // 隱藏 HTML 表單，顯示 PDF viewer
+    document.getElementById('formHtmlViewer').style.display = 'none';
     document.getElementById('formPdfIframe').src = path;
     document.getElementById('formEmpty').style.display = 'none';
     document.getElementById('formViewer').style.display = 'block';
@@ -984,6 +1136,26 @@
     btn.href = path;
     btn.download = title + '.pdf';
     btn.classList.remove('hidden');
+    // 確保在表單頁
+    showPage('forms');
+    document.getElementById('nav-forms').classList.add('active', 'open');
+  }
+
+  function loadHtmlForm(el, title, path, meta) {
+    // active 樣式
+    document.querySelectorAll('.nav-doc-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    // toolbar
+    document.getElementById('formTitle').innerHTML =
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + title;
+    document.getElementById('formMeta').textContent = meta;
+    // 隱藏 PDF viewer，顯示 HTML 表單
+    document.getElementById('formViewer').style.display = 'none';
+    document.getElementById('formEmpty').style.display = 'none';
+    document.getElementById('formHtmlIframe').src = path;
+    document.getElementById('formHtmlViewer').style.display = 'block';
+    // 隱藏下載 PDF 按鈕（HTML 表單有自己的列印/下載功能）
+    document.getElementById('downloadBtn').classList.add('hidden');
     // 確保在表單頁
     showPage('forms');
     document.getElementById('nav-forms').classList.add('active', 'open');
@@ -1000,7 +1172,7 @@
 
 <script>
   // 自動從 data.json 讀取最新人數
-  fetch('https://simei6523.github.io/zerova-hr/data.json?t=' + Date.now())
+  fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/data.json?t=' + Date.now())
     .then(r => r.json())
     .then(d => {
       const el = document.getElementById('statTotal');
@@ -1012,6 +1184,208 @@
       const el = document.getElementById('statTotal');
       if (el) el.textContent = '—';
     });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  招募達成率 Icon — 從 recruit.json 自動讀取（與 Dashboard 同步）
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/recruit.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(json => {
+        const el = document.getElementById('statRecruitRate');
+        if (el) el.textContent = json.overall_rate.toFixed(2) + '%';
+      })
+      .catch(() => {
+        // fetch 失敗時用靜態備用值
+        const el = document.getElementById('statRecruitRate');
+        if (el) el.textContent = '43.10%';
+      });
+  });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  離職率 Icon — 從 turnover.json 自動讀取（與 Dashboard 同步）
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/turnover.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(json => {
+        const el = document.getElementById('statTurnoverRate');
+        if (el) el.textContent = json.global_turnover_rate.toFixed(1) + '%';
+      })
+      .catch(() => {
+        // fetch 失敗時用靜態備用值
+        const el = document.getElementById('statTurnoverRate');
+        if (el) el.textContent = '23.7%';
+      });
+  });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  本季專案進度 — 從 project_progress.json 自動讀取（人資專案進度管控表）
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/project_progress.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(json => {
+        const list = document.getElementById('projectProgressList');
+        if (list && json.this_quarter_projects) {
+          list.innerHTML = json.this_quarter_projects.map(p => `
+            <div class="progress-item">
+              <div class="progress-label"><span class="progress-name">${p.name}</span><span class="progress-pct">${p.progress_pct}%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.progress_pct}%"></div></div>
+            </div>
+          `).join('');
+        }
+        if (json.summary && typeof json.summary.this_quarter_avg_pct === 'number') {
+          const avg = json.summary.this_quarter_avg_pct;
+          const avgEl = document.getElementById('projectProgressAvg');
+          const avgBar = document.getElementById('projectProgressAvgBar');
+          const iconEl = document.getElementById('statProjectProgress');
+          if (avgEl) avgEl.textContent = avg + '%';
+          if (avgBar) avgBar.style.width = avg + '%';
+          if (iconEl) iconEl.textContent = avg + '%';
+        }
+      })
+      .catch(() => {
+        // fetch 失敗時保留 HTML 中寫死的預設值，不做任何更動
+      });
+  });
+</script>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  HR 重要工作行事曆 — 月曆式呈現，從 calendar_events.json 動態讀取
+  //  之後要新增/修改事項：編輯「行事曆事項.xlsx」→ 雙擊 update_calendar.bat，不用再改這份 HTML
+  // ══════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    var calEvents = [];
+
+    var calGrid = document.getElementById('calGrid');
+    var calTitle = document.getElementById('calTitle');
+    var calEventList = document.getElementById('calEventList');
+    var calLegend = document.getElementById('calLegend');
+    var calPrev = document.getElementById('calPrev');
+    var calNext = document.getElementById('calNext');
+    if (!calGrid) return;
+
+    var today = new Date();
+    var currentYear = today.getFullYear();
+    var currentMonth = today.getMonth() + 1;
+
+    var CATEGORY_LABELS = {
+      recruit: { label: '招募', dot: 'cal-dot-recruit' },
+      training: { label: '訓練', dot: 'cal-dot-training' },
+      comp: { label: '薪酬', dot: 'cal-dot-comp' },
+      event: { label: '活動', dot: 'cal-dot-event' },
+      other: { label: '其他', dot: 'cal-dot-other' }
+    };
+
+    function eventsInMonth(year, month) {
+      return calEvents.filter(function (e) { return e.year === year && e.month === month; });
+    }
+
+    function renderLegend(monthEvents) {
+      var usedColors = {};
+      monthEvents.forEach(function (e) { usedColors[e.categoryColor || 'other'] = true; });
+      var keys = Object.keys(usedColors);
+      if (keys.length === 0) { calLegend.innerHTML = ''; return; }
+      calLegend.innerHTML = keys.map(function (key) {
+        var info = CATEGORY_LABELS[key] || CATEGORY_LABELS.other;
+        return '<div class="cal-legend__item"><span class="cal-legend__dot ' + info.dot + '"></span>' + info.label + '</div>';
+      }).join('');
+    }
+
+    function renderEventList(monthEvents) {
+      if (monthEvents.length === 0) {
+        calEventList.innerHTML = '<div style="font-size:0.75rem;color:var(--gray);text-align:center;padding:0.5rem 0;">本月無重要事項</div>';
+        return;
+      }
+      calEventList.innerHTML = monthEvents.slice().sort(function (a, b) { return a.day - b.day; }).map(function (e) {
+        var catInfo = CATEGORY_LABELS[e.categoryColor] || null;
+        var catTag = catInfo
+          ? '<div class="event-info__cat"><span class="event-info__cat-dot ' + catInfo.dot + '"></span>' + catInfo.label + '</div>'
+          : '';
+        return '<div class="event-item">' +
+          '<div class="event-date"><div class="event-date__day">' + e.day + '</div><div class="event-date__month">' + currentMonth + '月</div></div>' +
+          '<div class="event-info"><div class="event-info__title">' + e.title + '</div><div class="event-info__meta">' + e.meta + '</div>' + catTag + '</div>' +
+          '<span class="event-badge eb-' + e.badge + '">' + e.badgeLabel + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    function renderCalendar() {
+      calTitle.textContent = currentYear + '年' + currentMonth + '月';
+      calGrid.innerHTML = '';
+
+      var firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+      var daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+      var monthEvents = eventsInMonth(currentYear, currentMonth);
+
+      for (var i = 0; i < firstDay; i++) {
+        var empty = document.createElement('div');
+        empty.className = 'cal-day is-empty';
+        calGrid.appendChild(empty);
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        var cell = document.createElement('div');
+        cell.className = 'cal-day';
+        cell.textContent = d;
+        var dayEvents = monthEvents.filter(function (e) { return e.day === d; });
+        if (dayEvents.length > 0) {
+          cell.classList.add('has-event');
+          var dot = document.createElement('span');
+          var catInfo = CATEGORY_LABELS[dayEvents[0].categoryColor] || CATEGORY_LABELS.other;
+          dot.className = 'cal-dot ' + catInfo.dot;
+          cell.appendChild(dot);
+          cell.title = dayEvents.map(function (e) { return e.title; }).join('、');
+        }
+        calGrid.appendChild(cell);
+      }
+      renderLegend(monthEvents);
+      renderEventList(monthEvents);
+    }
+
+    function pickStartMonth() {
+      if (calEvents.length === 0) return currentYear * 100 + currentMonth;
+      var currentKey = currentYear * 100 + currentMonth;
+      var keys = calEvents.map(function (e) { return e.year * 100 + e.month; });
+      var future = keys.filter(function (k) { return k >= currentKey; });
+      return future.length ? Math.min.apply(null, future) : Math.min.apply(null, keys);
+    }
+
+    calPrev.addEventListener('click', function () {
+      currentMonth -= 1;
+      if (currentMonth < 1) { currentMonth = 12; currentYear -= 1; }
+      renderCalendar();
+    });
+    calNext.addEventListener('click', function () {
+      currentMonth += 1;
+      if (currentMonth > 12) { currentMonth = 1; currentYear += 1; }
+      renderCalendar();
+    });
+
+    renderCalendar(); // 先顯示空的當月月曆，資料抓到後再補上
+
+    fetch('https://raw.githubusercontent.com/simei6523/zerova-hr/main/calendar_events.json?t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (json && Array.isArray(json.events)) {
+          calEvents = json.events;
+          var startKey = pickStartMonth();
+          currentYear = Math.floor(startKey / 100);
+          currentMonth = startKey % 100;
+          renderCalendar();
+        }
+      })
+      .catch(function () {
+        // 抓不到資料時，維持顯示空白的當月月曆
+      });
+  });
 </script>
 </body>
 </html>
